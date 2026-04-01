@@ -1,0 +1,1745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 2: Malware — Exam Destroyer</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&family=Barlow:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a26;
+    --border: #2a2a3e;
+    --accent: #ff3c5f;
+    --accent2: #00d4ff;
+    --accent3: #ffd700;
+    --accent4: #7c3aed;
+    --text: #e8e8f0;
+    --muted: #8888aa;
+    --green: #00ff88;
+    --orange: #ff8c00;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    background: linear-gradient(135deg, #0a0a0f 0%, #1a0a1f 50%, #0a0f1f 100%);
+    border-bottom: 2px solid var(--accent);
+    padding: 60px 24px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(255,60,95,0.15) 0%, transparent 70%);
+  }
+  .hero-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 10vw, 96px);
+    letter-spacing: 4px;
+    line-height: 1;
+    background: linear-gradient(90deg, #ff3c5f, #ff8c00, #ffd700);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+  }
+  .hero-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--accent2);
+    margin-top: 16px;
+    letter-spacing: 2px;
+  }
+  .chapter-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,60,95,0.15);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    padding: 6px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  /* ─── NAV ─── */
+  .sticky-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,15,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .sticky-nav::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--muted);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 14px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  .nav-btn:hover, .nav-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ─── LAYOUT ─── */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  .section {
+    padding: 60px 0;
+    border-bottom: 1px solid var(--border);
+    display: none;
+  }
+  .section.active { display: block; }
+
+  /* ─── SECTION HEADER ─── */
+  .sec-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .sec-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    color: var(--accent);
+    opacity: 0.3;
+    line-height: 1;
+  }
+  .sec-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 2px;
+    color: var(--text);
+    line-height: 1;
+  }
+  .sec-subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .card:hover { border-color: var(--accent2); transform: translateY(-2px); }
+  .card-accent-line {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+  }
+  .card h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    color: var(--accent2);
+  }
+  .card p { color: var(--text); line-height: 1.8; }
+
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+
+  /* ─── HIGHLIGHT BOX ─── */
+  .highlight {
+    background: rgba(255,215,0,0.06);
+    border: 1px solid rgba(255,215,0,0.3);
+    border-left: 4px solid var(--accent3);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 20px 0;
+    font-size: 15px;
+  }
+  .highlight strong { color: var(--accent3); }
+  .highlight-red {
+    background: rgba(255,60,95,0.06);
+    border: 1px solid rgba(255,60,95,0.3);
+    border-left: 4px solid var(--accent);
+  }
+  .highlight-red strong { color: var(--accent); }
+  .highlight-blue {
+    background: rgba(0,212,255,0.06);
+    border: 1px solid rgba(0,212,255,0.3);
+    border-left: 4px solid var(--accent2);
+  }
+  .highlight-blue strong { color: var(--accent2); }
+  .highlight-green {
+    background: rgba(0,255,136,0.06);
+    border: 1px solid rgba(0,255,136,0.3);
+    border-left: 4px solid var(--green);
+  }
+  .highlight-green strong { color: var(--green); }
+
+  /* ─── TAGS ─── */
+  .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin: 3px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .tag-red { background: rgba(255,60,95,0.2); color: var(--accent); border: 1px solid var(--accent); }
+  .tag-blue { background: rgba(0,212,255,0.2); color: var(--accent2); border: 1px solid var(--accent2); }
+  .tag-gold { background: rgba(255,215,0,0.2); color: var(--accent3); border: 1px solid var(--accent3); }
+  .tag-green { background: rgba(0,255,136,0.2); color: var(--green); border: 1px solid var(--green); }
+  .tag-purple { background: rgba(124,58,237,0.2); color: #a78bfa; border: 1px solid #7c3aed; }
+  .tag-orange { background: rgba(255,140,0,0.2); color: var(--orange); border: 1px solid var(--orange); }
+
+  /* ─── PHASE STEPS ─── */
+  .phase-steps { display: flex; flex-direction: column; gap: 0; }
+  .phase-step {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .phase-step:last-child { border-bottom: none; }
+  .phase-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    line-height: 1;
+    min-width: 60px;
+    text-align: center;
+  }
+  .phase-content h4 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+
+  /* ─── CIA TABLE ─── */
+  .cia-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+  .cia-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 12px 16px;
+    border-bottom: 2px solid var(--border);
+    text-align: left;
+  }
+  .cia-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    font-size: 15px;
+  }
+  .cia-table tr:hover td { background: var(--surface2); }
+
+  /* ─── COMPARISON TABLE ─── */
+  .compare-table { width: 100%; border-collapse: collapse; margin: 20px 0; overflow-x: auto; display: block; }
+  .compare-table th {
+    background: var(--surface2);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent2);
+    padding: 12px 16px;
+    text-align: left;
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .compare-table td {
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    font-size: 14px;
+    vertical-align: top;
+  }
+  .compare-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+  /* ─── TRICK BOXES ─── */
+  .trick-box {
+    background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(0,212,255,0.05));
+    border: 1px solid rgba(124,58,237,0.4);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 16px 0;
+  }
+  .trick-box .trick-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #a78bfa;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .trick-box .trick-content { font-size: 15px; }
+
+  /* ─── MCQ ─── */
+  .mcq-container { display: flex; flex-direction: column; gap: 28px; }
+  .mcq-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .mcq-question {
+    padding: 20px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+    line-height: 1.6;
+  }
+  .mcq-q-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .mcq-options { padding: 16px 24px; display: flex; flex-direction: column; gap: 10px; }
+  .mcq-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 15px;
+  }
+  .mcq-option:hover { border-color: var(--accent2); background: rgba(0,212,255,0.05); }
+  .mcq-option.correct { border-color: var(--green); background: rgba(0,255,136,0.08); color: var(--green); }
+  .mcq-option.wrong { border-color: var(--accent); background: rgba(255,60,95,0.08); color: var(--accent); }
+  .mcq-option.disabled { cursor: default; }
+  .mcq-opt-letter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    min-width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .mcq-explanation {
+    padding: 14px 24px;
+    font-size: 14px;
+    background: rgba(0,255,136,0.05);
+    border-top: 1px solid rgba(0,255,136,0.2);
+    color: var(--green);
+    display: none;
+    line-height: 1.7;
+  }
+  .mcq-explanation.wrong-exp { background: rgba(255,60,95,0.05); color: #ff8888; border-top-color: rgba(255,60,95,0.2); }
+  .mcq-score-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  .score-display {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    line-height: 1;
+    background: linear-gradient(90deg, var(--accent2), var(--green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .score-label { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--muted); letter-spacing: 2px; }
+  .reset-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 28px;
+    cursor: pointer;
+    margin-top: 16px;
+    transition: opacity 0.2s;
+  }
+  .reset-btn:hover { opacity: 0.85; }
+
+  /* ─── SPREAD ICONS ─── */
+  .spread-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+  .spread-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .spread-item:hover { border-color: var(--accent); transform: translateY(-3px); }
+  .spread-icon { font-size: 36px; margin-bottom: 10px; }
+  .spread-item h4 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: var(--accent2);
+    margin-bottom: 8px;
+  }
+  .spread-item p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* ─── TIMELINE ─── */
+  .timeline { position: relative; padding-left: 40px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 12px; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--accent), var(--accent4), var(--accent2));
+  }
+  .tl-item {
+    position: relative;
+    padding: 0 0 28px 24px;
+  }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -32px;
+    top: 6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 12px var(--accent);
+  }
+  .tl-year {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent3);
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+  .tl-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .tl-desc { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+  /* ─── RANSOMWARE FLOW ─── */
+  .flow-steps { display: flex; gap: 0; align-items: stretch; flex-wrap: wrap; }
+  .flow-step {
+    flex: 1;
+    min-width: 180px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px;
+    position: relative;
+    text-align: center;
+  }
+  .flow-step:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    right: -14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent);
+    font-size: 20px;
+    z-index: 2;
+    background: var(--bg);
+    padding: 0 2px;
+  }
+  .flow-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--accent);
+    opacity: 0.5;
+    line-height: 1;
+  }
+  .flow-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: var(--accent2);
+    margin: 6px 0;
+  }
+  .flow-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* ─── ACCORDION ─── */
+  .accordion { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 12px; }
+  .accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    cursor: pointer;
+    background: var(--surface);
+    transition: background 0.2s;
+  }
+  .accordion-header:hover { background: var(--surface2); }
+  .accordion-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: var(--text);
+  }
+  .accordion-arrow { color: var(--accent); font-size: 18px; transition: transform 0.3s; }
+  .accordion-body { padding: 0 20px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s; }
+  .accordion.open .accordion-body { max-height: 1000px; padding: 16px 20px; }
+  .accordion.open .accordion-arrow { transform: rotate(180deg); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 600px) {
+    .flow-steps { flex-direction: column; }
+    .flow-step:not(:last-child)::after { content: '↓'; right: 50%; top: auto; bottom: -14px; transform: translateX(50%); }
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    text-align: center;
+    padding: 40px 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 2px;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .section.active { animation: fadeInUp 0.4s ease; }
+
+  /* ─── MNEMONICS ─── */
+  .mnemonic {
+    background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,140,0,0.05));
+    border: 1px dashed rgba(255,215,0,0.4);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 12px 0;
+  }
+  .mnemonic-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent3);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .mnemonic-text {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent3);
+    letter-spacing: 1px;
+  }
+  .mnemonic-expand { font-size: 14px; color: var(--text); margin-top: 6px; }
+
+  /* ─── BOTNET USES ─── */
+  .botnet-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 20px; }
+  .botnet-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+    border-top: 3px solid var(--accent);
+  }
+  .botnet-card h4 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .botnet-card p { font-size: 14px; color: var(--muted); }
+
+  /* ─── PROGRESS ─── */
+  .progress-wrap { background: rgba(255,255,255,0.05); border-radius: 4px; height: 6px; margin-top: 8px; }
+  .progress-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--accent), var(--accent3)); transition: width 0.5s; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="chapter-badge">⚡ Network Security · CHAPTER 2</div>
+  <div class="hero-tag">// Malicious Software — Complete Study Guide</div>
+  <h1>MALWARE</h1>
+  <div class="hero-sub">CIRCULATION · INFECTION · CONCEALMENT · PROTECTION</div>
+</div>
+
+<!-- NAV -->
+<nav class="sticky-nav">
+  <button class="nav-btn active" onclick="showSection('foundations')">01 Foundations</button>
+  <button class="nav-btn" onclick="showSection('lifecycle')">02 Lifecycle</button>
+  <button class="nav-btn" onclick="showSection('families')">03 Families</button>
+  <button class="nav-btn" onclick="showSection('modern')">04 Modern Threats</button>
+  <button class="nav-btn" onclick="showSection('defense')">05 Defense</button>
+  <button class="nav-btn" onclick="showSection('mcq')">🎯 MCQ Quiz</button>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 1: FOUNDATIONS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="section-foundations" class="section active">
+<div class="container">
+  <div class="sec-header">
+    <div class="sec-num">01</div>
+    <div>
+      <div class="sec-title">FOUNDATIONS</div>
+      <div class="sec-subtitle">What malware is and why it matters to every organization</div>
+    </div>
+  </div>
+
+  <!-- Definition -->
+  <div class="card">
+    <div class="card-accent-line" style="background:var(--accent)"></div>
+    <h3>WHAT IS MALWARE?</h3>
+    <p><strong style="color:var(--accent)">Malware</strong> = <strong>Mal</strong>icious Soft<strong>ware</strong> — any program <em>intentionally designed</em> to damage systems, steal data, or gain unauthorized access to computing resources.</p>
+    <br>
+    <p>It covers a broad spectrum: from simple nuisance programs → to sophisticated <strong style="color:var(--accent2)">nation-state tools</strong>.</p>
+
+    <div class="highlight highlight-red" style="margin-top:16px">
+      <strong>🔑 KEY INSIGHT:</strong> Most malware relies on <strong>human interaction</strong> at some point in the attack chain — making <strong>user awareness your first line of defense.</strong>
+    </div>
+
+    <div style="margin-top:16px">
+      <span class="tag tag-red">Steals credentials</span>
+      <span class="tag tag-red">Disrupts services</span>
+      <span class="tag tag-red">Encrypts files</span>
+      <span class="tag tag-red">Silent takeover</span>
+    </div>
+    <div style="margin-top:8px">
+      <span class="tag tag-blue">Email attachments</span>
+      <span class="tag tag-blue">Web links</span>
+      <span class="tag tag-blue">Fake downloads</span>
+    </div>
+  </div>
+
+  <!-- CIA + Control -->
+  <div class="sec-header" style="margin-top:40px;margin-bottom:20px">
+    <div>
+      <div class="sec-title" style="font-size:28px">CIA + CONTROL</div>
+      <div class="sec-subtitle">4 Objectives Malware Targets</div>
+    </div>
+  </div>
+
+  <div class="mnemonic">
+    <div class="mnemonic-label">🧠 Memory Trick</div>
+    <div class="mnemonic-text">CIAC → "CIA + Control"</div>
+    <div class="mnemonic-expand"><strong>C</strong>onfidentiality · <strong>I</strong>ntegrity · <strong>A</strong>vailability · <strong>C</strong>ontrol</div>
+  </div>
+
+  <table class="cia-table">
+    <thead>
+      <tr>
+        <th>Pillar</th>
+        <th>What Malware Does</th>
+        <th>Examples</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="tag tag-red">Confidentiality</span></td>
+        <td>Exfiltrate sensitive data</td>
+        <td>Credentials, financial records, IP, PII</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-blue">Availability</span></td>
+        <td>Crash systems, encrypt files, flood networks</td>
+        <td>DDoS, Ransomware, disk wipers</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-gold">Integrity</span></td>
+        <td>Alter data, inject false records</td>
+        <td>Modify configs, tamper with logs, false transactions</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-green">Control</span></td>
+        <td>Install backdoors + C2 channels</td>
+        <td>Remote access, persistent unauthorized entry</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="trick-box">
+    <div class="trick-label">💡 Exam Trick — CIA vs Control</div>
+    <div class="trick-content">CIA are the <strong>classic 3 security pillars</strong>. Malware adds a <strong>4th — Control</strong> (backdoors, C2). If the exam asks "what does malware target BEYOND the traditional CIA triad?" → Answer: <strong>Control / Persistence</strong></div>
+  </div>
+
+  <!-- Quick-reference summary -->
+  <div class="highlight highlight-blue" style="margin-top:30px">
+    <strong>📋 ONE-LINE DEFINITIONS TO MEMORIZE:</strong><br><br>
+    <strong>Confidentiality attack</strong> = stealing data nobody should see<br>
+    <strong>Availability attack</strong> = making things unavailable (crash/encrypt)<br>
+    <strong>Integrity attack</strong> = quietly changing data to wrong values<br>
+    <strong>Control attack</strong> = persistent hidden access via backdoor/C2
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 2: LIFECYCLE -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="section-lifecycle" class="section">
+<div class="container">
+  <div class="sec-header">
+    <div class="sec-num">02</div>
+    <div>
+      <div class="sec-title">THE MALWARE LIFECYCLE</div>
+      <div class="sec-subtitle">4 Phases — from spread to defense</div>
+    </div>
+  </div>
+
+  <div class="mnemonic">
+    <div class="mnemonic-label">🧠 Remember the 4 Phases</div>
+    <div class="mnemonic-text">"CICP" → Can I Create Problems?</div>
+    <div class="mnemonic-expand"><strong>C</strong>irculation → <strong>I</strong>nfection → <strong>C</strong>oncealment → <strong>P</strong>rotection</div>
+  </div>
+
+  <!-- Phase 1: Circulation -->
+  <div class="card" style="border-color:var(--accent)">
+    <div class="card-accent-line" style="background:var(--accent)"></div>
+    <h3 style="color:var(--accent)">⚡ PHASE 1 — CIRCULATION: HOW MALWARE SPREADS</h3>
+    <p>Every available channel is used to reach victims. Understanding spread = first step to blocking.</p>
+
+    <div class="spread-grid" style="margin-top:20px">
+      <div class="spread-item">
+        <div class="spread-icon">📧</div>
+        <h4>EMAIL</h4>
+        <p>Malicious attachments, embedded links, macro-enabled docs — <strong>#1 initial access vector</strong></p>
+      </div>
+      <div class="spread-item">
+        <div class="spread-icon">🌐</div>
+        <h4>WEB</h4>
+        <p>Drive-by downloads, malvertising, watering-hole attacks — exploit browsers silently</p>
+      </div>
+      <div class="spread-item">
+        <div class="spread-icon">⬇️</div>
+        <h4>DOWNLOADS</h4>
+        <p>Fake installers, trojanized software, cracked apps — user executes malware voluntarily</p>
+      </div>
+      <div class="spread-item">
+        <div class="spread-icon">🔌</div>
+        <h4>NETWORK</h4>
+        <p>Worms scan for exposed services, exploit unpatched vulnerabilities, spread laterally</p>
+      </div>
+      <div class="spread-item">
+        <div class="spread-icon">💾</div>
+        <h4>REMOVABLE MEDIA</h4>
+        <p>USB / external devices — autorun payloads. Especially dangerous in air-gapped environments</p>
+      </div>
+    </div>
+
+    <div style="margin-top:20px">
+      <div class="sec-title" style="font-size:20px;margin-bottom:16px">COMMON INFECTION VECTORS (Real World)</div>
+      <div class="grid-3">
+        <div class="card" style="margin:0">
+          <h3 style="font-size:16px">📄 Macro-Enabled Docs</h3>
+          <p style="font-size:13px">Office files with VBA macros — executes when user clicks <em>"Enable Content"</em></p>
+        </div>
+        <div class="card" style="margin:0">
+          <h3 style="font-size:16px">🌐 Browser Exploits</h3>
+          <p style="font-size:13px">Vulnerabilities in browsers, Java, Flash, PDF readers → silent code execution</p>
+        </div>
+        <div class="card" style="margin:0">
+          <h3 style="font-size:16px">🔑 Stolen Credentials</h3>
+          <p style="font-size:13px">Harvested passwords → attackers log in + manually deploy malware</p>
+        </div>
+        <div class="card" style="margin:0">
+          <h3 style="font-size:16px">📦 Compressed Archives</h3>
+          <p style="font-size:13px">ZIP/RAR hiding executables behind double extensions (e.g., <code>invoice.pdf.exe</code>)</p>
+        </div>
+        <div class="card" style="margin:0">
+          <h3 style="font-size:16px">⛓️ Supply-Chain</h3>
+          <p style="font-size:13px">Compromised software updates distribute malware through <em>trusted vendor channels</em></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="trick-box" style="margin-top:16px">
+      <div class="trick-label">🎯 Exam Focus</div>
+      <div class="trick-content">Email is <strong>#1 vector</strong>. Supply-chain is most <em>sophisticated</em>. USB is most dangerous in <em>air-gapped</em> environments. Double-extension trick: <code>invoice.pdf.exe</code> — the OS hides <code>.exe</code> so user thinks it's a PDF.</div>
+    </div>
+  </div>
+
+  <!-- Phase 2: Infection -->
+  <div class="card" style="border-color:var(--orange); margin-top:20px">
+    <div class="card-accent-line" style="background:var(--orange)"></div>
+    <h3 style="color:var(--orange)">🦠 PHASE 2 — INFECTION: ENTRY & EXECUTION</h3>
+    <p>Once malware reaches a target, it must <strong>execute</strong> and establish <strong>persistence</strong>.</p>
+
+    <div class="phase-steps" style="margin-top:16px">
+      <div class="phase-step">
+        <div class="phase-num" style="color:var(--orange)">1</div>
+        <div class="phase-content">
+          <h4 style="color:var(--orange)">USER-TRIGGERED EXECUTION</h4>
+          <p>Victim opens a file, runs an installer, or enables macros → initiates the execution chain</p>
+          <span class="tag tag-orange">Requires human action</span>
+        </div>
+      </div>
+      <div class="phase-step">
+        <div class="phase-num" style="color:var(--orange)">2</div>
+        <div class="phase-content">
+          <h4 style="color:var(--orange)">AUTOMATIC EXECUTION</h4>
+          <p>Exploit chains and worm behavior require NO user interaction — vulnerability alone is enough</p>
+          <span class="tag tag-red">Zero user action needed</span>
+        </div>
+      </div>
+      <div class="phase-step">
+        <div class="phase-num" style="color:var(--orange)">3</div>
+        <div class="phase-content">
+          <h4 style="color:var(--orange)">PERSISTENCE MECHANISMS</h4>
+          <p>Ensures malware <strong>survives reboots</strong> via:</p>
+          <div style="margin-top:8px">
+            <span class="tag tag-gold">Registry keys</span>
+            <span class="tag tag-gold">Startup folders</span>
+            <span class="tag tag-gold">Scheduled tasks</span>
+            <span class="tag tag-gold">System services</span>
+          </div>
+        </div>
+      </div>
+      <div class="phase-step">
+        <div class="phase-num" style="color:var(--orange)">4</div>
+        <div class="phase-content">
+          <h4 style="color:var(--orange)">PAYLOAD DELIVERY</h4>
+          <p>Final action: steal data, encrypt files, spy on users, control system, or move laterally</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 3: Concealment -->
+  <div class="card" style="border-color:var(--accent4); margin-top:20px">
+    <div class="card-accent-line" style="background:var(--accent4)"></div>
+    <h3 style="color:#a78bfa">👻 PHASE 3 — CONCEALMENT: HOW MALWARE HIDES</h3>
+    <p>Sophisticated malware invests heavily in evasion. <strong>Longer undetected = more damage.</strong></p>
+
+    <div class="grid-2" style="margin-top:16px">
+      <div class="card" style="margin:0;border-color:rgba(124,58,237,0.4)">
+        <h3 style="font-size:16px;color:#a78bfa">1. Obfuscation & Packing</h3>
+        <p style="font-size:14px">Code is <strong>scrambled or compressed</strong> so signature-based tools can't match known patterns</p>
+      </div>
+      <div class="card" style="margin:0;border-color:rgba(124,58,237,0.4)">
+        <h3 style="font-size:16px;color:#a78bfa">2. Anti-VM / Anti-Sandbox</h3>
+        <p style="font-size:14px">Malware <strong>detects analysis environments</strong> and refuses to execute, frustrating reverse engineers</p>
+      </div>
+      <div class="card" style="margin:0;border-color:rgba(124,58,237,0.4)">
+        <h3 style="font-size:16px;color:#a78bfa">3. Encrypted C2 Traffic</h3>
+        <p style="font-size:14px">Command-and-control disguised as <strong>normal HTTPS traffic</strong> to blend with legitimate activity</p>
+      </div>
+      <div class="card" style="margin:0;border-color:rgba(124,58,237,0.4)">
+        <h3 style="font-size:16px;color:#a78bfa">4. Delays & Staged Downloads</h3>
+        <p style="font-size:14px"><strong>Sleeping before execution</strong> or downloading payloads in stages to bypass initial scans</p>
+      </div>
+      <div class="card" style="margin:0;border-color:rgba(124,58,237,0.4);grid-column:span 2">
+        <h3 style="font-size:16px;color:#a78bfa">5. Rootkits</h3>
+        <p style="font-size:14px"><strong>Kernel-level tools</strong> that hide processes, files, and network connections from the OS itself — deepest form of concealment</p>
+      </div>
+    </div>
+
+    <div class="trick-box" style="margin-top:16px">
+      <div class="trick-label">🎯 Detection vs Evasion = Arms Race</div>
+      <div class="trick-content">Security = constant tug-of-war. Each side adapts as the other evolves. Rootkits are the <em>hardest to detect</em> because they operate at kernel level — below the OS security layer.</div>
+    </div>
+  </div>
+
+  <!-- Phase 4: Protection -->
+  <div class="card" style="border-color:var(--green); margin-top:20px">
+    <div class="card-accent-line" style="background:var(--green)"></div>
+    <h3 style="color:var(--green)">🛡️ PHASE 4 — PROTECTION: DEFENDER ROLE</h3>
+    <p>How defenders prevent, detect, respond, and recover from compromise. <em>(Covered in detail in Section 5)</em></p>
+    <div style="margin-top:12px">
+      <span class="tag tag-green">Prevent</span>
+      <span class="tag tag-green">Detect</span>
+      <span class="tag tag-green">Respond</span>
+      <span class="tag tag-green">Recover</span>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 3: MALWARE FAMILIES -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="section-families" class="section">
+<div class="container">
+  <div class="sec-header">
+    <div class="sec-num">03</div>
+    <div>
+      <div class="sec-title">MALWARE FAMILIES</div>
+      <div class="sec-subtitle">Viruses, Worms, Trojans, Ransomware, Spyware, Adware</div>
+    </div>
+  </div>
+
+  <!-- COMPARISON TABLE -->
+  <div style="overflow-x:auto;margin-bottom:30px">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Family</th>
+          <th>Self-Replicates?</th>
+          <th>Needs Host File?</th>
+          <th>User Action?</th>
+          <th>Key Behavior</th>
+          <th>Famous Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="tag tag-red">Virus</span></td>
+          <td>✅ Yes</td>
+          <td>✅ Yes</td>
+          <td>✅ Yes</td>
+          <td>Attaches to host file, spreads when file opened</td>
+          <td>Melissa (1999), ILOVEYOU (2000)</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-orange">Worm</span></td>
+          <td>✅ Yes</td>
+          <td>❌ No</td>
+          <td>❌ No</td>
+          <td>Spreads autonomously over networks</td>
+          <td>Morris Worm (1988), NotPetya</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-blue">Trojan</span></td>
+          <td>❌ No</td>
+          <td>❌ No</td>
+          <td>✅ Yes (tricked)</td>
+          <td>Disguised as legit software, hidden payload</td>
+          <td>Emotet-style loaders</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-red">Ransomware</span></td>
+          <td>Sometimes</td>
+          <td>❌ No</td>
+          <td>✅ Initially</td>
+          <td>Encrypts files, demands payment</td>
+          <td>WannaCry (2017), CryptoLocker (2013)</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-purple">Spyware</span></td>
+          <td>❌ No</td>
+          <td>❌ No</td>
+          <td>✅ Initially</td>
+          <td>Silent surveillance, data exfiltration</td>
+          <td>Keyloggers</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-gold">Adware</span></td>
+          <td>❌ No</td>
+          <td>❌ No</td>
+          <td>✅ Initially</td>
+          <td>Injecting ads, tracking, browser hijacking</td>
+          <td>Bundled with "free" software</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mnemonic">
+    <div class="mnemonic-label">🧠 Key Distinction Trick</div>
+    <div class="mnemonic-text">VIRUS needs a HOST. WORM needs NOTHING. TROJAN needs a LIE.</div>
+    <div class="mnemonic-expand">Virus = attaches to existing file | Worm = standalone, autonomous | Trojan = social engineering disguise</div>
+  </div>
+
+  <!-- ACCORDION FAMILIES -->
+  <div style="margin-top:30px">
+
+    <!-- VIRUS -->
+    <div class="accordion open">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="accordion-title">🦠 COMPUTER VIRUSES</span>
+        <span class="accordion-arrow">▾</span>
+      </div>
+      <div class="accordion-body">
+        <p>A virus <strong>attaches itself to a legitimate host file</strong> (document, script, or executable) and spreads when that file is opened/executed. <strong>Unlike worms, viruses typically require user action to propagate.</strong></p>
+        <br>
+        <p>Viruses modify host files by inserting their own code. Many carry payloads: data destruction → credential theft.</p>
+
+        <div class="grid-2" style="margin-top:16px">
+          <div class="highlight highlight-red">
+            <strong>Program Viruses (Executable Infectors)</strong><br>
+            Target <code>.exe</code>, <code>.dll</code>, <code>.com</code> files. Every time infected program runs, the virus activates and seeks more executables.<br><br>
+            <strong>CIH "Chernobyl" (1998)</strong> — overwrote flash BIOS on motherboards, <em>physically bricking machines</em>. Most destructive virus ever recorded.
+          </div>
+          <div>
+            <div class="timeline">
+              <div class="tl-item">
+                <div class="tl-year">1998</div>
+                <div class="tl-title">CIH "Chernobyl"</div>
+                <div class="tl-desc">Overwrote BIOS — physically bricked machines</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-year">1999</div>
+                <div class="tl-title">Melissa</div>
+                <div class="tl-desc">Macro virus — mass-mailed via Outlook, overwhelmed email servers worldwide</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-year">2000</div>
+                <div class="tl-title">ILOVEYOU</div>
+                <div class="tl-desc">VBScript worm/virus hybrid via email — ~$10 billion in damages</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WORMS -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="accordion-title">🐛 WORMS</span>
+        <span class="accordion-arrow">▾</span>
+      </div>
+      <div class="accordion-body">
+        <p>Worms are <strong>self-replicating malware that spread across networks WITHOUT needing a host file</strong>. They exploit network protocols and vulnerabilities to propagate <em>autonomously</em>, often at devastating speed.</p>
+
+        <div class="grid-3" style="margin-top:16px">
+          <div class="card" style="margin:0;border-color:var(--orange)">
+            <h3 style="font-size:16px;color:var(--orange)">🔁 Self-Replicating</h3>
+            <p style="font-size:13px">No user action required — copies itself to new hosts automatically</p>
+          </div>
+          <div class="card" style="margin:0;border-color:var(--orange)">
+            <h3 style="font-size:16px;color:var(--orange)">📡 Network Outages</h3>
+            <p style="font-size:13px">Massive bandwidth consumption + system crashes → widespread disruption</p>
+          </div>
+          <div class="card" style="margin:0;border-color:var(--orange)">
+            <h3 style="font-size:16px;color:var(--orange)">📦 Payload Delivery</h3>
+            <p style="font-size:13px">Modern worms drop additional malware — ransomware, backdoors, cryptominers</p>
+          </div>
+        </div>
+
+        <div class="highlight highlight-red" style="margin-top:16px">
+          <strong>Morris Worm (1988)</strong> — First major Internet worm. Infected ~6,000 machines = roughly <strong>10% of the entire Internet</strong> at the time.<br><br>
+          <strong>NotPetya</strong> — Used worm-like spread to cripple global enterprises in <em>hours</em>.
+        </div>
+
+        <div class="trick-box">
+          <div class="trick-label">🎯 Worm vs Virus — The BIG Difference</div>
+          <div class="trick-content">
+            Virus = needs a <strong>host file</strong> + <strong>user to open it</strong><br>
+            Worm = standalone + spreads <strong>autonomously</strong> via network vulnerabilities<br>
+            <strong>Worms are faster and more dangerous</strong> because they don't wait for anyone.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TROJANS -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="accordion-title">🐴 TROJAN HORSES</span>
+        <span class="accordion-arrow">▾</span>
+      </div>
+      <div class="accordion-body">
+        <p>Trojans disguise themselves as legitimate, useful software (a game, utility, productivity tool) but carry <strong>hidden malicious functionality</strong>. <strong>Unlike viruses and worms, Trojans do NOT self-replicate</strong> — they rely entirely on <strong>social engineering</strong> to trick users.</p>
+
+        <div class="grid-3" style="margin-top:16px">
+          <div class="card" style="margin:0;border-color:var(--accent2)">
+            <h3 style="font-size:16px">🏦 Banking Trojans</h3>
+            <p style="font-size:13px">Intercept financial transactions, steal banking credentials, inject fake forms into legitimate banking sites</p>
+          </div>
+          <div class="card" style="margin:0;border-color:var(--accent2)">
+            <h3 style="font-size:16px">🖥️ RATs</h3>
+            <p style="font-size:13px"><strong>Remote Access Trojans</strong> — grant attackers full control: keylogging, screen capture, file access, <em>webcam activation</em></p>
+          </div>
+          <div class="card" style="margin:0;border-color:var(--accent2)">
+            <h3 style="font-size:16px">🔧 Modular Loaders</h3>
+            <p style="font-size:13px">Emotet-style loaders deliver additional payloads on command — ransomware, info-stealers, lateral movement tools</p>
+          </div>
+        </div>
+
+        <div class="trick-box" style="margin-top:16px">
+          <div class="trick-label">🎯 Remember</div>
+          <div class="trick-content">RAT = <strong>R</strong>emote <strong>A</strong>ccess <strong>T</strong>rojan. It gives the attacker a "remote control" for your entire PC including webcam. Trojans spread via <strong>deception</strong>, not replication.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RANSOMWARE -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="accordion-title">💰 RANSOMWARE</span>
+        <span class="accordion-arrow">▾</span>
+      </div>
+      <div class="accordion-body">
+        <p>Ransomware <strong>encrypts victim files or locks entire systems</strong>, demanding payment (typically cryptocurrency) for the decryption key. <strong>Most financially impactful malware category in the modern threat landscape.</strong></p>
+
+        <div class="flow-steps" style="margin:20px 0;gap:4px">
+          <div class="flow-step">
+            <div class="flow-num">1</div>
+            <div class="flow-title">INITIAL ACCESS</div>
+            <div class="flow-desc">Phishing email, exposed RDP, or exploited vulnerability</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">2</div>
+            <div class="flow-title">PRIVILEGE ESCALATION</div>
+            <div class="flow-desc">Gain admin rights, disable security tools, map the network</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">3</div>
+            <div class="flow-title">ENCRYPTION</div>
+            <div class="flow-desc">Mass-encrypt files across drives and network shares</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">4</div>
+            <div class="flow-title">RANSOM NOTE</div>
+            <div class="flow-desc">Demand payment with deadline + threat of data publication</div>
+          </div>
+        </div>
+
+        <div class="highlight highlight-red">
+          <strong>⚠️ DOUBLE EXTORTION:</strong> Modern ransomware gangs <strong>exfiltrate data BEFORE encrypting it</strong>, then threaten public release to increase pressure. This means paying the ransom doesn't guarantee your data is safe!<br><br>
+          <strong>Notable:</strong> CryptoLocker (2013) · WannaCry (2017)
+        </div>
+
+        <div class="trick-box">
+          <div class="trick-label">🎯 Double Extortion = 2 threats</div>
+          <div class="trick-content">
+            Threat 1: Files encrypted — can't access your data<br>
+            Threat 2: Data will be published publicly<br>
+            Payment solves neither guarantee. Only <strong>offline backups</strong> solve Threat 1.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPYWARE -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="accordion-title">🕵️ SPYWARE & KEYLOGGERS</span>
+        <span class="accordion-arrow">▾</span>
+      </div>
+      <div class="accordion-body">
+        <div class="grid-2">
+          <div>
+            <div class="sec-title" style="font-size:20px;margin-bottom:12px;color:var(--accent2)">SPYWARE</div>
+            <p>Silently monitors user activity — browsing habits, app usage, file access, communications. <strong>Exfiltrated without victim's knowledge.</strong></p>
+            <ul style="margin-top:12px;padding-left:20px;color:var(--muted);font-size:14px">
+              <li>Screen capture at intervals</li>
+              <li>Clipboard monitoring</li>
+              <li>Microphone/camera activation</li>
+            </ul>
+          </div>
+          <div>
+            <div class="sec-title" style="font-size:20px;margin-bottom:12px;color:var(--accent)">KEYLOGGERS</div>
+            <p>Records <strong>every keystroke</strong> to capture passwords, credit card numbers, messages. Can be <em>software-based</em> OR physical hardware attached to keyboards.</p>
+            <ul style="margin-top:12px;padding-left:20px;color:var(--muted);font-size:14px">
+              <li>Credential harvesting</li>
+              <li>Session token capture</li>
+              <li>Form-field interception</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="highlight highlight-green" style="margin-top:16px">
+          <strong>🛡️ Defense:</strong> MFA (Multi-Factor Authentication) · Least-privilege access · EDR (Endpoint Detection & Response) · Regular behavioral monitoring
+        </div>
+
+        <div class="trick-box">
+          <div class="trick-label">🎯 Why MFA beats keyloggers</div>
+          <div class="trick-content">Even if a keylogger steals your password, MFA requires a <strong>second factor</strong> (phone/hardware token) that the attacker doesn't have. Password alone = useless.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADWARE -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="accordion-title">📢 ADWARE & BROWSER HIJACKERS</span>
+        <span class="accordion-arrow">▾</span>
+      </div>
+      <div class="accordion-body">
+        <p><strong>Adware</strong> injects unwanted advertisements (pop-ups, banners, redirected searches) while tracking browsing behavior for profit.</p>
+        <p style="margin-top:8px"><strong>Browser Hijackers</strong> go further — change default homepage, search engine, and security settings <em>without consent</em>.</p>
+
+        <div class="highlight highlight-red" style="margin-top:16px">
+          <strong>⚠️ Not just a nuisance — real security risks:</strong><br>
+          • Privacy loss through extensive behavioral tracking<br>
+          • Exposure to additional malware through <strong>malicious ad networks</strong><br>
+          • Weakened browser security settings → increased attack surface<br>
+          • Degraded system performance and productivity
+        </div>
+
+        <div class="trick-box">
+          <div class="trick-label">🎯 Key Fact</div>
+          <div class="trick-content">Most frequently bundled with <strong>"free" software installers</strong>. Always use <em>Custom Installation</em> and review what's included. Adware can serve as a <strong>gateway to more serious malware</strong> through malicious ad networks.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end accordions -->
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 4: MODERN THREATS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="section-modern" class="section">
+<div class="container">
+  <div class="sec-header">
+    <div class="sec-num">04</div>
+    <div>
+      <div class="sec-title">MODERN THREATS</div>
+      <div class="sec-subtitle">Zero-day, Botnets, Phishing, WannaCry</div>
+    </div>
+  </div>
+
+  <!-- BOTNETS -->
+  <div class="card" style="border-color:var(--accent2)">
+    <div class="card-accent-line" style="background:var(--accent2)"></div>
+    <h3>🤖 BOTNETS</h3>
+    <p>A botnet is a network of <strong>compromised devices</strong> (computers, servers, IoT devices) silently controlled by an attacker through a <strong>Command-and-Control (C2) infrastructure</strong>.</p>
+    <p style="margin-top:8px;color:var(--muted)">Individual infected devices = <strong>"bots"</strong> or <strong>"zombies"</strong></p>
+
+    <div class="botnet-grid">
+      <div class="botnet-card">
+        <h4>DDoS ATTACKS</h4>
+        <p>Overwhelm targets with massive traffic volumes, disrupting online services and infrastructure</p>
+      </div>
+      <div class="botnet-card" style="border-top-color:var(--accent3)">
+        <h4 style="color:var(--accent3)">CRYPTOMINING</h4>
+        <p>Steal compute resources to mine cryptocurrency, running silently in the background</p>
+      </div>
+      <div class="botnet-card" style="border-top-color:var(--orange)">
+        <h4 style="color:var(--orange)">SPAM & PHISHING</h4>
+        <p>Distribute millions of malicious emails from distributed, hard-to-block IP addresses</p>
+      </div>
+      <div class="botnet-card" style="border-top-color:#a78bfa">
+        <h4 style="color:#a78bfa">FRAUD</h4>
+        <p>Credential stuffing, click fraud, and financial theft at scale</p>
+      </div>
+    </div>
+
+    <div class="highlight highlight-blue" style="margin-top:16px">
+      <strong>📌 MIRAI BOTNET (2016):</strong> Exploited <em>default passwords</em> on IoT devices to build a massive botnet. Launched record-breaking DDoS attacks → took down DNS provider <strong>Dyn</strong> → disrupted Twitter, Netflix, and Reddit.
+    </div>
+
+    <div class="trick-box">
+      <div class="trick-label">🎯 Mirai = IoT + Default Passwords = Lesson</div>
+      <div class="trick-content">Mirai's lesson: Change default passwords on ALL IoT devices. The botnet used the devices' own manufacturer-set passwords. Defense: change defaults, segment IoT networks, update firmware.</div>
+    </div>
+  </div>
+
+  <!-- PHISHING -->
+  <div class="card" style="border-color:var(--accent3); margin-top:20px">
+    <div class="card-accent-line" style="background:var(--accent3)"></div>
+    <h3 style="color:var(--accent3)">🎣 SOCIAL ENGINEERING & PHISHING</h3>
+    <p>Social engineering <strong>manipulates human psychology</strong> to bypass technical security controls. Phishing is its most common form.</p>
+
+    <div class="grid-2" style="margin-top:16px">
+      <div class="card" style="margin:0">
+        <h3 style="font-size:16px;color:var(--accent3)">📧 Phishing</h3>
+        <p style="font-size:13px">Mass emails impersonating trusted brands with <strong>generic lures</strong></p>
+      </div>
+      <div class="card" style="margin:0">
+        <h3 style="font-size:16px;color:var(--accent3)">🎯 Spear Phishing</h3>
+        <p style="font-size:13px"><strong>Highly targeted</strong> messages crafted with personal details of specific individuals</p>
+      </div>
+      <div class="card" style="margin:0">
+        <h3 style="font-size:16px;color:var(--accent3)">📱 Smishing</h3>
+        <p style="font-size:13px"><strong>SMS-based</strong> phishing exploiting mobile trust and smaller screen real estate</p>
+      </div>
+      <div class="card" style="margin:0">
+        <h3 style="font-size:16px;color:var(--accent3)">📞 Vishing</h3>
+        <p style="font-size:13px"><strong>Voice calls</strong> impersonating IT support, banks, or government agencies</p>
+      </div>
+    </div>
+
+    <div class="mnemonic" style="margin-top:16px">
+      <div class="mnemonic-label">🧠 Phishing Types Memory Trick</div>
+      <div class="mnemonic-text">"P-S-S-V" = Phone, SMS, Spear, Voice</div>
+      <div class="mnemonic-expand"><strong>P</strong>hishing (email) → <strong>S</strong>pear Phishing (targeted email) → <strong>S</strong>mishing (SMS) → <strong>V</strong>ishing (Voice)</div>
+    </div>
+
+    <div class="highlight highlight-red" style="margin-top:16px">
+      <strong>🚩 RED FLAGS to spot phishing:</strong><br>
+      • Urgency language ("Act NOW or your account will be suspended!")<br>
+      • Unusual sender addresses<br>
+      • Spoofed domains (paypa1.com vs paypal.com)<br>
+      • Unexpected attachments<br>
+      • Requests that bypass normal approval processes
+    </div>
+
+    <!-- Phishing Defense -->
+    <div style="margin-top:20px">
+      <div class="sec-title" style="font-size:20px;margin-bottom:16px">PHISHING DEFENSE STRATEGIES</div>
+      <div class="grid-4">
+        <div class="card" style="margin:0;text-align:center">
+          <div style="font-size:32px;margin-bottom:8px">🎓</div>
+          <h3 style="font-size:16px">TRAINING</h3>
+          <p style="font-size:13px">Regular phishing simulations + awareness programs so employees recognize and report attacks</p>
+        </div>
+        <div class="card" style="margin:0;text-align:center">
+          <div style="font-size:32px;margin-bottom:8px">📞</div>
+          <h3 style="font-size:16px">VERIFICATION</h3>
+          <p style="font-size:13px">Out-of-band confirmation for sensitive requests — call back on a <em>known number</em>, don't trust the email</p>
+        </div>
+        <div class="card" style="margin:0;text-align:center">
+          <div style="font-size:32px;margin-bottom:8px">🔐</div>
+          <h3 style="font-size:16px">MFA</h3>
+          <p style="font-size:13px">Multi-factor authentication ensures stolen passwords alone are NOT enough for account takeover</p>
+        </div>
+        <div class="card" style="margin:0;text-align:center">
+          <div style="font-size:32px;margin-bottom:8px">🔍</div>
+          <h3 style="font-size:16px">FILTERING</h3>
+          <p style="font-size:13px">Email gateways, URL reputation, attachment sandboxing, DMARC/DKIM/SPF enforcement</p>
+        </div>
+      </div>
+
+      <div class="trick-box" style="margin-top:16px">
+        <div class="trick-label">🎯 DMARC / DKIM / SPF — What Are These?</div>
+        <div class="trick-content">
+          <strong>SPF</strong> (Sender Policy Framework) = specifies which mail servers are allowed to send email for your domain<br>
+          <strong>DKIM</strong> (DomainKeys Identified Mail) = cryptographic signature proving email wasn't tampered with<br>
+          <strong>DMARC</strong> = policy that tells receivers what to do if SPF/DKIM fail (reject/quarantine)<br>
+          Together = email authentication trio that blocks spoofed sender addresses
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WANNACRY CASE STUDY -->
+  <div class="card" style="border-color:var(--accent);margin-top:20px;background:linear-gradient(135deg, var(--surface), rgba(255,60,95,0.05))">
+    <div class="card-accent-line" style="background:var(--accent)"></div>
+    <h3>💣 CASE STUDY: WANNACRY (2017)</h3>
+    <div class="grid-2" style="margin-top:16px">
+      <div>
+        <div class="tag tag-red" style="margin-bottom:12px;display:block;width:fit-content">RANSOMWARE + WORM</div>
+        <p style="font-size:14px;margin-bottom:12px"><strong>WannaCry</strong> combined ransomware encryption with worm-like self-propagation — making it uniquely devastating.</p>
+        <ul style="padding-left:20px;color:var(--muted);font-size:14px;line-height:2">
+          <li>Exploited <strong>EternalBlue</strong> — an NSA exploit leaked by Shadow Brokers</li>
+          <li>Targeted unpatched <strong>Windows SMB</strong> vulnerability</li>
+          <li>Spread to 150+ countries, 200,000+ machines in 24 hours</li>
+          <li>Crippled UK's <strong>NHS</strong> — hospitals turned away patients</li>
+          <li>Attributed to North Korea's <strong>Lazarus Group</strong></li>
+        </ul>
+      </div>
+      <div>
+        <div class="highlight highlight-green">
+          <strong>🛑 Kill Switch:</strong> Security researcher <strong>Marcus Hutchins</strong> discovered WannaCry checked a specific unregistered domain. He registered it for $10.69 — and the malware stopped spreading globally.
+        </div>
+        <div class="highlight highlight-red" style="margin-top:12px">
+          <strong>⚠️ Lesson:</strong> WannaCry could have been stopped by a <strong>patch released 2 months earlier</strong> (MS17-010). Unpatched systems = open invitation.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 5: DEFENSE PLAYBOOK -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="section-defense" class="section">
+<div class="container">
+  <div class="sec-header">
+    <div class="sec-num">05</div>
+    <div>
+      <div class="sec-title">DEFENSE PLAYBOOK</div>
+      <div class="sec-subtitle">Layered controls, patching, backups, incident response</div>
+    </div>
+  </div>
+
+  <div class="mnemonic">
+    <div class="mnemonic-label">🧠 Defense Layers = "DEPTH"</div>
+    <div class="mnemonic-text">Defense-in-Depth: No single control is sufficient</div>
+    <div class="mnemonic-expand">Training · Technology · Process · Policy · Human factors — all required together</div>
+  </div>
+
+  <!-- Defense categories -->
+  <div class="grid-2" style="margin-top:24px">
+
+    <div class="card" style="border-color:var(--green)">
+      <div class="card-accent-line" style="background:var(--green)"></div>
+      <h3 style="color:var(--green)">🔄 PATCHING</h3>
+      <p>Apply security patches promptly. <strong>WannaCry's patch (MS17-010) was available 2 months before the attack.</strong> Unpatched = open door.</p>
+      <div class="highlight highlight-green" style="margin-top:12px">
+        <strong>Rule:</strong> Patch Critical vulnerabilities within 24-48 hours. High within 7 days. Medium within 30 days.
+      </div>
+    </div>
+
+    <div class="card" style="border-color:var(--accent2)">
+      <div class="card-accent-line" style="background:var(--accent2)"></div>
+      <h3 style="color:var(--accent2)">💾 BACKUPS</h3>
+      <p>The <strong>only guaranteed defense against ransomware</strong>. Follow the 3-2-1 rule:</p>
+      <ul style="margin-top:12px;padding-left:20px;color:var(--muted);font-size:14px;line-height:2">
+        <li><strong>3</strong> copies of data</li>
+        <li><strong>2</strong> different storage media</li>
+        <li><strong>1</strong> copy offline/offsite (air-gapped)</li>
+      </ul>
+    </div>
+
+    <div class="card" style="border-color:var(--accent3)">
+      <div class="card-accent-line" style="background:var(--accent3)"></div>
+      <h3 style="color:var(--accent3)">🔐 MFA & LEAST PRIVILEGE</h3>
+      <p><strong>MFA:</strong> Stolen passwords alone can't grant access. Second factor = phone/hardware token.</p>
+      <p style="margin-top:8px"><strong>Least Privilege:</strong> Users/programs get only the minimum access they need. Limits blast radius of compromise.</p>
+    </div>
+
+    <div class="card" style="border-color:var(--orange)">
+      <div class="card-accent-line" style="background:var(--orange)"></div>
+      <h3 style="color:var(--orange)">🤖 EDR & ANTIVIRUS</h3>
+      <p><strong>Antivirus:</strong> Signature-based detection of known malware.</p>
+      <p style="margin-top:8px"><strong>EDR (Endpoint Detection & Response):</strong> Behavioral monitoring — detects anomalies even for <em>unknown</em> malware. More powerful than traditional AV.</p>
+    </div>
+
+    <div class="card" style="border-color:#a78bfa">
+      <div class="card-accent-line" style="background:#a78bfa"></div>
+      <h3 style="color:#a78bfa">🎓 USER TRAINING</h3>
+      <p>Since most malware relies on <strong>human interaction</strong> at some point — training is your first line of defense.</p>
+      <ul style="margin-top:12px;padding-left:20px;color:var(--muted);font-size:14px;line-height:2">
+        <li>Phishing simulation exercises</li>
+        <li>Recognize red flags</li>
+        <li>Report suspicious activity</li>
+      </ul>
+    </div>
+
+    <div class="card" style="border-color:var(--accent)">
+      <div class="card-accent-line" style="background:var(--accent)"></div>
+      <h3 style="color:var(--accent)">🚨 INCIDENT RESPONSE</h3>
+      <p>When compromise happens:</p>
+      <div class="phase-steps" style="margin-top:12px">
+        <div class="phase-step" style="padding:10px 0">
+          <div class="phase-num" style="font-size:28px;min-width:40px;color:var(--accent)">1</div>
+          <div><strong>Identify</strong> — detect and confirm the incident</div>
+        </div>
+        <div class="phase-step" style="padding:10px 0">
+          <div class="phase-num" style="font-size:28px;min-width:40px;color:var(--accent)">2</div>
+          <div><strong>Contain</strong> — isolate affected systems</div>
+        </div>
+        <div class="phase-step" style="padding:10px 0">
+          <div class="phase-num" style="font-size:28px;min-width:40px;color:var(--accent)">3</div>
+          <div><strong>Eradicate</strong> — remove the malware</div>
+        </div>
+        <div class="phase-step" style="padding:10px 0">
+          <div class="phase-num" style="font-size:28px;min-width:40px;color:var(--accent)">4</div>
+          <div><strong>Recover</strong> — restore from clean backups</div>
+        </div>
+        <div class="phase-step" style="padding:10px 0;border:none">
+          <div class="phase-num" style="font-size:28px;min-width:40px;color:var(--accent)">5</div>
+          <div><strong>Learn</strong> — post-mortem to prevent recurrence</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Layered Defense summary -->
+  <div class="highlight highlight-blue" style="margin-top:30px">
+    <strong>🛡️ KEY PRINCIPLE — DEFENSE IN DEPTH:</strong><br>
+    No single control is sufficient. Combating threats requires:<br>
+    <strong>Technology</strong> (EDR, firewalls, email gateways) + <strong>Process</strong> (patching, backups, IR plans) + <strong>Human Factors</strong> (training, awareness, reporting culture)
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 6: MCQ QUIZ -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="section-mcq" class="section">
+<div class="container">
+  <div class="sec-header">
+    <div class="sec-num">🎯</div>
+    <div>
+      <div class="sec-title">MCQ QUIZ</div>
+      <div class="sec-subtitle">Test yourself on every topic from the lecture</div>
+    </div>
+  </div>
+
+  <div class="mcq-score-bar">
+    <div class="score-display" id="scoreDisplay">0/20</div>
+    <div class="score-label">CORRECT ANSWERS</div>
+    <div class="progress-wrap" style="max-width:300px;margin:12px auto 0">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <br>
+    <button class="reset-btn" onclick="resetQuiz()">↺ RESET ALL QUESTIONS</button>
+  </div>
+
+  <div class="mcq-container" id="quizContainer"></div>
+
+</div>
+</div>
+
+<div class="footer">
+  CHAPTER 2 — MALWARE · Network Security · STUDY GUIDE · MADE WITH ❤️ FOR YOUR EXAM
+</div>
+
+<script>
+// ─── NAV ───
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('section-' + id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── ACCORDION ───
+function toggleAccordion(header) {
+  const accordion = header.parentElement;
+  accordion.classList.toggle('open');
+}
+
+// ─── QUIZ DATA ───
+const questions = [
+  {
+    q: "What does 'malware' stand for?",
+    opts: ["Malicious hardware", "Malicious software", "Malformed ware", "Managed warfare"],
+    correct: 1,
+    exp: "Malware = Malicious Software — any program intentionally designed to damage systems, steal data, or gain unauthorized access."
+  },
+  {
+    q: "Which security pillar does ransomware PRIMARILY attack?",
+    opts: ["Confidentiality", "Integrity", "Availability", "Control"],
+    correct: 2,
+    exp: "Ransomware denies access to files by encrypting them — this is an Availability attack. It makes data unavailable to legitimate users."
+  },
+  {
+    q: "What is the #1 initial access vector for most malware campaigns?",
+    opts: ["USB drives", "Email", "Web browser exploits", "Network scanning"],
+    correct: 1,
+    exp: "Email (malicious attachments, embedded links, macro-enabled documents) remains the #1 initial access vector for most campaigns."
+  },
+  {
+    q: "A virus DIFFERS from a worm primarily because a virus:",
+    opts: ["Spreads autonomously over the network", "Requires a host file to attach to", "Does not need user action", "Can only infect IoT devices"],
+    correct: 1,
+    exp: "A virus attaches to a legitimate host file and spreads when that file is opened. Worms are standalone and need no host file."
+  },
+  {
+    q: "Which malware type does NOT self-replicate and relies entirely on social engineering?",
+    opts: ["Virus", "Worm", "Trojan", "Ransomware"],
+    correct: 2,
+    exp: "Trojans do NOT self-replicate. They disguise themselves as legitimate software and rely entirely on social engineering to trick users into installing them."
+  },
+  {
+    q: "The Morris Worm (1988) infected approximately what percentage of the Internet at the time?",
+    opts: ["1%", "5%", "10%", "25%"],
+    correct: 2,
+    exp: "The Morris Worm infected ~6,000 machines, which was roughly 10% of the entire Internet at the time — making it the first major Internet worm incident."
+  },
+  {
+    q: "What is 'double extortion' in the context of ransomware?",
+    opts: ["Attacking two organizations simultaneously", "Charging double the ransom after payment", "Exfiltrating data BEFORE encryption and threatening to publish it", "Using two different encryption algorithms"],
+    correct: 2,
+    exp: "Double extortion = exfiltrating victim data BEFORE encrypting it, then threatening public release to increase pressure even if the victim has backups."
+  },
+  {
+    q: "A RAT (Remote Access Trojan) primarily gives attackers:",
+    opts: ["The ability to encrypt files for ransom", "Full remote control of the victim's system", "Access to network bandwidth for DDoS", "The ability to replicate across networks"],
+    correct: 1,
+    exp: "RATs grant attackers full control: keylogging, screen capture, file access, and even webcam/microphone activation."
+  },
+  {
+    q: "Which persistence mechanism ensures malware survives system reboots?",
+    opts: ["Obfuscation", "Registry keys and scheduled tasks", "Encrypted C2 traffic", "Anti-VM techniques"],
+    correct: 1,
+    exp: "Persistence is achieved through registry keys, startup folders, scheduled tasks, or system services — all of which execute automatically on system boot."
+  },
+  {
+    q: "Rootkits are particularly dangerous because they:",
+    opts: ["Spread via email attachments", "Operate at kernel-level, hiding from the OS itself", "Demand cryptocurrency payments", "Only target IoT devices"],
+    correct: 1,
+    exp: "Rootkits are kernel-level tools that hide processes, files, and network connections from the OS itself — making them the deepest and hardest form of concealment."
+  },
+  {
+    q: "What distinguishes Spear Phishing from regular Phishing?",
+    opts: ["Spear phishing is delivered via SMS", "Spear phishing uses voice calls", "Spear phishing is highly targeted using personal details of specific individuals", "Spear phishing only targets executives"],
+    correct: 2,
+    exp: "Spear phishing = highly targeted messages crafted with personal details about specific individuals. Regular phishing = mass emails with generic lures."
+  },
+  {
+    q: "The Mirai botnet (2016) primarily exploited what vulnerability?",
+    opts: ["Unpatched Windows SMB", "Default passwords on IoT devices", "Browser zero-days", "Macro-enabled Office documents"],
+    correct: 1,
+    exp: "Mirai exploited default passwords on IoT devices to build a massive botnet. It then launched record DDoS attacks that took down DNS provider Dyn."
+  },
+  {
+    q: "WannaCry (2017) was a combination of which two malware types?",
+    opts: ["Virus + Trojan", "Spyware + Adware", "Ransomware + Worm behavior", "Keylogger + Rootkit"],
+    correct: 2,
+    exp: "WannaCry combined ransomware (file encryption + ransom demand) with worm-like propagation (exploiting EternalBlue/MS17-010 to spread autonomously)."
+  },
+  {
+    q: "The CIH 'Chernobyl' virus (1998) was notable for:",
+    opts: ["Being the first email worm", "Physically bricking machines by overwriting the flash BIOS", "Creating the first botnet", "Inventing ransomware"],
+    correct: 1,
+    exp: "CIH (Chernobyl) overwrote the flash BIOS on certain motherboards, permanently destroying them — one of the most physically destructive viruses ever recorded."
+  },
+  {
+    q: "What does EDR stand for and what makes it superior to traditional antivirus?",
+    opts: ["Enterprise Data Repository — it stores more data", "Endpoint Detection and Response — behavioral monitoring detects unknown malware", "External Detection Runtime — monitors network traffic only", "Encrypted Data Recovery — recovers ransomware-encrypted files"],
+    correct: 1,
+    exp: "EDR = Endpoint Detection & Response. Unlike signature-based antivirus (which only knows known threats), EDR uses behavioral monitoring to detect anomalies from unknown/new malware."
+  },
+  {
+    q: "Which email authentication protocol specifies which mail servers are allowed to send email for a domain?",
+    opts: ["DKIM", "DMARC", "SPF", "SSL"],
+    correct: 2,
+    exp: "SPF (Sender Policy Framework) specifies which mail servers are authorized to send email for your domain. DKIM adds cryptographic signing. DMARC is the policy layer that uses both."
+  },
+  {
+    q: "Supply-chain attacks are dangerous primarily because they:",
+    opts: ["Spread via USB drives", "Distribute malware through trusted vendor update channels", "Only target small businesses", "Require physical access to systems"],
+    correct: 1,
+    exp: "Supply-chain attacks compromise software updates from trusted vendors — victims install malware thinking it's a legitimate update. Trust makes them especially effective."
+  },
+  {
+    q: "What is the 3-2-1 backup rule?",
+    opts: ["3 backups per day, 2 on cloud, 1 on device", "3 copies of data, on 2 different media, with 1 offline/offsite", "3 employees manage backups, 2 approve restores, 1 tests them", "3GB minimum, 2 locations, 1 hour recovery time"],
+    correct: 1,
+    exp: "3-2-1: 3 copies of data · 2 different storage media types · 1 copy offline/offsite (air-gapped). This ensures ransomware can't reach all copies."
+  },
+  {
+    q: "Adware and browser hijackers are dismissed as nuisances, but pose real security risks including:",
+    opts: ["Direct file encryption", "Exposure to additional malware via malicious ad networks", "Kernel-level OS hiding", "Self-replication across networks"],
+    correct: 1,
+    exp: "Beyond annoyance, adware can serve as a gateway to more serious malware through malicious ad networks, plus causes privacy loss and weakens browser security settings."
+  },
+  {
+    q: "What is 'defense-in-depth' in cybersecurity?",
+    opts: ["Using the deepest encryption algorithms available", "Relying on a single powerful firewall at the network perimeter", "Layering multiple security controls so no single failure compromises the whole system", "Only defending internet-facing systems"],
+    correct: 2,
+    exp: "Defense-in-depth = layered controls where no single control is sufficient. Combines technology (EDR, firewalls) + process (patching, backups) + human factors (training) — attacker must defeat ALL layers."
+  }
+];
+
+let score = 0;
+let answered = 0;
+const totalQ = questions.length;
+
+function buildQuiz() {
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = '';
+  questions.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'mcq-card';
+    card.id = `q${i}`;
+
+    const letters = ['A','B','C','D'];
+    const optsHTML = q.opts.map((opt, j) => `
+      <div class="mcq-option" id="q${i}opt${j}" onclick="answer(${i}, ${j})">
+        <span class="mcq-opt-letter">${letters[j]}</span>
+        ${opt}
+      </div>
+    `).join('');
+
+    card.innerHTML = `
+      <div class="mcq-question">
+        <span class="mcq-q-num">QUESTION ${String(i+1).padStart(2,'0')} / ${totalQ}</span>
+        ${q.q}
+      </div>
+      <div class="mcq-options">${optsHTML}</div>
+      <div class="mcq-explanation" id="q${i}exp"></div>
+    `;
+    container.appendChild(card);
+  });
+  updateScore();
+}
+
+function answer(qIdx, optIdx) {
+  const q = questions[qIdx];
+  const opts = document.querySelectorAll(`#q${qIdx} .mcq-option`);
+  const exp = document.getElementById(`q${qIdx}exp`);
+
+  // Already answered?
+  if (opts[0].classList.contains('disabled')) return;
+
+  opts.forEach(o => o.classList.add('disabled'));
+
+  if (optIdx === q.correct) {
+    opts[optIdx].classList.add('correct');
+    exp.textContent = '✅ Correct! ' + q.exp;
+    exp.className = 'mcq-explanation';
+    score++;
+  } else {
+    opts[optIdx].classList.add('wrong');
+    opts[q.correct].classList.add('correct');
+    exp.textContent = '❌ Wrong. ' + q.exp;
+    exp.className = 'mcq-explanation wrong-exp';
+  }
+
+  exp.style.display = 'block';
+  answered++;
+  updateScore();
+}
+
+function updateScore() {
+  document.getElementById('scoreDisplay').textContent = `${score}/${totalQ}`;
+  const pct = (score / totalQ) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function resetQuiz() {
+  score = 0;
+  answered = 0;
+  buildQuiz();
+}
+
+buildQuiz();
+</script>
+</body>
+</html>
