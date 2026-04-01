@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VPN & IPsec — Network Security Masterclass</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0d14;
+  --surface: #111520;
+  --surface2: #161c2d;
+  --border: #1e2a45;
+  --accent: #00d4ff;
+  --accent2: #ff6b35;
+  --accent3: #a78bfa;
+  --green: #00ff88;
+  --red: #ff4757;
+  --yellow: #ffd32a;
+  --text: #e8eaf0;
+  --muted: #6b7a99;
+  --card: #131929;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+  position: relative;
+  background: radial-gradient(ellipse at 50% 0%, rgba(0,212,255,0.08) 0%, transparent 70%),
+              radial-gradient(ellipse at 80% 80%, rgba(167,139,250,0.06) 0%, transparent 60%);
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+.badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  border: 1px solid rgba(0,212,255,0.3);
+  padding: 0.4rem 1rem;
+  border-radius: 2px;
+  margin-bottom: 2rem;
+  background: rgba(0,212,255,0.04);
+  animation: fadeIn 0.6s ease;
+}
+
+.hero h1 {
+  font-size: clamp(3rem, 8vw, 7rem);
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 1.5rem;
+  animation: slideUp 0.8s ease;
+}
+
+.hero h1 span.cyber { color: var(--accent); }
+.hero h1 span.fire { color: var(--accent2); }
+
+.hero-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-bottom: 3rem;
+  animation: fadeIn 1s ease;
+}
+
+.nav-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  animation: fadeIn 1.2s ease;
+}
+
+.nav-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  padding: 0.6rem 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.nav-pill:hover { border-color: var(--accent); color: var(--accent); background: rgba(0,212,255,0.05); }
+
+/* ─── SECTIONS ─── */
+.section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 5rem 2rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.section-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 0.2rem 0.5rem;
+  letter-spacing: 0.1em;
+}
+
+.section-title {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.accent { color: var(--accent); }
+.accent2 { color: var(--accent2); }
+.accent3 { color: var(--accent3); }
+.green { color: var(--green); }
+
+/* ─── DIVIDER ─── */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 0;
+}
+
+/* ─── DEFINITION CARD ─── */
+.def-card {
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: 4px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.def-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: var(--accent);
+}
+.def-card.orange::before { background: var(--accent2); }
+.def-card.purple::before { background: var(--accent3); }
+.def-card.green::before { background: var(--green); }
+
+.def-card h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.def-card p, .def-card li {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.8;
+}
+.def-card ul { padding-left: 1.2rem; }
+.def-card li { margin-bottom: 0.4rem; }
+
+/* ─── GRID ─── */
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+.grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+
+/* ─── COMPARISON TABLE ─── */
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  margin: 1.5rem 0;
+}
+.compare-table th {
+  background: var(--surface2);
+  padding: 0.9rem 1.2rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--accent);
+  border-bottom: 2px solid var(--accent);
+}
+.compare-table td {
+  padding: 0.8rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+.compare-table tr:hover td { background: rgba(0,212,255,0.03); }
+.compare-table .yes { color: var(--green); }
+.compare-table .no { color: var(--red); }
+.compare-table .warn { color: var(--yellow); }
+
+/* ─── PROCESS FLOW ─── */
+.flow {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  flex-wrap: wrap;
+  margin: 2rem 0;
+}
+.flow-step {
+  flex: 1;
+  min-width: 140px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 1.2rem;
+  position: relative;
+  text-align: center;
+}
+.flow-step:not(:last-child)::after {
+  content: '→';
+  position: absolute;
+  right: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--accent);
+  font-size: 1.2rem;
+  z-index: 2;
+  background: var(--bg);
+  padding: 0 2px;
+}
+.flow-step .step-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+.flow-step .step-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.flow-step p {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+
+/* ─── FEATURE BADGE ─── */
+.feature-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.ftag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 2px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+.ftag.blue { background: rgba(0,212,255,0.1); color: var(--accent); border: 1px solid rgba(0,212,255,0.2); }
+.ftag.orange { background: rgba(255,107,53,0.1); color: var(--accent2); border: 1px solid rgba(255,107,53,0.2); }
+.ftag.purple { background: rgba(167,139,250,0.1); color: var(--accent3); border: 1px solid rgba(167,139,250,0.2); }
+.ftag.green { background: rgba(0,255,136,0.1); color: var(--green); border: 1px solid rgba(0,255,136,0.2); }
+.ftag.red { background: rgba(255,71,87,0.1); color: var(--red); border: 1px solid rgba(255,71,87,0.2); }
+.ftag.yellow { background: rgba(255,211,42,0.1); color: var(--yellow); border: 1px solid rgba(255,211,42,0.2); }
+
+/* ─── HIGHLIGHT BOX ─── */
+.highlight {
+  background: linear-gradient(135deg, rgba(0,212,255,0.06), rgba(167,139,250,0.04));
+  border: 1px solid rgba(0,212,255,0.2);
+  border-radius: 4px;
+  padding: 1.5rem 2rem;
+  margin: 1.5rem 0;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.85rem;
+  line-height: 1.8;
+}
+.highlight.orange { background: linear-gradient(135deg, rgba(255,107,53,0.06), transparent); border-color: rgba(255,107,53,0.2); }
+.highlight.green { background: linear-gradient(135deg, rgba(0,255,136,0.06), transparent); border-color: rgba(0,255,136,0.2); }
+.highlight.red { background: linear-gradient(135deg, rgba(255,71,87,0.06), transparent); border-color: rgba(255,71,87,0.2); }
+
+/* ─── PACKET DIAGRAM ─── */
+.packet {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 1.5rem 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.packet-seg {
+  flex: 1;
+  padding: 0.8rem 0.5rem;
+  text-align: center;
+  border-right: 1px solid var(--border);
+  transition: all 0.2s;
+}
+.packet-seg:last-child { border-right: none; }
+.packet-seg .label { font-size: 0.65rem; font-weight: 400; color: var(--muted); margin-top: 0.2rem; }
+.packet-seg.ip { background: rgba(167,139,250,0.08); color: var(--accent3); }
+.packet-seg.ah { background: rgba(0,212,255,0.08); color: var(--accent); }
+.packet-seg.esp { background: rgba(255,107,53,0.08); color: var(--accent2); }
+.packet-seg.enc { background: rgba(0,255,136,0.08); color: var(--green); }
+.packet-seg.new-ip { background: rgba(255,211,42,0.08); color: var(--yellow); }
+
+/* ─── MCQ SECTION ─── */
+.mcq-container { margin: 2rem 0; }
+
+.mcq-card {
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: 4px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  transition: border-color 0.2s;
+}
+.mcq-card:hover { border-color: var(--border); }
+
+.mcq-q {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.mcq-q .qnum {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent);
+  font-size: 0.8rem;
+  margin-right: 0.5rem;
+}
+
+.mcq-options { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.mcq-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  background: var(--surface);
+  text-align: left;
+  width: 100%;
+  color: var(--text);
+}
+.mcq-opt:hover { border-color: var(--accent); background: rgba(0,212,255,0.04); }
+.mcq-opt.correct { border-color: var(--green); background: rgba(0,255,136,0.08); color: var(--green); }
+.mcq-opt.wrong { border-color: var(--red); background: rgba(255,71,87,0.08); color: var(--red); }
+
+.mcq-letter {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  min-width: 18px;
+  color: var(--muted);
+}
+
+.mcq-explain {
+  margin-top: 1rem;
+  padding: 0.8rem 1rem;
+  background: rgba(0,255,136,0.06);
+  border: 1px solid rgba(0,255,136,0.2);
+  border-radius: 2px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--green);
+  display: none;
+  line-height: 1.6;
+}
+
+.mcq-score-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 1.5rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin-bottom: 2rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+}
+
+.score-display { color: var(--accent); font-size: 1.4rem; font-weight: 700; }
+
+.reset-btn {
+  padding: 0.5rem 1.2rem;
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+.reset-btn:hover { background: var(--accent); color: var(--bg); }
+
+/* ─── ALGORITHM TABLE ─── */
+.algo-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 1rem 0;
+}
+.algo-cell {
+  background: var(--card);
+  padding: 0.9rem 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+}
+.algo-row.header .algo-cell {
+  background: var(--surface2);
+  color: var(--accent);
+  font-weight: 700;
+}
+.algo-cell.deprecated { text-decoration: line-through; color: var(--red); }
+.algo-cell.good { color: var(--green); }
+.algo-cell.ok { color: var(--yellow); }
+
+/* ─── STICKY TOC ─── */
+.toc {
+  position: fixed;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  z-index: 100;
+}
+.toc-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid var(--muted);
+}
+.toc-dot:hover, .toc-dot.active { background: var(--accent); border-color: var(--accent); width: 10px; height: 10px; }
+
+/* ─── KEY MEMORY ─── */
+.memory-card {
+  background: linear-gradient(135deg, var(--surface2), var(--card));
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.5rem;
+  position: relative;
+}
+.memory-card::after {
+  content: '💡 EXAM TIP';
+  position: absolute;
+  top: -10px;
+  left: 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--yellow);
+  background: var(--bg);
+  padding: 0 0.5rem;
+  letter-spacing: 0.1em;
+}
+.memory-card p {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.82rem;
+  color: var(--text);
+  line-height: 1.8;
+}
+.memory-card strong { color: var(--accent2); }
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ─── PROGRESS ─── */
+.progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  background: var(--accent);
+  z-index: 999;
+  transition: width 0.1s;
+}
+
+/* ─── MOBILE ─── */
+@media (max-width: 768px) {
+  .toc { display: none; }
+  .flow { flex-direction: column; }
+  .flow-step:not(:last-child)::after { content: '↓'; right: 50%; top: auto; bottom: -14px; transform: translateX(50%); }
+  .algo-row { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- TOC dots -->
+<div class="toc" id="toc">
+  <div class="toc-dot active" onclick="scrollTo('ch1')" title="VPN Fundamentals"></div>
+  <div class="toc-dot" onclick="scrollTo('ch2')" title="VPN Types"></div>
+  <div class="toc-dot" onclick="scrollTo('ch3')" title="IPsec Architecture"></div>
+  <div class="toc-dot" onclick="scrollTo('ch4')" title="Protocols & Modes"></div>
+  <div class="toc-dot" onclick="scrollTo('ch5')" title="IKE"></div>
+  <div class="toc-dot" onclick="scrollTo('ch6')" title="Applications"></div>
+  <div class="toc-dot" onclick="scrollTo('mcq')" title="MCQ Quiz"></div>
+</div>
+
+<!-- ═══════════════════════════════════════ HERO ═══════════════════════════════════════ -->
+<div class="hero">
+  <div class="badge">NETWORK SECURITY · LECTURE 4 · DR. ABDALLA SAYED</div>
+  <h1><span class="cyber">VPN</span> <span style="color:var(--muted)">&</span> <span class="fire">IPsec</span></h1>
+  <p class="hero-sub">// Secure Network Communication — Complete Exam Masterclass</p>
+  <div class="nav-pills">
+    <a class="nav-pill" href="#ch1">📡 VPN Basics</a>
+    <a class="nav-pill" href="#ch2">🔀 VPN Types</a>
+    <a class="nav-pill" href="#ch3">🔒 IPsec Core</a>
+    <a class="nav-pill" href="#ch4">⚙️ AH vs ESP</a>
+    <a class="nav-pill" href="#ch5">🔑 IKE</a>
+    <a class="nav-pill" href="#ch6">🌐 Apps & Limits</a>
+    <a class="nav-pill" href="#mcq">🎯 MCQ Quiz</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ CH1: VPN FUNDAMENTALS ═══════════════════════════════════════ -->
+<div id="ch1" class="section">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2 class="section-title">VPN <span class="accent">Fundamentals</span></h2>
+  </div>
+
+  <div class="def-card">
+    <h3>🌐 What Is a VPN?</h3>
+    <p>A <strong style="color:var(--accent)">Virtual Private Network (VPN)</strong> extends a private network across a public network (usually the internet), creating a logical, secure channel between two endpoints — so devices communicate as if on a private link.</p>
+    <div class="feature-row" style="margin-top:1rem">
+      <span class="ftag blue">Virtual → No physical link</span>
+      <span class="ftag orange">Private → Data protected</span>
+      <span class="ftag purple">Network → Multiple devices unified</span>
+    </div>
+  </div>
+
+  <div class="highlight">
+    🔴 <strong style="color:var(--red)">THE PROBLEM:</strong> Public networks are insecure. Data without protection is vulnerable to <strong style="color:var(--accent2)">eavesdropping</strong>, <strong style="color:var(--accent2)">man-in-the-middle attacks</strong>, and <strong style="color:var(--accent2)">surveillance</strong> — especially on open Wi-Fi.<br><br>
+    🟢 <strong style="color:var(--green)">THE SOLUTION:</strong> VPN creates an encrypted tunnel → your data becomes unreadable to any interceptor.
+  </div>
+
+  <h3 style="margin-bottom:1rem; font-size:1.2rem;">How a VPN Works — The Flow</h3>
+  <div class="flow">
+    <div class="flow-step">
+      <div class="step-num">STEP 01</div>
+      <div class="step-label" style="color:var(--accent)">Client Device</div>
+      <p>Initiates connection</p>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">STEP 02</div>
+      <div class="step-label" style="color:var(--accent3)">Encrypted Tunnel</div>
+      <p>Data is encrypted</p>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">STEP 03</div>
+      <div class="step-label" style="color:var(--accent2)">VPN Server</div>
+      <p>Decrypts & forwards</p>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">STEP 04</div>
+      <div class="step-label" style="color:var(--green)">Internet Dest.</div>
+      <p>Sees VPN IP, not yours</p>
+    </div>
+  </div>
+
+  <h3 style="margin: 2rem 0 1rem; font-size:1.2rem;">The 4 Core VPN Functions</h3>
+  <div class="grid-4">
+    <div class="def-card">
+      <h3 style="color:var(--accent)">🔐 Encryption</h3>
+      <p>Transforms readable data → ciphertext. Unauthorized parties intercepting traffic see only noise.</p>
+    </div>
+    <div class="def-card orange">
+      <h3 style="color:var(--accent2)">✅ Integrity</h3>
+      <p>Detects if data was altered/tampered in transit. Ensures receiver gets exactly what was sent.</p>
+    </div>
+    <div class="def-card purple">
+      <h3 style="color:var(--accent3)">🪪 Authentication</h3>
+      <p>Only authorized users/devices can establish a VPN. Prevents impersonation attacks.</p>
+    </div>
+    <div class="def-card green">
+      <h3 style="color:var(--green)">🕵️ IP Masking</h3>
+      <p>Hides real IP behind VPN server's address. Improves privacy & enables location flexibility.</p>
+    </div>
+  </div>
+
+  <div class="memory-card" style="margin-top:2rem">
+    <p>Remember the 4 functions as <strong>EIAM</strong> → <strong>E</strong>ncryption, <strong>I</strong>ntegrity, <strong>A</strong>uthentication, <strong>M</strong>asking. Or think: <strong>"Every Intelligent Admin Masks"</strong> their traffic! 🛡️</p>
+  </div>
+</div>
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════ CH2: VPN TYPES ═══════════════════════════════════════ -->
+<div id="ch2" class="section">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2 class="section-title">Types of <span class="accent2">VPNs</span></h2>
+  </div>
+
+  <div class="grid-3">
+    <div class="def-card">
+      <h3>📱 Remote Access VPN</h3>
+      <p><strong style="color:var(--accent)">Who:</strong> Individual users<br>
+      <strong style="color:var(--accent)">What:</strong> Connects remotely to org's private network from anywhere<br>
+      <strong style="color:var(--accent)">How:</strong> Authenticates each user, encrypts all traffic<br>
+      <strong style="color:var(--accent)">Examples:</strong> Cisco AnyConnect, OpenVPN, WireGuard<br>
+      <strong style="color:var(--accent)">Used for:</strong> Remote & hybrid work</p>
+    </div>
+    <div class="def-card orange">
+      <h3>🏢 Site-to-Site VPN</h3>
+      <p><strong style="color:var(--accent2)">Who:</strong> Entire networks (not individuals)<br>
+      <strong style="color:var(--accent2)">What:</strong> Connects branch offices to HQ<br>
+      <strong style="color:var(--accent2)">How:</strong> Gateways at each site handle encryption transparently<br>
+      <strong style="color:var(--accent2)">Key:</strong> End-user devices need NO VPN config<br>
+      <strong style="color:var(--accent2)">Used for:</strong> Multi-branch enterprises</p>
+    </div>
+    <div class="def-card purple">
+      <h3>💻 Client-to-Site VPN</h3>
+      <p><strong style="color:var(--accent3)">Who:</strong> Individual users (managed corp environment)<br>
+      <strong style="color:var(--accent3)">What:</strong> User installs VPN client software to connect into enterprise<br>
+      <strong style="color:var(--accent3)">How:</strong> IT enforces policies + access controls at gateway<br>
+      <strong style="color:var(--accent3)">Bonus:</strong> Often paired with MFA<br>
+      <strong style="color:var(--accent3)">vs Remote Access:</strong> More IT control</p>
+    </div>
+  </div>
+
+  <div class="memory-card" style="margin-top:2rem">
+    <p>
+      <strong>Remote Access</strong> = one person → organization (no IT management needed)<br>
+      <strong>Site-to-Site</strong> = whole office → whole office (gateways do the work, users don't notice)<br>
+      <strong>Client-to-Site</strong> = one person → organization (but IT controls everything via software + MFA)
+    </p>
+  </div>
+
+  <table class="compare-table" style="margin-top:2rem">
+    <tr>
+      <th>Feature</th>
+      <th>Remote Access</th>
+      <th>Site-to-Site</th>
+      <th>Client-to-Site</th>
+    </tr>
+    <tr>
+      <td>Who connects</td>
+      <td>Individual user</td>
+      <td>Entire network</td>
+      <td>Individual user</td>
+    </tr>
+    <tr>
+      <td>VPN software on device?</td>
+      <td class="yes">✅ Yes</td>
+      <td class="no">❌ No (gateway)</td>
+      <td class="yes">✅ Yes</td>
+    </tr>
+    <tr>
+      <td>IT centralized control</td>
+      <td class="warn">⚠️ Basic</td>
+      <td class="warn">⚠️ Gateway only</td>
+      <td class="yes">✅ Full control</td>
+    </tr>
+    <tr>
+      <td>MFA support</td>
+      <td class="warn">⚠️ Optional</td>
+      <td class="no">❌ Rare</td>
+      <td class="yes">✅ Common</td>
+    </tr>
+    <tr>
+      <td>Best use case</td>
+      <td>WFH employees</td>
+      <td>Branch offices</td>
+      <td>Managed corp devices</td>
+    </tr>
+  </table>
+</div>
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════ CH3: IPSEC ARCHITECTURE ═══════════════════════════════════════ -->
+<div id="ch3" class="section">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2 class="section-title">IPsec <span class="accent">Architecture</span></h2>
+  </div>
+
+  <div class="def-card">
+    <h3>🔒 What Is IPsec?</h3>
+    <p><strong style="color:var(--accent)">IPsec (Internet Protocol Security)</strong> is a standardized suite of protocols that secures IP communications by <strong style="color:var(--accent2)">authenticating and encrypting each IP packet</strong> in a data stream.</p>
+    <div class="feature-row" style="margin-top:1rem">
+      <span class="ftag blue">Layer 3 — Network Layer (OSI)</span>
+      <span class="ftag orange">Open standards — not proprietary</span>
+      <span class="ftag purple">Transparent to apps — no changes needed</span>
+      <span class="ftag green">Packet-level protection</span>
+    </div>
+  </div>
+
+  <div class="highlight orange" style="margin:1.5rem 0">
+    ⚡ <strong style="color:var(--accent2)">KEY DIFFERENCE from TLS:</strong> TLS works at the Application Layer (Layer 7). IPsec works at the Network Layer (Layer 3) — meaning it protects ALL traffic automatically, regardless of application. No app changes needed!
+  </div>
+
+  <h3 style="margin-bottom:1.5rem; font-size:1.2rem;">The 5 IPsec Security Services</h3>
+  <div class="grid-3">
+    <div class="def-card">
+      <h3>🔐 Confidentiality</h3>
+      <p>Encrypts packet contents using symmetric algorithms (AES). Intercepted data is unreadable without the key.</p>
+    </div>
+    <div class="def-card orange">
+      <h3>✅ Data Integrity</h3>
+      <p>Uses cryptographic hash functions (SHA-256) + MACs to verify data wasn't altered. If hash doesn't match → packet discarded.</p>
+    </div>
+    <div class="def-card purple">
+      <h3>🔁 Anti-Replay</h3>
+      <p>Each packet has a unique sequence number. Receiver tracks numbers and rejects duplicates → blocks replay attacks.</p>
+    </div>
+    <div class="def-card green">
+      <h3>🪪 Origin Authentication</h3>
+      <p>Verifies identity using digital signatures or pre-shared keys. Prevents impersonation & man-in-the-middle.</p>
+    </div>
+    <div class="def-card" style="border-left-color: var(--yellow)">
+      <h3 style="color:var(--yellow)">🔑 Key Management (IKE)</h3>
+      <p>IKE automates negotiation, generation, and renewal of cryptographic keys. No manual distribution needed.</p>
+    </div>
+  </div>
+
+  <div class="memory-card" style="margin-top:2rem">
+    <p>Remember the 5 services as <strong>C-I-A-R-K</strong>: <strong>C</strong>onfidentiality, <strong>I</strong>ntegrity, <strong>A</strong>uthentication, <strong>R</strong>eplay-protection, <strong>K</strong>ey management.<br>
+    Or: <strong>"Can I Always Rely on Keys?"</strong> ✅</p>
+  </div>
+
+  <h3 style="margin: 2.5rem 0 1.5rem; font-size:1.2rem;">Bulk Encryption Algorithms — Evolution</h3>
+  <div class="algo-row header">
+    <div class="algo-cell">Algorithm</div>
+    <div class="algo-cell">Key Size</div>
+    <div class="algo-cell">Status</div>
+    <div class="algo-cell">Notes</div>
+  </div>
+  <div class="algo-row">
+    <div class="algo-cell deprecated">DES</div>
+    <div class="algo-cell deprecated">56-bit</div>
+    <div class="algo-cell" style="color:var(--red)">❌ BROKEN</div>
+    <div class="algo-cell" style="color:var(--muted); font-size:0.75rem;">Legacy. Do not use.</div>
+  </div>
+  <div class="algo-row">
+    <div class="algo-cell ok">3DES</div>
+    <div class="algo-cell ok">168-bit</div>
+    <div class="algo-cell" style="color:var(--yellow)">⚠️ PHASING OUT</div>
+    <div class="algo-cell" style="color:var(--muted); font-size:0.75rem;">Triple DES. Slower.</div>
+  </div>
+  <div class="algo-row">
+    <div class="algo-cell" style="color:var(--accent3)">SEAL</div>
+    <div class="algo-cell" style="color:var(--accent3)">—</div>
+    <div class="algo-cell" style="color:var(--yellow)">⚠️ Niche</div>
+    <div class="algo-cell" style="color:var(--muted); font-size:0.75rem;">Stream cipher. Low CPU.</div>
+  </div>
+  <div class="algo-row">
+    <div class="algo-cell good">AES</div>
+    <div class="algo-cell good">128/192/256-bit</div>
+    <div class="algo-cell good">✅ GOLD STANDARD</div>
+    <div class="algo-cell" style="color:var(--muted); font-size:0.75rem;">Hardware accelerated. Use this!</div>
+  </div>
+
+  <div class="def-card" style="margin-top:2rem">
+    <h3>🤝 Diffie–Hellman Key Exchange</h3>
+    <p>DH enables two parties to independently compute a <strong style="color:var(--accent)">shared secret over an untrusted channel</strong> — without ever transmitting the secret itself. The shared secret derives the symmetric encryption keys for the session.</p>
+    <br>
+    <p>• Neither party sends the actual key over the network<br>
+    • An eavesdropper who captures the exchange CANNOT derive the secret<br>
+    • DH Groups (e.g., Group 14, 19, 20) define key size & algorithm<br>
+    • <strong style="color:var(--accent2)">Foundational to IKE's secure key establishment</strong></p>
+  </div>
+</div>
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════ CH4: AH vs ESP & MODES ═══════════════════════════════════════ -->
+<div id="ch4" class="section">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2 class="section-title">IPsec <span class="accent3">Protocols</span> & Modes</h2>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:2rem">
+    <div class="def-card">
+      <h3>🔵 AH — Authentication Header</h3>
+      <p><strong style="color:var(--green)">PROVIDES:</strong></p>
+      <p>✅ Data origin authentication<br>
+      ✅ Connectionless integrity (detects packet modification)<br>
+      ✅ Anti-replay protection (sequence numbers)<br>
+      ✅ IP header protection (authenticates outer header)</p>
+      <br>
+      <p><strong style="color:var(--red)">DOES NOT PROVIDE:</strong></p>
+      <p>❌ Encryption — traffic is READABLE by interceptors (though not modifiable)<br></p>
+      <div class="feature-row" style="margin-top:0.75rem">
+        <span class="ftag yellow">Use: Integrity only (no confidentiality needed)</span>
+      </div>
+    </div>
+    <div class="def-card orange">
+      <h3>🟠 ESP — Encapsulating Security Payload</h3>
+      <p><strong style="color:var(--green)">PROVIDES:</strong></p>
+      <p>✅ Confidentiality (encrypts payload with AES)<br>
+      ✅ Authentication (optional — verifies origin + integrity via MACs)<br>
+      ✅ Anti-replay (sequence number tracking)<br></p>
+      <br>
+      <p><strong style="color:var(--accent2)">MOST COMMONLY DEPLOYED</strong> protocol in modern VPN implementations due to encryption capability.</p>
+      <div class="feature-row" style="margin-top:0.75rem">
+        <span class="ftag green">Use: Standard VPN — all modern deployments</span>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="margin-bottom:1.5rem; font-size:1.2rem;">AH vs ESP — Full Comparison</h3>
+  <table class="compare-table">
+    <tr>
+      <th>Feature</th>
+      <th>AH (Auth Header)</th>
+      <th>ESP (Encapsulating SP)</th>
+    </tr>
+    <tr>
+      <td>Encryption</td>
+      <td class="no">❌ Not provided</td>
+      <td class="yes">✅ Yes (AES, 3DES…)</td>
+    </tr>
+    <tr>
+      <td>Data Integrity</td>
+      <td class="yes">✅ Yes</td>
+      <td class="yes">✅ Yes (optional)</td>
+    </tr>
+    <tr>
+      <td>Origin Authentication</td>
+      <td class="yes">✅ Yes</td>
+      <td class="yes">✅ Yes (optional)</td>
+    </tr>
+    <tr>
+      <td>IP Header Protection</td>
+      <td class="yes">✅ Includes outer header</td>
+      <td class="warn">⚠️ Partial (inner in tunnel mode)</td>
+    </tr>
+    <tr>
+      <td>Anti-Replay</td>
+      <td class="yes">✅ Yes</td>
+      <td class="yes">✅ Yes</td>
+    </tr>
+    <tr>
+      <td>Real-World Usage</td>
+      <td style="color:var(--muted)">Rare — integrity-only scenarios</td>
+      <td class="yes">✅ Standard in ALL modern VPNs</td>
+    </tr>
+  </table>
+
+  <div class="highlight" style="margin-top:1.5rem">
+    💡 <strong style="color:var(--accent)">AH + ESP together?</strong> Can be used simultaneously when you need both full IP header integrity AND payload encryption — but this is uncommon in practice.
+  </div>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-size:1.2rem;">Authentication Algorithms</h3>
+  <div class="algo-row header">
+    <div class="algo-cell">Algorithm</div>
+    <div class="algo-cell">Type</div>
+    <div class="algo-cell">Status</div>
+    <div class="algo-cell">Notes</div>
+  </div>
+  <div class="algo-row">
+    <div class="algo-cell deprecated">HMAC-MD5</div>
+    <div class="algo-cell deprecated">Hash/MAC</div>
+    <div class="algo-cell" style="color:var(--red)">❌ Weakened</div>
+    <div class="algo-cell" style="color:var(--muted); font-size:0.75rem;">Legacy, limited use</div>
+  </div>
+  <div class="algo-row">
+    <div class="algo-cell ok">HMAC-SHA-1</div>
+    <div class="algo-cell ok">Hash/MAC</div>
+    <div class="algo-cell" style="color:var(--yellow)">⚠️ Transitional</div>
+    <div class="algo-cell" style="color:var(--muted); font-size:0.75rem;">Being phased out</div>
+  </div>
+  <div class="algo-row">
+    <div class="algo-cell good">HMAC-SHA-256</div>
+    <div class="algo-cell good">Hash/MAC</div>
+    <div class="algo-cell good">✅ Current Standard</div>
+    <div class="algo-cell" style="color:var(--muted); font-size:0.75rem;">Use this!</div>
+  </div>
+  <div class="algo-row">
+    <div class="algo-cell good">HMAC-SHA-384</div>
+    <div class="algo-cell good">Hash/MAC</div>
+    <div class="algo-cell good">✅ Current Standard</div>
+    <div class="algo-cell" style="color:var(--muted); font-size:0.75rem;">High security</div>
+  </div>
+
+  <h3 style="margin: 2.5rem 0 1.5rem; font-size:1.2rem;">Operating Modes</h3>
+  <div class="grid-2">
+    <div class="def-card">
+      <h3>🚀 Transport Mode</h3>
+      <p><strong style="color:var(--accent)">What's protected:</strong> Only upper-layer payload (TCP/UDP data)<br>
+      <strong style="color:var(--accent)">IP Header:</strong> Remains intact & VISIBLE to routers<br>
+      <strong style="color:var(--accent)">Use case:</strong> Host-to-host (peer-to-peer) communication<br>
+      <strong style="color:var(--accent)">Overhead:</strong> Low (no extra IP header)<br>
+      <strong style="color:var(--red)">Weakness:</strong> Source/destination IPs visible → reveals network topology</p>
+      <br>
+      <p style="color:var(--muted); font-size:0.75rem; margin-top:0.5rem">Best for: End-to-end protection within trusted networks</p>
+    </div>
+    <div class="def-card orange">
+      <h3>🛡️ Tunnel Mode</h3>
+      <p><strong style="color:var(--accent2)">What's protected:</strong> Entire original IP packet (header + payload)<br>
+      <strong style="color:var(--accent2)">IP Header:</strong> NEW outer header added (VPN gateway addresses)<br>
+      <strong style="color:var(--accent2)">Use case:</strong> Site-to-site VPN gateways<br>
+      <strong style="color:var(--accent2)">Overhead:</strong> Higher (new header added)<br>
+      <strong style="color:var(--green)">Strength:</strong> Internal topology completely hidden</p>
+      <br>
+      <p style="color:var(--muted); font-size:0.75rem; margin-top:0.5rem">Standard for enterprise VPN → preferred mode</p>
+    </div>
+  </div>
+
+  <h3 style="margin: 2rem 0 1rem; font-size:1rem; color:var(--muted)">Packet Structure Visualized:</h3>
+  
+  <p style="font-size:0.85rem; color:var(--muted); margin-bottom:0.5rem; font-family:'JetBrains Mono',monospace">TRANSPORT MODE (AH):</p>
+  <div class="packet">
+    <div class="packet-seg ip">Original IP Header<div class="label">Visible ⚠️</div></div>
+    <div class="packet-seg ah">AH Header<div class="label">Inserted</div></div>
+    <div class="packet-seg enc">TCP/UDP Data<div class="label">Protected ✅</div></div>
+  </div>
+
+  <p style="font-size:0.85rem; color:var(--muted); margin-bottom:0.5rem; font-family:'JetBrains Mono',monospace">TUNNEL MODE (ESP):</p>
+  <div class="packet">
+    <div class="packet-seg new-ip">NEW Outer IP<div class="label">Gateway addrs 🔒</div></div>
+    <div class="packet-seg esp">ESP Header<div class="label">Added</div></div>
+    <div class="packet-seg enc">Original IP + Data<div class="label">Fully Encrypted ✅</div></div>
+  </div>
+
+  <div class="memory-card" style="margin-top:1.5rem">
+    <p><strong>Transport</strong> = "transport" your payload only → IP header visible → partial protection<br>
+    <strong>Tunnel</strong> = tunnel your ENTIRE packet inside a new packet → everything hidden → full protection<br>
+    🎯 <strong>Exam rule: Tunnel Mode = preferred for VPNs. Always.</strong></p>
+  </div>
+</div>
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════ CH5: IKE ═══════════════════════════════════════ -->
+<div id="ch5" class="section">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2 class="section-title">IKE — <span class="accent">Key Exchange</span></h2>
+  </div>
+
+  <div class="def-card">
+    <h3>🔑 What Is IKE?</h3>
+    <p><strong style="color:var(--accent)">Internet Key Exchange (IKE)</strong> is the protocol that automates the negotiation, generation, and periodic renewal of cryptographic keys — eliminating the need for manual key distribution. IKE supports forward secrecy and handles peer authentication + SA (Security Association) establishment.</p>
+  </div>
+
+  <h3 style="margin: 2rem 0 1.5rem; font-size:1.2rem;">IKE — Two Phases</h3>
+  <div class="grid-2">
+    <div class="def-card">
+      <h3>Phase 1 — Establish Secure Channel</h3>
+      <p>Goal: Create a secure, authenticated channel (ISAKMP SA) between peers so Phase 2 can safely happen.<br><br>
+      <strong style="color:var(--accent)">Steps in Phase 1:</strong><br>
+      1. Algorithm negotiation (encryption, hash, DH group)<br>
+      2. Diffie-Hellman key exchange → shared secret<br>
+      3. Peer authentication (PSK or digital certificates)<br>
+      4. ISAKMP SA created</p>
+      <div class="feature-row" style="margin-top:1rem">
+        <span class="ftag blue">Main Mode</span>
+        <span class="ftag orange">Aggressive Mode</span>
+      </div>
+    </div>
+    <div class="def-card orange">
+      <h3>Phase 2 — Negotiate IPsec SA</h3>
+      <p>Goal: Using the Phase 1 secure channel, negotiate the actual IPsec SAs used to protect data traffic.<br><br>
+      <strong style="color:var(--accent2)">Steps in Phase 2:</strong><br>
+      1. Negotiate IPsec policy (AH or ESP, algorithms)<br>
+      2. Generate IPsec session keys<br>
+      3. Establish IPsec SA (unidirectional)<br>
+      4. Data can now flow securely</p>
+      <div class="feature-row" style="margin-top:1rem">
+        <span class="ftag green">Quick Mode</span>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="margin: 2rem 0 1.5rem; font-size:1.2rem;">Main Mode vs Aggressive Mode (Phase 1)</h3>
+  <table class="compare-table">
+    <tr>
+      <th>Feature</th>
+      <th>Main Mode</th>
+      <th>Aggressive Mode</th>
+    </tr>
+    <tr>
+      <td>Number of messages</td>
+      <td>6 messages</td>
+      <td>3 messages</td>
+    </tr>
+    <tr>
+      <td>Speed</td>
+      <td style="color:var(--muted)">Slower</td>
+      <td class="yes">✅ Faster</td>
+    </tr>
+    <tr>
+      <td>Security</td>
+      <td class="yes">✅ More secure (identity protected)</td>
+      <td class="warn">⚠️ Less secure (identity exposed)</td>
+    </tr>
+    <tr>
+      <td>Identity protection</td>
+      <td class="yes">✅ Identity encrypted</td>
+      <td class="no">❌ Identity sent in clear</td>
+    </tr>
+    <tr>
+      <td>Use case</td>
+      <td>Default — most deployments</td>
+      <td>When speed is critical</td>
+    </tr>
+  </table>
+
+  <div class="memory-card" style="margin-top:1.5rem">
+    <p><strong>Main Mode</strong> = 6 messages, SLOW but SAFE (identity hidden) → <strong>"Main = Maximum security"</strong><br>
+    <strong>Aggressive Mode</strong> = 3 messages, FAST but RISKY (identity exposed) → <strong>"Aggressive = Attacks possible"</strong><br><br>
+    <strong>IKE Phase 1</strong> = Build the secure tunnel<br>
+    <strong>IKE Phase 2</strong> = Build the data SA inside that tunnel</p>
+  </div>
+
+  <div class="highlight green" style="margin-top:1.5rem">
+    📝 <strong style="color:var(--green)">Security Association (SA):</strong> A one-way logical connection between two devices that defines the security parameters (algorithm, keys, lifetime). Since it's one-way, a full bidirectional IPsec connection requires TWO SAs (one each direction).
+  </div>
+</div>
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════ CH6: APPLICATIONS & LIMITATIONS ═══════════════════════════════════════ -->
+<div id="ch6" class="section">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <h2 class="section-title">Applications & <span class="accent2">Limitations</span></h2>
+  </div>
+
+  <div class="grid-2">
+    <div>
+      <h3 style="margin-bottom:1.5rem; font-size:1.2rem; color:var(--green)">✅ IPsec Applications</h3>
+      <div class="def-card green" style="margin-bottom:1rem">
+        <h3>🏢 Branch Office Connectivity</h3>
+        <p>Site-to-site IPsec tunnels connect branches to HQ — seamless resource sharing without expensive dedicated leased lines.</p>
+      </div>
+      <div class="def-card" style="margin-bottom:1rem">
+        <h3>🏠 Secure Remote Access</h3>
+        <p>IPsec VPNs give remote employees encrypted access to internal systems — replacing insecure plain SSH or unprotected RDP.</p>
+      </div>
+      <div class="def-card orange" style="margin-bottom:1rem">
+        <h3>🤝 Extranet & Intranet</h3>
+        <p><strong style="color:var(--accent2)">Extranet:</strong> Controlled secure comms with trusted external partners.<br>
+        <strong style="color:var(--accent2)">Intranet:</strong> Between internal business units on segmented networks.</p>
+      </div>
+      <div class="def-card purple">
+        <h3>🛒 E-Commerce Security</h3>
+        <p>Additional layer for payment systems & B2B transactions — supplements TLS at the network layer.</p>
+      </div>
+    </div>
+    <div>
+      <h3 style="margin-bottom:1.5rem; font-size:1.2rem; color:var(--red)">❌ IPsec Limitations</h3>
+      <div class="def-card" style="border-left-color:var(--red); margin-bottom:1rem">
+        <h3 style="color:var(--red)">⚡ Processor Overhead</h3>
+        <p>Crypto operations (encryption, decryption, integrity checking) impose significant CPU load. In high-throughput environments → reduced bandwidth + increased latency.<br><br>
+        <strong style="color:var(--accent)">Solution:</strong> Hardware acceleration (dedicated crypto chips)</p>
+      </div>
+      <div class="def-card" style="border-left-color:var(--red); margin-bottom:1rem">
+        <h3 style="color:var(--red)">🧩 Network Design Complexity</h3>
+        <p>Requires careful planning of Security Associations, key management, firewall rules, and NAT traversal.<br><br>
+        <strong style="color:var(--accent2)">Key ports/protocols to remember:</strong></p>
+        <div class="feature-row" style="margin-top:0.75rem">
+          <span class="ftag orange">UDP 500 — IKE</span>
+          <span class="ftag red">Protocol 50 — ESP</span>
+          <span class="ftag yellow">UDP 4500 — NAT-T</span>
+        </div>
+      </div>
+      <div class="highlight red">
+        ⚠️ <strong style="color:var(--red)">NAT Problem:</strong> IPsec and NAT don't play well together. NAT modifies IP headers, breaking AH integrity checks. Solution: <strong style="color:var(--accent)">NAT-T (NAT Traversal)</strong> — encapsulates IPsec in UDP port 4500.
+      </div>
+    </div>
+  </div>
+</div>
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════ QUICK REFERENCE ═══════════════════════════════════════ -->
+<div class="section" style="padding-top:3rem">
+  <div class="section-header">
+    <span class="section-num">⚡</span>
+    <h2 class="section-title">Quick <span class="accent">Reference</span> Cheatsheet</h2>
+  </div>
+
+  <div class="grid-2">
+    <div class="highlight">
+      <strong style="color:var(--accent)">🔢 NUMBERS TO MEMORIZE:</strong><br>
+      • DH key exchange = shared secret <strong style="color:var(--accent2)">never transmitted</strong><br>
+      • IKE Phase 1 Main Mode = <strong style="color:var(--accent2)">6</strong> messages<br>
+      • IKE Phase 1 Aggressive Mode = <strong style="color:var(--accent2)">3</strong> messages<br>
+      • IKE = Phase <strong style="color:var(--accent2)">1</strong> (secure channel) + Phase <strong style="color:var(--accent2)">2</strong> (IPsec SA)<br>
+      • UDP <strong style="color:var(--accent2)">500</strong> = IKE | Protocol <strong style="color:var(--accent2)">50</strong> = ESP | UDP <strong style="color:var(--accent2)">4500</strong> = NAT-T<br>
+      • SA is <strong style="color:var(--accent2)">unidirectional</strong> → need 2 SAs for bidirectional
+    </div>
+    <div class="highlight orange">
+      <strong style="color:var(--accent2)">🎯 EXAM CRITICAL FACTS:</strong><br>
+      • IPsec = Layer <strong style="color:var(--accent)">3</strong> (Network) | TLS = Layer <strong style="color:var(--accent)">7</strong> (Application)<br>
+      • AH = NO encryption | ESP = YES encryption<br>
+      • Tunnel Mode = preferred for VPNs (hides topology)<br>
+      • Transport Mode = host-to-host only<br>
+      • AES = gold standard encryption algorithm<br>
+      • HMAC-SHA-256 = current auth standard<br>
+      • ESP = most deployed protocol<br>
+      • Site-to-site = gateways handle crypto, not users
+    </div>
+  </div>
+</div>
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════ MCQ SECTION ═══════════════════════════════════════ -->
+<div id="mcq" class="section">
+  <div class="section-header">
+    <span class="section-num">🎯</span>
+    <h2 class="section-title">MCQ <span class="accent">Practice Quiz</span></h2>
+  </div>
+
+  <div class="mcq-score-bar">
+    <span style="color:var(--muted); font-size:0.85rem">SCORE</span>
+    <span class="score-display" id="scoreDisplay">0 / 0</span>
+    <button class="reset-btn" onclick="resetQuiz()">↺ RESET ALL</button>
+  </div>
+
+  <div class="mcq-container" id="quizContainer"></div>
+</div>
+
+<div style="text-align:center; padding: 4rem 2rem; font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:var(--muted)">
+  Network Security · Lecture 4 · VPN & IPsec · Dr. Abdalla Sayed<br>
+  <span style="color:var(--accent)">Good luck on your exam! 🚀</span>
+</div>
+
+<script>
+// ─── PROGRESS BAR ───
+window.addEventListener('scroll', () => {
+  const pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  
+  // TOC active
+  const sections = ['ch1','ch2','ch3','ch4','ch5','ch6','mcq'];
+  const dots = document.querySelectorAll('.toc-dot');
+  sections.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      if (rect.top <= 200 && rect.bottom > 200) {
+        dots.forEach(d => d.classList.remove('active'));
+        if(dots[i]) dots[i].classList.add('active');
+      }
+    }
+  });
+});
+
+function scrollTo(id) {
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+}
+
+// ─── MCQ DATA ───
+const questions = [
+  // Ch1 VPN Basics
+  {
+    q: "What does VPN stand for, and what is its primary purpose?",
+    opts: [
+      "Virtual Public Network — connects devices to the internet faster",
+      "Virtual Private Network — extends a private network across a public network securely",
+      "Verified Protected Network — verifies user identities before granting access",
+      "Virtual Protocol Network — a protocol suite for managing IP addresses"
+    ],
+    ans: 1,
+    explain: "VPN = Virtual Private Network. It creates a logical, secure channel over public infrastructure (internet) so devices communicate as if on a private network."
+  },
+  {
+    q: "When a user connects through a VPN, what IP address does the destination server see?",
+    opts: [
+      "The user's real IP address",
+      "A randomly generated temporary IP address",
+      "The VPN server's IP address",
+      "The ISP's gateway IP address"
+    ],
+    ans: 2,
+    explain: "The destination server sees the VPN server's IP address — not the client's real address. This provides IP masking and privacy."
+  },
+  {
+    q: "Which of the following is NOT one of the core VPN functions?",
+    opts: [
+      "Encryption",
+      "Integrity",
+      "IP Masking",
+      "Bandwidth boosting"
+    ],
+    ans: 3,
+    explain: "The 4 core VPN functions are: Encryption, Integrity, Authentication, and IP Masking. VPNs do NOT boost bandwidth — they often slightly reduce it due to encryption overhead."
+  },
+  // Ch2 VPN Types
+  {
+    q: "In which VPN type do end-user devices require NO special VPN configuration, as gateways handle everything?",
+    opts: [
+      "Remote Access VPN",
+      "Client-to-Site VPN",
+      "Site-to-Site VPN",
+      "Peer-to-Peer VPN"
+    ],
+    ans: 2,
+    explain: "In Site-to-Site VPN, gateways at each site handle encryption/decryption transparently. End-user devices don't need any special VPN software or configuration."
+  },
+  {
+    q: "Which VPN type is most commonly paired with Multi-Factor Authentication (MFA) and gives IT the most centralized control?",
+    opts: [
+      "Site-to-Site VPN",
+      "Remote Access VPN",
+      "Client-to-Site VPN",
+      "Extranet VPN"
+    ],
+    ans: 2,
+    explain: "Client-to-Site VPN is used in managed corporate environments where IT wants granular control. It's commonly paired with MFA and allows IT to enforce security policies at the gateway."
+  },
+  {
+    q: "An employee working from home uses Cisco AnyConnect to access company resources. Which VPN type is this?",
+    opts: [
+      "Site-to-Site VPN",
+      "Remote Access VPN",
+      "Extranet VPN",
+      "Tunnel Mode VPN"
+    ],
+    ans: 1,
+    explain: "Remote Access VPN is designed for individual users connecting to an org's private network from a remote location. Cisco AnyConnect, OpenVPN, and WireGuard are common implementations."
+  },
+  // Ch3 IPsec
+  {
+    q: "At which OSI layer does IPsec operate?",
+    opts: [
+      "Layer 7 — Application",
+      "Layer 4 — Transport",
+      "Layer 3 — Network",
+      "Layer 2 — Data Link"
+    ],
+    ans: 2,
+    explain: "IPsec operates at Layer 3 (Network Layer) of the OSI model. Unlike TLS which operates at Layer 7 (Application), IPsec protects ALL IP traffic transparently, regardless of application."
+  },
+  {
+    q: "Which IPsec security service uses sequence numbers to prevent attackers from re-sending captured packets?",
+    opts: [
+      "Confidentiality",
+      "Origin Authentication",
+      "Anti-Replay Protection",
+      "Key Management"
+    ],
+    ans: 2,
+    explain: "Anti-Replay Protection uses unique sequence numbers on each packet. The receiver tracks these numbers and rejects any duplicate or out-of-window packets."
+  },
+  {
+    q: "Which encryption algorithm is the current gold standard in IPsec and is hardware-accelerated?",
+    opts: [
+      "DES (56-bit)",
+      "3DES (168-bit)",
+      "SEAL",
+      "AES (128/192/256-bit)"
+    ],
+    ans: 3,
+    explain: "AES (Advanced Encryption Standard) with 128, 192, or 256-bit keys is the current gold standard. It's hardware-accelerated and widely deployed. DES is broken, 3DES is phasing out, SEAL is a niche stream cipher."
+  },
+  {
+    q: "In Diffie-Hellman key exchange, what is transmitted over the public/untrusted network?",
+    opts: [
+      "The actual symmetric encryption key",
+      "The shared secret directly",
+      "Public values that allow both parties to independently derive the shared secret",
+      "The encrypted private keys of each party"
+    ],
+    ans: 2,
+    explain: "DH exchanges public values. Both parties independently compute the SAME shared secret from these public values + their own private values. The secret itself is NEVER transmitted — an eavesdropper cannot derive it."
+  },
+  // Ch4 AH vs ESP
+  {
+    q: "Which IPsec protocol provides encryption of the data payload?",
+    opts: [
+      "AH — Authentication Header",
+      "ESP — Encapsulating Security Payload",
+      "Both AH and ESP equally",
+      "Neither — encryption is handled by IKE"
+    ],
+    ans: 1,
+    explain: "Only ESP (Encapsulating Security Payload) provides encryption. AH provides integrity and authentication but NO encryption — intercepted AH-only traffic is readable, just not modifiable."
+  },
+  {
+    q: "What is the main advantage of AH over ESP?",
+    opts: [
+      "AH encrypts both the payload AND the IP header",
+      "AH authenticates the outer IP header, providing full header integrity protection",
+      "AH is faster because it doesn't do any cryptographic operations",
+      "AH supports more encryption algorithms than ESP"
+    ],
+    ans: 1,
+    explain: "AH's key advantage is that it authenticates the OUTER IP header, providing full header integrity. ESP only partially protects the inner packet in tunnel mode. However, AH provides NO encryption."
+  },
+  {
+    q: "Which mode hides the internal network topology by encapsulating the entire original IP packet?",
+    opts: [
+      "Transport Mode",
+      "Tunnel Mode",
+      "Aggressive Mode",
+      "Quick Mode"
+    ],
+    ans: 1,
+    explain: "Tunnel Mode encapsulates the ENTIRE original IP packet (header + payload) inside a new outer packet. A new outer IP header is added showing gateway addresses — internal topology is hidden."
+  },
+  {
+    q: "In Transport Mode, what remains visible to intermediate routers?",
+    opts: [
+      "Only the encrypted payload",
+      "Nothing — everything is encrypted",
+      "The original IP header with source and destination addresses",
+      "Only the IPsec header"
+    ],
+    ans: 2,
+    explain: "In Transport Mode, the original IP header remains intact and VISIBLE. This means source and destination IP addresses of the actual communicating hosts can be seen — revealing network topology."
+  },
+  {
+    q: "Which IPsec protocol is the most commonly deployed in modern VPN implementations?",
+    opts: [
+      "AH — because it provides stronger header protection",
+      "ESP — because it provides encryption",
+      "Both are equally common",
+      "IKE — it handles data encryption directly"
+    ],
+    ans: 1,
+    explain: "ESP (Encapsulating Security Payload) is the most commonly deployed IPsec protocol because it provides encryption (confidentiality), which is essential for VPNs. AH is rare in modern deployments."
+  },
+  // Ch5 IKE
+  {
+    q: "What is the purpose of IKE Phase 1?",
+    opts: [
+      "To encrypt the actual user data traffic",
+      "To establish a secure, authenticated channel (ISAKMP SA) between peers",
+      "To negotiate the IPsec SAs for data traffic",
+      "To configure firewall rules for IPsec"
+    ],
+    ans: 1,
+    explain: "IKE Phase 1 creates a secure, authenticated channel called ISAKMP SA between the two peers. This secure channel is then used in Phase 2 to safely negotiate the actual IPsec SAs for data."
+  },
+  {
+    q: "Main Mode in IKE Phase 1 uses how many messages, and what is its key security advantage?",
+    opts: [
+      "3 messages — faster negotiation",
+      "6 messages — identity is encrypted (protected)",
+      "3 messages — identity is protected",
+      "6 messages — identity is sent in clear for speed"
+    ],
+    ans: 1,
+    explain: "Main Mode uses 6 messages and protects the identity of peers by encrypting it. Aggressive Mode uses only 3 messages but sends identity in clear — making it faster but less secure."
+  },
+  {
+    q: "A Security Association (SA) in IPsec is:",
+    opts: [
+      "A bidirectional connection between two devices",
+      "A certificate authority for managing keys",
+      "A one-way logical connection defining security parameters",
+      "A protocol for negotiating encryption algorithms"
+    ],
+    ans: 2,
+    explain: "An SA is UNIDIRECTIONAL (one-way). It defines security parameters (algorithm, keys, lifetime) for one direction of traffic. A full bidirectional IPsec connection requires TWO SAs — one in each direction."
+  },
+  // Ch6 Apps & Limits
+  {
+    q: "IPsec's Anti-replay protection using NAT can cause issues. What is the solution?",
+    opts: [
+      "Use AH instead of ESP",
+      "Use Transport Mode instead of Tunnel Mode",
+      "Use NAT-T (NAT Traversal) which encapsulates IPsec in UDP port 4500",
+      "Disable Anti-replay protection when NAT is present"
+    ],
+    ans: 2,
+    explain: "NAT modifies IP headers, breaking AH integrity checks and causing issues with ESP. NAT-T (NAT Traversal) solves this by encapsulating IPsec packets in UDP port 4500, allowing them to traverse NAT devices."
+  },
+  {
+    q: "What port does IKE use for key exchange?",
+    opts: [
+      "TCP 443",
+      "UDP 500",
+      "UDP 4500",
+      "Protocol 50"
+    ],
+    ans: 1,
+    explain: "IKE uses UDP port 500. NAT-T uses UDP port 4500. ESP is Protocol 50 (not a port). TCP 443 is HTTPS."
+  },
+  {
+    q: "What is the difference between an Extranet VPN and an Intranet VPN?",
+    opts: [
+      "Extranet = faster, Intranet = more secure",
+      "Extranet connects trusted external partners, Intranet connects internal business units",
+      "Extranet uses AH, Intranet uses ESP",
+      "Extranet = site-to-site, Intranet = remote access"
+    ],
+    ans: 1,
+    explain: "Extranet VPN = controlled secure communication with trusted EXTERNAL partners. Intranet VPN = secure communication between internal business units on segmented internal networks."
+  }
+];
+
+let score = 0;
+let answered = 0;
+const userAnswers = {};
+
+function buildQuiz() {
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = '';
+  questions.forEach((q, qi) => {
+    const card = document.createElement('div');
+    card.className = 'mcq-card';
+    card.id = `q${qi}`;
+    
+    const letters = ['A','B','C','D'];
+    let optsHTML = q.opts.map((opt, oi) => `
+      <button class="mcq-opt" onclick="answer(${qi}, ${oi})" id="q${qi}o${oi}">
+        <span class="mcq-letter">${letters[oi]}</span>
+        ${opt}
+      </button>
+    `).join('');
+
+    card.innerHTML = `
+      <div class="mcq-q"><span class="qnum">Q${qi+1}.</span>${q.q}</div>
+      <div class="mcq-options">${optsHTML}</div>
+      <div class="mcq-explain" id="exp${qi}">✅ ${q.explain}</div>
+    `;
+    container.appendChild(card);
+  });
+  updateScore();
+}
+
+function answer(qi, chosen) {
+  if (userAnswers[qi] !== undefined) return;
+  userAnswers[qi] = chosen;
+  answered++;
+  
+  const correct = questions[qi].ans;
+  const chosenBtn = document.getElementById(`q${qi}o${chosen}`);
+  const correctBtn = document.getElementById(`q${qi}o${correct}`);
+  
+  // Disable all options
+  questions[qi].opts.forEach((_, oi) => {
+    const btn = document.getElementById(`q${qi}o${oi}`);
+    btn.style.pointerEvents = 'none';
+  });
+  
+  if (chosen === correct) {
+    score++;
+    chosenBtn.classList.add('correct');
+  } else {
+    chosenBtn.classList.add('wrong');
+    correctBtn.classList.add('correct');
+  }
+  
+  document.getElementById(`exp${qi}`).style.display = 'block';
+  updateScore();
+}
+
+function updateScore() {
+  const total = questions.length;
+  document.getElementById('scoreDisplay').textContent = `${score} / ${answered} answered (${total} total)`;
+}
+
+function resetQuiz() {
+  score = 0;
+  answered = 0;
+  Object.keys(userAnswers).forEach(k => delete userAnswers[k]);
+  buildQuiz();
+}
+
+buildQuiz();
+</script>
+</body>
+</html>
