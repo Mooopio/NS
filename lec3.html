@@ -1,0 +1,1986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cryptography — Network Security Study Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #05080f;
+    --surface: #0c1120;
+    --surface2: #111827;
+    --border: #1e2d45;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --danger: #ef4444;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --glow: 0 0 30px rgba(0,212,255,0.15);
+    --card-glow: 0 0 40px rgba(0,212,255,0.05);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* Animated background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    position: relative;
+    text-align: center;
+    padding: 60px 20px 40px;
+    z-index: 1;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-badge {
+    display: inline-block;
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.3);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    padding: 6px 18px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  header h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+
+  header p {
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(5,8,15,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  nav::-webkit-scrollbar { display: none; }
+
+  .nav-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    padding: 14px 18px;
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+
+  .nav-btn:hover, .nav-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ===== MAIN LAYOUT ===== */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px 100px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section { display: none; animation: fadeIn 0.4s ease; }
+  .section.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== CHAPTER HEADER ===== */
+  .chapter-header {
+    margin-bottom: 32px;
+    padding: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .chapter-header::before {
+    content: attr(data-num);
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Space Mono', monospace;
+    font-size: 6rem;
+    font-weight: 700;
+    color: rgba(0,212,255,0.05);
+    line-height: 1;
+  }
+
+  .chapter-header h2 {
+    font-weight: 800;
+    font-size: 1.6rem;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+
+  .chapter-header p {
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    position: relative;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .card:hover {
+    border-color: rgba(0,212,255,0.3);
+    box-shadow: var(--card-glow);
+  }
+
+  .card h3 {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--accent);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .card h3 .icon {
+    font-size: 1.1rem;
+  }
+
+  .card p, .card li {
+    color: #cbd5e1;
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  .card ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .card ul li {
+    padding: 5px 0;
+    padding-left: 18px;
+    position: relative;
+  }
+
+  .card ul li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* ===== GRID ===== */
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-bottom: 20px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px; }
+
+  /* ===== COLOR VARIANTS ===== */
+  .card.green { border-left: 3px solid var(--accent3); }
+  .card.green h3 { color: var(--accent3); }
+  .card.purple { border-left: 3px solid var(--accent2); }
+  .card.purple h3 { color: #a78bfa; }
+  .card.yellow { border-left: 3px solid var(--accent4); }
+  .card.yellow h3 { color: var(--accent4); }
+  .card.red { border-left: 3px solid var(--danger); }
+  .card.red h3 { color: var(--danger); }
+  .card.cyan { border-left: 3px solid var(--accent); }
+
+  /* ===== HIGHLIGHT BOX ===== */
+  .highlight {
+    background: rgba(0,212,255,0.07);
+    border: 1px solid rgba(0,212,255,0.25);
+    border-radius: 2px;
+    padding: 18px 22px;
+    margin: 16px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    line-height: 1.8;
+  }
+
+  .highlight.green-hl {
+    background: rgba(16,185,129,0.07);
+    border-color: rgba(16,185,129,0.3);
+    color: var(--accent3);
+  }
+
+  .highlight.yellow-hl {
+    background: rgba(245,158,11,0.07);
+    border-color: rgba(245,158,11,0.3);
+    color: var(--accent4);
+  }
+
+  .highlight.red-hl {
+    background: rgba(239,68,68,0.07);
+    border-color: rgba(239,68,68,0.3);
+    color: var(--danger);
+  }
+
+  /* ===== TAG ===== */
+  .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin: 3px 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .tag.blue { background: rgba(0,212,255,0.1); color: var(--accent); border: 1px solid rgba(0,212,255,0.3); }
+  .tag.green { background: rgba(16,185,129,0.1); color: var(--accent3); border: 1px solid rgba(16,185,129,0.3); }
+  .tag.red { background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
+  .tag.yellow { background: rgba(245,158,11,0.1); color: var(--accent4); border: 1px solid rgba(245,158,11,0.3); }
+  .tag.purple { background: rgba(124,58,237,0.1); color: #a78bfa; border: 1px solid rgba(124,58,237,0.3); }
+
+  /* ===== COMPARISON TABLE ===== */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 0.875rem;
+  }
+
+  .compare-table th {
+    background: rgba(0,212,255,0.1);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    padding: 12px 16px;
+    text-align: left;
+    border: 1px solid var(--border);
+    text-transform: uppercase;
+  }
+
+  .compare-table td {
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    color: #cbd5e1;
+    vertical-align: top;
+  }
+
+  .compare-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+  .compare-table tr:hover td { background: rgba(0,212,255,0.03); }
+
+  /* ===== FLOW STEPS ===== */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 16px 0;
+  }
+
+  .flow-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px 20px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    position: relative;
+  }
+
+  .flow-step:last-child { border-bottom: 1px solid var(--border); }
+
+  .flow-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 29px;
+    width: 2px;
+    height: 10px;
+    background: var(--accent);
+    z-index: 2;
+  }
+
+  .step-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #000;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .step-content h4 { font-size: 0.9rem; color: #fff; margin-bottom: 4px; }
+  .step-content p { font-size: 0.83rem; color: var(--muted); line-height: 1.5; }
+
+  /* ===== VS SPLIT ===== */
+  .vs-container {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0;
+    align-items: stretch;
+    margin: 16px 0 20px;
+  }
+
+  .vs-side {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px;
+  }
+
+  .vs-side h4 {
+    font-weight: 700;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+  }
+
+  .vs-side.left h4 { color: var(--accent); }
+  .vs-side.right h4 { color: var(--accent2); }
+  .vs-side.right { border-left: none; }
+
+  .vs-divider {
+    background: var(--surface2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 14px;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .vs-side ul { list-style: none; }
+  .vs-side ul li { font-size: 0.83rem; color: #94a3b8; padding: 4px 0; padding-left: 14px; position: relative; }
+  .vs-side.left ul li::before { content: '▸'; position: absolute; left: 0; color: var(--accent); font-size: 10px; }
+  .vs-side.right ul li::before { content: '▸'; position: absolute; left: 0; color: #a78bfa; font-size: 10px; }
+
+  /* ===== MEMORY TRICK ===== */
+  .memory-trick {
+    background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(245,158,11,0.03));
+    border: 1px solid rgba(245,158,11,0.3);
+    padding: 18px 22px;
+    margin: 14px 0;
+    position: relative;
+  }
+
+  .memory-trick::before {
+    content: '💡 TRICK';
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--accent4);
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+
+  .memory-trick p { color: #fcd34d; font-size: 0.88rem; }
+
+  /* ===== WARNING ===== */
+  .warn-box {
+    background: rgba(239,68,68,0.07);
+    border: 1px solid rgba(239,68,68,0.3);
+    padding: 14px 20px;
+    margin: 14px 0;
+    font-size: 0.875rem;
+    color: #fca5a5;
+  }
+
+  .warn-box::before { content: '⚠ '; font-weight: 700; }
+
+  /* ===== MCQ SECTION ===== */
+  .mcq-section { margin-top: 40px; }
+
+  .mcq-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+    padding: 20px 24px;
+    background: rgba(124,58,237,0.08);
+    border: 1px solid rgba(124,58,237,0.25);
+  }
+
+  .mcq-header h2 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #a78bfa;
+  }
+
+  .mcq-header p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .mcq-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px 28px;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+
+  .mcq-question {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #fff;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  .mcq-num {
+    display: inline-block;
+    background: rgba(124,58,237,0.2);
+    color: #a78bfa;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(124,58,237,0.3);
+  }
+
+  .mcq-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .mcq-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 0.875rem;
+    color: #94a3b8;
+    text-align: left;
+    width: 100%;
+  }
+
+  .mcq-option:hover { border-color: rgba(124,58,237,0.4); color: #e2e8f0; }
+
+  .mcq-option.selected-correct {
+    background: rgba(16,185,129,0.1);
+    border-color: var(--accent3);
+    color: #6ee7b7;
+  }
+
+  .mcq-option.selected-wrong {
+    background: rgba(239,68,68,0.1);
+    border-color: var(--danger);
+    color: #fca5a5;
+  }
+
+  .mcq-option.reveal-correct {
+    background: rgba(16,185,129,0.07);
+    border-color: rgba(16,185,129,0.4);
+    color: #6ee7b7;
+  }
+
+  .opt-letter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    background: rgba(124,58,237,0.15);
+    border: 1px solid rgba(124,58,237,0.3);
+    color: #a78bfa;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .mcq-explanation {
+    display: none;
+    margin-top: 14px;
+    padding: 14px 16px;
+    background: rgba(0,212,255,0.05);
+    border-left: 3px solid var(--accent);
+    font-size: 0.85rem;
+    color: #94a3b8;
+    line-height: 1.6;
+  }
+
+  .mcq-explanation.show { display: block; }
+  .mcq-explanation strong { color: var(--accent); }
+
+  .mcq-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .btn {
+    padding: 8px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid;
+    text-transform: uppercase;
+    transition: all 0.15s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+  }
+
+  .btn-primary:hover { background: #00b8d9; border-color: #00b8d9; }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border-color: var(--border);
+  }
+
+  .btn-ghost:hover { color: #fff; border-color: #fff; }
+
+  /* ===== SCORE PANEL ===== */
+  .score-panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .score-display {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .score-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* ===== PROGRESS BAR ===== */
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    margin-bottom: 8px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.4s ease;
+  }
+
+  /* ===== FORMULA / CODE ===== */
+  .formula {
+    font-family: 'Space Mono', monospace;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 12px 18px;
+    font-size: 0.85rem;
+    color: var(--accent);
+    margin: 10px 0;
+    display: block;
+  }
+
+  /* ===== DIVIDER ===== */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 28px 0;
+  }
+
+  /* ===== CHECKLIST ===== */
+  .checklist li {
+    padding: 7px 0;
+    padding-left: 24px;
+    position: relative;
+    font-size: 0.875rem;
+    color: #94a3b8;
+    list-style: none;
+  }
+
+  .checklist li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--accent3);
+    font-weight: 700;
+  }
+
+  .checklist.danger li::before { content: '✗'; color: var(--danger); }
+
+  /* ===== ALGO BADGE ===== */
+  .algo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border: 1px solid;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 4px;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 600px) {
+    .vs-container { grid-template-columns: 1fr; }
+    .vs-divider { padding: 12px; }
+    .vs-side.right { border-left: 1px solid var(--border); border-top: none; }
+    .chapter-header::before { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-badge">Network Security · Lecture 3</div>
+  <h1>Introduction to Cryptography</h1>
+  <p>Dr. Abdalla Sayed · Complete Study Reference · All Chapters Covered</p>
+</header>
+
+<nav id="mainNav">
+  <button class="nav-btn active" onclick="showSection('ch1')">Ch.1 Foundations</button>
+  <button class="nav-btn" onclick="showSection('ch2')">Ch.2 Symmetric</button>
+  <button class="nav-btn" onclick="showSection('ch3')">Ch.3 Asymmetric</button>
+  <button class="nav-btn" onclick="showSection('ch4')">Ch.4 Hash & Integrity</button>
+  <button class="nav-btn" onclick="showSection('ch5')">Ch.5 Signatures</button>
+  <button class="nav-btn" onclick="showSection('ch6')">Ch.6 Real World</button>
+  <button class="nav-btn" onclick="showSection('compare')">📊 Master Table</button>
+  <button class="nav-btn" onclick="showSection('mcq')">🧠 MCQ Quiz</button>
+</nav>
+
+<main>
+
+<!-- ===== CHAPTER 1 ===== -->
+<div id="ch1" class="section active">
+  <div class="chapter-header" data-num="01">
+    <h2>Chapter 1: Foundations of Cryptography</h2>
+    <p>Core definitions · Security goals · Key principles</p>
+  </div>
+
+  <div class="card cyan">
+    <h3><span class="icon">🔐</span> What Is Cryptography?</h3>
+    <p>The science of securing information by transforming it into an unreadable form — ensuring only authorized parties can access the original content.</p>
+    <div class="highlight" style="margin-top:14px;">
+      Plaintext (readable data)  →  [Algorithm + Key]  →  Ciphertext (scrambled output)
+    </div>
+    <p style="margin-top:10px;">Protects data during <strong>storage</strong> and <strong>transmission</strong>. Enables trust between parties who've never met. Without cryptography → no e-commerce, no banking, no private messaging.</p>
+  </div>
+
+  <div class="card yellow">
+    <h3><span class="icon">⚠️</span> Why Cryptography? — The Threat Landscape</h3>
+    <p>Every piece of data (email, password, payment) travels through <strong>untrusted networks</strong>. Attackers can:</p>
+    <div class="grid-3" style="margin-top:14px;">
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:14px;">
+        <div style="color:var(--danger);font-weight:700;margin-bottom:6px;font-size:0.85rem;">INTERCEPT</div>
+        <div style="font-size:0.82rem;color:var(--muted);">Eavesdrop on messages and steal sensitive data in transit</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:14px;">
+        <div style="color:var(--danger);font-weight:700;margin-bottom:6px;font-size:0.85rem;">MODIFY</div>
+        <div style="font-size:0.82rem;color:var(--muted);">Alter message contents without sender or receiver knowing</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:14px;">
+        <div style="color:var(--danger);font-weight:700;margin-bottom:6px;font-size:0.85rem;">IMPERSONATE</div>
+        <div style="font-size:0.82rem;color:var(--muted);">Pretend to be a trusted party to deceive victims</div>
+      </div>
+    </div>
+    <div class="warn-box">Cryptography reduces risk — it is NOT "magic immunity." Proper implementation, key management, and protocol design are equally critical.</div>
+  </div>
+
+  <div class="card green">
+    <h3><span class="icon">🎯</span> The 4 Security Goals — CIA + Non-Repudiation</h3>
+    <div class="grid-2">
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:16px;">
+        <div style="color:var(--accent);font-family:'Space Mono',monospace;font-size:0.8rem;font-weight:700;margin-bottom:6px;">CONFIDENTIALITY</div>
+        <div style="font-size:0.83rem;color:#94a3b8;">Data remains secret & accessible only to authorized parties. Encryption converts readable data to ciphertext adversaries can't interpret.</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:16px;">
+        <div style="color:var(--accent3);font-family:'Space Mono',monospace;font-size:0.8rem;font-weight:700;margin-bottom:6px;">INTEGRITY</div>
+        <div style="font-size:0.83rem;color:#94a3b8;">Guarantees data has NOT been altered in transit or storage. Hash functions and MACs detect even single-bit unauthorized changes.</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:16px;">
+        <div style="color:var(--accent4);font-family:'Space Mono',monospace;font-size:0.8rem;font-weight:700;margin-bottom:6px;">AUTHENTICATION</div>
+        <div style="font-size:0.83rem;color:#94a3b8;">Verifies the IDENTITY of communicating parties. Digital certificates & signatures prove a message came from the claimed sender.</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:16px;">
+        <div style="color:#a78bfa;font-family:'Space Mono',monospace;font-size:0.8rem;font-weight:700;margin-bottom:6px;">NON-REPUDIATION</div>
+        <div style="font-size:0.83rem;color:#94a3b8;">Prevents a sender from DENYING they sent a message. Digital signatures create irrefutable proof tied to the signer's private key.</div>
+      </div>
+    </div>
+    <div class="memory-trick"><p>Remember: <strong>C.I.A.N.</strong> — Confidentiality, Integrity, Authentication, Non-repudiation. Think "CIA operatives Never deny their missions."</p></div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">📚</span> Core Terminology</h3>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;">
+      <div style="padding:12px 16px;background:var(--surface2);border:1px solid var(--border);display:flex;gap:16px;align-items:flex-start;">
+        <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--accent);min-width:100px;padding-top:2px;">ENCRYPTION</span>
+        <span style="font-size:0.875rem;color:#94a3b8;">Converting plaintext → ciphertext using an algorithm + key. Makes data unreadable to unauthorized parties.</span>
+      </div>
+      <div style="padding:12px 16px;background:var(--surface2);border:1px solid var(--border);display:flex;gap:16px;align-items:flex-start;">
+        <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--accent3);min-width:100px;padding-top:2px;">DECRYPTION</span>
+        <span style="font-size:0.875rem;color:#94a3b8;">Reverse process — transforming ciphertext back into plaintext using the correct key. Only authorized key holders can do this.</span>
+      </div>
+      <div style="padding:12px 16px;background:var(--surface2);border:1px solid var(--border);display:flex;gap:16px;align-items:flex-start;">
+        <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--danger);min-width:100px;padding-top:2px;">CLEARTEXT</span>
+        <span style="font-size:0.875rem;color:#94a3b8;">Data stored/transmitted WITHOUT encryption. Fully exposed and vulnerable to interception — a critical security risk.</span>
+      </div>
+      <div style="padding:12px 16px;background:var(--surface2);border:1px solid var(--border);display:flex;gap:16px;align-items:flex-start;">
+        <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--accent4);min-width:100px;padding-top:2px;">PLAINTEXT</span>
+        <span style="font-size:0.875rem;color:#94a3b8;">The original readable data BEFORE encryption (or AFTER decryption).</span>
+      </div>
+      <div style="padding:12px 16px;background:var(--surface2);border:1px solid var(--border);display:flex;gap:16px;align-items:flex-start;">
+        <span style="font-family:'Space Mono',monospace;font-size:11px;color:#a78bfa;min-width:100px;padding-top:2px;">CIPHERTEXT</span>
+        <span style="font-size:0.875rem;color:#94a3b8;">The scrambled, unreadable output AFTER encryption.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card purple">
+    <h3><span class="icon">🔑</span> Kerckhoffs' Principle — The Big Idea</h3>
+    <div class="highlight" style="background:rgba(124,58,237,0.08);border-color:rgba(124,58,237,0.3);color:#a78bfa;">
+      "The security of a system should depend SOLELY on the secrecy of the KEY — NOT on hiding the algorithm."
+    </div>
+    <div class="grid-3" style="margin-top:14px;">
+      <div style="text-align:center;padding:16px;background:var(--surface2);border:1px solid var(--border);">
+        <div style="font-size:1.5rem;margin-bottom:6px;">🔓</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);margin-bottom:4px;">ALGORITHM</div>
+        <div style="font-size:0.8rem;color:var(--muted);">Public & peer-reviewed (AES, RSA, SHA-256). Strength proven by public scrutiny.</div>
+      </div>
+      <div style="text-align:center;padding:16px;background:var(--surface2);border:1px solid var(--border);">
+        <div style="font-size:1.5rem;margin-bottom:6px;">🗝️</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent3);margin-bottom:4px;">KEY</div>
+        <div style="font-size:0.8rem;color:var(--muted);">SECRET. Strength comes from secrecy & randomness. PROTECT THIS.</div>
+      </div>
+      <div style="text-align:center;padding:16px;background:var(--surface2);border:1px solid var(--border);">
+        <div style="font-size:1.5rem;margin-bottom:6px;">🛡️</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent4);margin-bottom:4px;">SECURITY</div>
+        <div style="font-size:0.8rem;color:var(--muted);">Strong keys + proven algorithms = security. Protect keys, not algorithms.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🎭</span> Steganography vs. Cryptography</h3>
+    <div class="vs-container">
+      <div class="vs-side left">
+        <h4>🔐 Cryptography</h4>
+        <ul>
+          <li>Makes data <strong>UNREADABLE</strong></li>
+          <li>Existence of message IS known</li>
+          <li>Content is NOT known</li>
+          <li>Interceptor sees ciphertext but can't understand it</li>
+          <li>Example: AES-encrypted file</li>
+        </ul>
+      </div>
+      <div class="vs-divider">VS</div>
+      <div class="vs-side right">
+        <h4>👻 Steganography</h4>
+        <ul>
+          <li>Makes data <strong>INVISIBLE</strong></li>
+          <li>Hides data inside other media</li>
+          <li>Interceptor doesn't know message exists</li>
+          <li>Hides in images, audio, video pixel data</li>
+          <li>Example: text hidden in image pixels</li>
+        </ul>
+      </div>
+    </div>
+    <div class="memory-trick"><p>Crypto = scramble the message. Stego = hide the message. They CAN be combined for layered security.</p></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 2 ===== -->
+<div id="ch2" class="section">
+  <div class="chapter-header" data-num="02">
+    <h2>Chapter 2: Symmetric Encryption</h2>
+    <p>Shared key · Block vs stream ciphers · Key distribution problem</p>
+  </div>
+
+  <div class="card cyan">
+    <h3><span class="icon">🔁</span> Symmetric Encryption: The Concept</h3>
+    <div class="highlight">
+      Same Key → Encryption &amp; Decryption. Both sender and receiver MUST possess the shared secret BEFORE communicating.
+    </div>
+    <div class="grid-3" style="margin-top:14px;">
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:16px;">
+        <div style="color:var(--accent3);font-weight:700;margin-bottom:6px;font-size:0.85rem;">⚡ SPEED</div>
+        <div style="font-size:0.82rem;color:#94a3b8;">Extremely fast & efficient. Ideal for encrypting large volumes of data — files, disk partitions, network traffic.</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:16px;">
+        <div style="color:var(--accent);font-weight:700;margin-bottom:6px;font-size:0.85rem;">🧮 SIMPLICITY</div>
+        <div style="font-size:0.82rem;color:#94a3b8;">Mathematical operations (substitution, permutation, XOR) are computationally lightweight vs asymmetric.</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:16px;">
+        <div style="color:var(--danger);font-weight:700;margin-bottom:6px;font-size:0.85rem;">❓ CHALLENGE</div>
+        <div style="font-size:0.82rem;color:#94a3b8;">How do both parties securely get the same key? Intercepted key = entire system compromised.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card green">
+    <h3><span class="icon">📋</span> Symmetric Algorithms Comparison</h3>
+    <table class="compare-table" style="margin-top:10px;">
+      <thead>
+        <tr>
+          <th>Algorithm</th>
+          <th>Key Size</th>
+          <th>Status</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:var(--accent3);">AES</strong></td>
+          <td>128, 192, or 256-bit</td>
+          <td><span class="tag green">✅ STANDARD</span></td>
+          <td>Modern gold standard. NIST 2001. Used in TLS, disk encryption. Most secure & efficient.</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--danger);">DES</strong></td>
+          <td>56-bit</td>
+          <td><span class="tag red">❌ BROKEN</span></td>
+          <td>Broken by brute force in 1999. NEVER use for security. Legacy only.</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--accent4);">3DES</strong></td>
+          <td>168-bit effective</td>
+          <td><span class="tag yellow">⚠ PHASING OUT</span></td>
+          <td>Applies DES 3 times. Successor to DES. Being phased out.</td>
+        </tr>
+        <tr>
+          <td><strong>Blowfish</strong></td>
+          <td>Up to 448-bit</td>
+          <td><span class="tag blue">LEGACY</span></td>
+          <td>Variable-length keys. Bruce Schneier. Unbroken but less common in modern deployments.</td>
+        </tr>
+        <tr>
+          <td><strong>Twofish</strong></td>
+          <td>128, 192, 256-bit</td>
+          <td><span class="tag blue">LEGACY</span></td>
+          <td>AES finalist. Unbroken. Bruce Schneier. Less common in modern systems.</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="memory-trick"><p>Remember: AES = ✅ Go. DES/3DES = ❌ Old. Blowfish/Twofish = Both by Schneier, both not common now.</p></div>
+  </div>
+
+  <div class="card yellow">
+    <h3><span class="icon">🚧</span> The Key Distribution Problem</h3>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Interception Risk</h4>
+          <p>If an attacker intercepts the key during exchange, they can decrypt EVERY future message — neither party may know the key was compromised.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Scalability Problem</h4>
+          <p>In a network of <strong>n</strong> users, you need <strong>n(n-1)/2</strong> unique keys. For 1,000 users → nearly 500,000 keys to manage securely.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>The Solution</h4>
+          <p>This problem motivated the invention of <strong>asymmetric cryptography</strong> and <strong>hybrid encryption</strong> systems.</p>
+        </div>
+      </div>
+    </div>
+    <code class="formula">Keys needed for n users = n × (n-1) / 2</code>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">📦</span> Block Ciphers vs. Stream Ciphers</h3>
+    <div class="vs-container">
+      <div class="vs-side left">
+        <h4>📦 Block Ciphers</h4>
+        <ul>
+          <li>Encrypt data in <strong>fixed-size blocks</strong> (e.g., 128-bit for AES)</li>
+          <li>Same algorithm applied to each block</li>
+          <li>Requires <strong>padding</strong> if data doesn't fill final block</li>
+          <li>Dominant in modern systems</li>
+          <li>Examples: <strong>AES, DES, Blowfish</strong></li>
+        </ul>
+      </div>
+      <div class="vs-divider">VS</div>
+      <div class="vs-side right">
+        <h4>🌊 Stream Ciphers</h4>
+        <ul>
+          <li>Encrypt <strong>one bit/byte at a time</strong> continuously</li>
+          <li>Generates pseudorandom keystream XORed with plaintext</li>
+          <li>Ideal for <strong>real-time data</strong> like voice/video</li>
+          <li>No padding required</li>
+          <li>Examples: <strong>ChaCha20, RC4 (deprecated)</strong></li>
+        </ul>
+      </div>
+    </div>
+    <div class="warn-box">CRITICAL: Correct usage of Initialization Vectors (IVs) and nonces is essential for BOTH types. Reusing an IV or nonce can CATASTROPHICALLY break security.</div>
+  </div>
+
+  <div class="card green">
+    <h3><span class="icon">🖥️</span> Symmetric Encryption — Real-World Use Cases</h3>
+    <div class="grid-3">
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:16px;">
+        <div style="color:var(--accent);font-weight:700;margin-bottom:8px;font-size:0.85rem;">💾 FILE & DISK ENCRYPTION</div>
+        <div style="font-size:0.82rem;color:#94a3b8;">BitLocker, FileVault, VeraCrypt use AES to encrypt entire drives. Protected even if physical device is stolen.</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:16px;">
+        <div style="color:var(--accent3);font-weight:700;margin-bottom:8px;font-size:0.85rem;">🔒 VPN TUNNELS</div>
+        <div style="font-size:0.82rem;color:#94a3b8;">IPSec, WireGuard establish encrypted tunnels. All traffic between endpoints protected from eavesdropping on public networks.</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:16px;">
+        <div style="color:var(--accent4);font-weight:700;margin-bottom:8px;font-size:0.85rem;">🗄️ DATABASE ENCRYPTION</div>
+        <div style="font-size:0.82rem;color:#94a3b8;">Credit cards, health records, personal info encrypted at rest using symmetric keys managed by app or cloud provider.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 3 ===== -->
+<div id="ch3" class="section">
+  <div class="chapter-header" data-num="03">
+    <h2>Chapter 3: Asymmetric Encryption</h2>
+    <p>Public/Private key pairs · RSA · ECC · Diffie-Hellman · Hybrid encryption</p>
+  </div>
+
+  <div class="card cyan">
+    <h3><span class="icon">🗝️</span> Asymmetric Encryption: The Concept</h3>
+    <p>A <strong>revolutionary breakthrough</strong> that solved the key distribution problem. Instead of one shared key, each party generates a <strong>mathematically linked key pair</strong>:</p>
+    <div class="grid-2" style="margin-top:14px;">
+      <div style="background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.3);padding:20px;">
+        <div style="color:var(--accent);font-family:'Space Mono',monospace;font-size:0.8rem;font-weight:700;margin-bottom:8px;">🌐 PUBLIC KEY</div>
+        <div style="font-size:0.875rem;color:#94a3b8;">Shared openly with the world. Anyone can use it to ENCRYPT messages intended for the key owner.</div>
+      </div>
+      <div style="background:rgba(124,58,237,0.05);border:1px solid rgba(124,58,237,0.3);padding:20px;">
+        <div style="color:#a78bfa;font-family:'Space Mono',monospace;font-size:0.8rem;font-weight:700;margin-bottom:8px;">🔒 PRIVATE KEY</div>
+        <div style="font-size:0.875rem;color:#94a3b8;">Kept STRICTLY SECRET. Only the owner can use it to DECRYPT messages or CREATE digital signatures.</div>
+      </div>
+    </div>
+    <div class="highlight" style="margin-top:14px;">
+      Enables secure communication WITHOUT prior key exchange. Forms the basis of digital signatures, certificates, and HTTPS.
+    </div>
+  </div>
+
+  <div class="card green">
+    <h3><span class="icon">↔️</span> How Public & Private Keys Are Used — Dual Roles</h3>
+    <div class="grid-2">
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:18px;">
+        <div style="color:var(--accent);font-weight:700;margin-bottom:10px;font-size:0.85rem;">🔐 CONFIDENTIALITY FLOW</div>
+        <div class="flow" style="gap:0;">
+          <div style="padding:10px 14px;background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.2);font-size:0.82rem;color:#94a3b8;border-bottom:none;">Encrypt with <strong style="color:var(--accent);">recipient's PUBLIC key</strong></div>
+          <div style="padding:10px 14px;background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.2);font-size:0.82rem;color:#94a3b8;">Only <strong style="color:var(--accent);">recipient's PRIVATE key</strong> can decrypt</div>
+        </div>
+        <div style="font-size:0.8rem;color:var(--muted);margin-top:10px;">→ Ensures only intended party can read message</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:18px;">
+        <div style="color:#a78bfa;font-weight:700;margin-bottom:10px;font-size:0.85rem;">✍️ AUTHENTICITY FLOW</div>
+        <div class="flow" style="gap:0;">
+          <div style="padding:10px 14px;background:rgba(124,58,237,0.05);border:1px solid rgba(124,58,237,0.2);font-size:0.82rem;color:#94a3b8;border-bottom:none;">Sign with <strong style="color:#a78bfa;">sender's PRIVATE key</strong></div>
+          <div style="padding:10px 14px;background:rgba(124,58,237,0.05);border:1px solid rgba(124,58,237,0.2);font-size:0.82rem;color:#94a3b8;">Anyone with <strong style="color:#a78bfa;">sender's PUBLIC key</strong> can verify</div>
+        </div>
+        <div style="font-size:0.8rem;color:var(--muted);margin-top:10px;">→ Proves message came from claimed sender & wasn't altered</div>
+      </div>
+    </div>
+    <div class="memory-trick"><p><strong>Encrypt → use receiver's PUBLIC key.</strong> <strong>Sign → use sender's PRIVATE key.</strong> Think: "PUBLIC locks the box, PRIVATE signs the letter."</p></div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">⚙️</span> Asymmetric Algorithms</h3>
+    <table class="compare-table" style="margin-top:10px;">
+      <thead>
+        <tr><th>Algorithm</th><th>Based On</th><th>Key Size</th><th>Use</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:var(--accent);">RSA</strong></td>
+          <td>Difficulty of <strong>factoring large primes</strong></td>
+          <td>2048–4096 bits</td>
+          <td>Encryption + Signatures</td>
+          <td>Most widely deployed. Invented 1977. Foundation of TLS/SSL.</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--accent3);">ECC</strong></td>
+          <td>Elliptic curve <strong>discrete logarithm</strong></td>
+          <td>256-bit (≈3072-bit RSA)</td>
+          <td>Encryption + Signatures</td>
+          <td>Same security as RSA with MUCH smaller keys. Preferred for mobile & IoT.</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--accent4);">Diffie-Hellman</strong></td>
+          <td>Discrete logarithm</td>
+          <td>Varies</td>
+          <td>Key Exchange ONLY</td>
+          <td>NOT encryption. Creates shared secret over insecure channel. Basis for Perfect Forward Secrecy in TLS.</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="memory-trick"><p>RSA = Rivet, Shamir, Adleman (inventors). ECC = tiny keys, same power. DH = "I don't encrypt, I just agree on a secret."</p></div>
+  </div>
+
+  <div class="card purple">
+    <h3><span class="icon">🎨</span> Diffie-Hellman Key Exchange — Paint Mixing Analogy</h3>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="step-num" style="background:#a78bfa;">1</div>
+        <div class="step-content">
+          <h4>Agree on Common Color (Public)</h4>
+          <p>Alice and Bob both pick <strong>yellow paint</strong> publicly. Everyone can see this.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num" style="background:#a78bfa;">2</div>
+        <div class="step-content">
+          <h4>Mix with Secret Color (Private)</h4>
+          <p>Alice secretly adds <strong>red</strong>. Bob secretly adds <strong>blue</strong>. Private colors are NEVER shared.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num" style="background:#a78bfa;">3</div>
+        <div class="step-content">
+          <h4>Exchange Mixed Colors (Public Channel)</h4>
+          <p>They send their mixed colors over the public channel. Eavesdropper sees the mixtures but <strong>cannot reverse the mixing</strong>.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num" style="background:#a78bfa;">4</div>
+        <div class="step-content">
+          <h4>Derive Shared Secret</h4>
+          <p>Each adds their private color to the received mix → <strong>same final color</strong>. This shared secret becomes the symmetric session key.</p>
+        </div>
+      </div>
+    </div>
+    <div class="highlight" style="background:rgba(124,58,237,0.08);border-color:rgba(124,58,237,0.3);color:#a78bfa;">
+      The shared secret is then used as a SYMMETRIC session key for fast bulk encryption.
+    </div>
+  </div>
+
+  <div class="card yellow">
+    <h3><span class="icon">🔀</span> Hybrid Encryption — Why It Exists & How It Works</h3>
+    <p style="margin-bottom:14px;">Neither symmetric nor asymmetric encryption is perfect alone. <strong>Hybrid = combines their strengths.</strong> This is how ALL modern secure protocols work.</p>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Asymmetric Handshake</h4>
+          <p>Use RSA or Diffie-Hellman to securely exchange a random symmetric <strong>session key</strong>. Asymmetric crypto solves key distribution.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Symmetric Data Transfer</h4>
+          <p>Use the exchanged session key with <strong>AES-GCM</strong> for fast bulk encryption. Symmetric crypto provides the speed needed for real-time data.</p>
+        </div>
+      </div>
+    </div>
+    <div class="highlight yellow-hl">
+      Result: Secure key exchange + high-speed encryption. This is exactly how TLS/HTTPS works every time you visit a secure website.
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 4 ===== -->
+<div id="ch4" class="section">
+  <div class="chapter-header" data-num="04">
+    <h2>Chapter 4: Hash Functions & Integrity</h2>
+    <p>One-way transforms · Password hashing · MACs · HMACs</p>
+  </div>
+
+  <div class="card cyan">
+    <h3><span class="icon">🔩</span> Hash Functions: The Concept</h3>
+    <p>A <strong>one-way mathematical transformation</strong> that takes an input of ANY size and produces a <strong>fixed-length output</strong> called a hash (or digest). Unlike encryption, hashing is <strong>NOT reversible</strong>.</p>
+    <div class="grid-3" style="margin-top:14px;">
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:16px;text-align:center;">
+        <div style="font-size:1.4rem;margin-bottom:8px;">📏</div>
+        <div style="color:var(--accent);font-weight:700;margin-bottom:6px;font-size:0.8rem;">ANY INPUT SIZE</div>
+        <div style="font-size:0.8rem;color:#94a3b8;">1 character, a novel, or 4GB file → all produce same fixed-length hash</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:16px;text-align:center;">
+        <div style="font-size:1.4rem;margin-bottom:8px;">📌</div>
+        <div style="color:var(--accent3);font-weight:700;margin-bottom:6px;font-size:0.8rem;">FIXED OUTPUT</div>
+        <div style="font-size:0.8rem;color:#94a3b8;">SHA-256 ALWAYS produces 256 bits regardless of input length</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:16px;text-align:center;">
+        <div style="font-size:1.4rem;margin-bottom:8px;">🌊</div>
+        <div style="color:var(--accent4);font-weight:700;margin-bottom:6px;font-size:0.8rem;">AVALANCHE EFFECT</div>
+        <div style="font-size:0.8rem;color:#94a3b8;">Changing even ONE bit of input produces a completely different hash output</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">⚖️</span> Hash Algorithms — Know Your Status</h3>
+    <table class="compare-table" style="margin-top:10px;">
+      <thead>
+        <tr><th>Algorithm</th><th>Output Size</th><th>Status</th><th>Use Case</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:var(--danger);">MD5</strong></td>
+          <td>128-bit</td>
+          <td><span class="tag red">❌ BROKEN</span></td>
+          <td>Collision attacks demonstrated 2004. NEVER use for security. Legacy checksum only.</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--accent3);">SHA-256</strong></td>
+          <td>256-bit</td>
+          <td><span class="tag green">✅ RECOMMENDED</span></td>
+          <td>Current industry standard. Digital signatures, certificates, integrity verification. No practical attacks known.</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--accent);">bcrypt</strong></td>
+          <td>192-bit</td>
+          <td><span class="tag green">✅ PASSWORDS</span></td>
+          <td>Designed specifically for PASSWORD hashing. Intentionally SLOW by design. Configurable work factor.</td>
+        </tr>
+        <tr>
+          <td><strong>scrypt / Argon2</strong></td>
+          <td>Variable</td>
+          <td><span class="tag green">✅ PASSWORDS</span></td>
+          <td>Memory-hard. Even better than bcrypt for passwords. Resistant to GPU/ASIC attacks.</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="memory-trick"><p>SHA-256 = for data integrity. bcrypt/scrypt/Argon2 = for passwords (SLOW is GOOD here). MD5 = DEAD. Never use MD5 for security.</p></div>
+  </div>
+
+  <div class="card yellow">
+    <h3><span class="icon">🔑</span> Password Hashing: How To Do It RIGHT</h3>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Never Store Plaintext</h4>
+          <p>If attacker gains DB access, plaintext passwords are IMMEDIATELY compromised. Always store only the <strong>hash</strong>.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Use a Unique Salt Per User</h4>
+          <p>A <strong>salt</strong> is a random value prepended to each password before hashing. Prevents rainbow table attacks. Ensures identical passwords produce different hashes.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Use Slow, Strong Schemes</h4>
+          <p>Standard SHA-256 is TOO FAST for passwords — attackers try billions per second. Use <strong>bcrypt, scrypt, or Argon2</strong> — deliberately slow and memory-hard.</p>
+        </div>
+      </div>
+    </div>
+    <div class="warn-box">SHA-256 is GREAT for file integrity but TERRIBLE for passwords. The speed that makes it good for files makes it dangerous for passwords.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🔏</span> Plain Hash vs. MAC vs. HMAC</h3>
+    <div class="vs-container">
+      <div class="vs-side left">
+        <h4>#️⃣ Plain Hash</h4>
+        <ul>
+          <li>Anyone can compute the hash of any data</li>
+          <li>Detects <strong>accidental corruption</strong></li>
+          <li>Does NOT authenticate the sender</li>
+          <li>No secret key involved</li>
+          <li>Attacker can modify data & recompute hash</li>
+        </ul>
+        <div style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">USE CASE: File download integrity checks</div>
+      </div>
+      <div class="vs-divider">VS</div>
+      <div class="vs-side right">
+        <h4>🔐 MAC / HMAC</h4>
+        <ul>
+          <li>Combines hash with a <strong>shared secret key</strong></li>
+          <li>Only parties with the key can create or verify</li>
+          <li>Authenticates <strong>both integrity AND origin</strong></li>
+          <li>HMAC = Hash-based MAC (e.g., HMAC-SHA256)</li>
+          <li>Attacker without key CANNOT forge</li>
+        </ul>
+        <div style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#a78bfa;">USE CASE: API authentication, message integrity in protocols</div>
+      </div>
+    </div>
+    <div class="memory-trick"><p>Plain Hash = knows data changed. MAC/HMAC = knows data changed AND who sent it. Always prefer HMAC when authentication matters.</p></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 5 ===== -->
+<div id="ch5" class="section">
+  <div class="chapter-header" data-num="05">
+    <h2>Chapter 5: Digital Signatures</h2>
+    <p>Sign · Verify · Authenticate · Non-repudiation</p>
+  </div>
+
+  <div class="card cyan">
+    <h3><span class="icon">✍️</span> Digital Signatures: What & Why</h3>
+    <p>The cryptographic equivalent of a handwritten signature — but <strong>far more secure</strong>. Provides mathematical proof that a message/document was created by a specific party and hasn't been altered since signing.</p>
+    <div class="grid-3" style="margin-top:14px;">
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:16px;text-align:center;">
+        <div style="color:var(--accent);font-weight:700;margin-bottom:8px;font-size:0.85rem;">✅ AUTHENTICITY</div>
+        <div style="font-size:0.82rem;color:#94a3b8;">Proves message was created by claimed sender, verified via their PUBLIC key.</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:16px;text-align:center;">
+        <div style="color:var(--accent3);font-weight:700;margin-bottom:8px;font-size:0.85rem;">🔒 INTEGRITY</div>
+        <div style="font-size:0.82rem;color:#94a3b8;">ANY modification to the signed data invalidates the signature — tampering is immediately detectable.</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:16px;text-align:center;">
+        <div style="color:#a78bfa;font-weight:700;margin-bottom:8px;font-size:0.85rem;">🚫 NON-REPUDIATION</div>
+        <div style="font-size:0.82rem;color:#94a3b8;">Signer CANNOT deny having signed. Only their private key could have produced the signature.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card green">
+    <h3><span class="icon">⚙️</span> How Digital Signatures Work — Step by Step</h3>
+    <p style="margin-bottom:14px;font-size:0.875rem;color:#94a3b8;">Two distinct phases: SIGNING (sender side) and VERIFYING (receiver side).</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent3);letter-spacing:1px;margin-bottom:10px;">SIGNING PHASE (SENDER)</div>
+        <div class="flow">
+          <div class="flow-step" style="border-color:rgba(16,185,129,0.3);">
+            <div class="step-num" style="background:var(--accent3);">1</div>
+            <div class="step-content"><h4>Hash the Message</h4><p>Run the document through SHA-256 → produces digest.</p></div>
+          </div>
+          <div class="flow-step" style="border-color:rgba(16,185,129,0.3);">
+            <div class="step-num" style="background:var(--accent3);">2</div>
+            <div class="step-content"><h4>Sign the Hash</h4><p>Encrypt the hash with sender's PRIVATE key → this IS the signature.</p></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#a78bfa;letter-spacing:1px;margin-bottom:10px;">VERIFYING PHASE (RECEIVER)</div>
+        <div class="flow">
+          <div class="flow-step" style="border-color:rgba(124,58,237,0.3);">
+            <div class="step-num" style="background:#a78bfa;">3</div>
+            <div class="step-content"><h4>Verify Signature</h4><p>Decrypt the signature using sender's PUBLIC key → recovers the original hash.</p></div>
+          </div>
+          <div class="flow-step" style="border-color:rgba(124,58,237,0.3);">
+            <div class="step-num" style="background:#a78bfa;">4</div>
+            <div class="step-content"><h4>Confirm Match</h4><p>Hash received document independently. Compare both hashes — match = valid, mismatch = tampered/forged.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight" style="margin-top:14px;">
+      This process runs BILLIONS of times daily in TLS certificates, software updates, and document signing.
+    </div>
+    <div class="memory-trick"><p>Sign = Hash → Encrypt with PRIVATE key. Verify = Decrypt with PUBLIC key → Compare hashes. Two hashes match = ✅ authentic.</p></div>
+  </div>
+</div>
+
+<!-- ===== CHAPTER 6 ===== -->
+<div id="ch6" class="section">
+  <div class="chapter-header" data-num="06">
+    <h2>Chapter 6: Real-World Applications</h2>
+    <p>Where cryptography lives in everyday technology</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🌍</span> Daily Cryptographic Touchpoints</h3>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="step-num" style="background:var(--accent4);">1</div>
+        <div class="step-content">
+          <h4>🔓 Unlock Phone</h4>
+          <p>Biometric data verified against encrypted template. Full-disk encryption protects stored data.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num" style="background:var(--accent4);">2</div>
+        <div class="step-content">
+          <h4>🌐 Browse HTTPS</h4>
+          <p>TLS handshake: certificate verification → Diffie-Hellman key exchange → AES-GCM session encryption. All automatic.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num" style="background:var(--accent4);">3</div>
+        <div class="step-content">
+          <h4>💬 Send a Message</h4>
+          <p>End-to-end encryption (Signal Protocol: DH + AES + HMAC). Ensures only sender and recipient can read the conversation — not even the service provider.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num" style="background:var(--accent4);">4</div>
+        <div class="step-content">
+          <h4>💳 Make a Payment</h4>
+          <p>Card data encrypted in transit, tokenized at the processor, signed for non-repudiation.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card green">
+    <h3><span class="icon">💬</span> Secure Communications In Practice</h3>
+    <div class="grid-3">
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:18px;">
+        <div style="color:var(--accent);font-weight:700;margin-bottom:8px;font-size:0.85rem;">📱 E2EE MESSAGING</div>
+        <div style="font-size:0.82rem;color:#94a3b8;line-height:1.6;">Signal, WhatsApp, iMessage. Uses Signal Protocol: Diffie-Hellman + AES + HMAC. Even the service provider CANNOT read messages.</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:18px;">
+        <div style="color:var(--accent3);font-weight:700;margin-bottom:8px;font-size:0.85rem;">📧 EMAIL ENCRYPTION</div>
+        <div style="font-size:0.82rem;color:#94a3b8;line-height:1.6;">PGP (Pretty Good Privacy) & S/MIME use hybrid encryption. Sender encrypts with recipient's public key. Signatures verify authenticity.</div>
+      </div>
+      <div style="background:var(--accent4);font-weight:700;margin-bottom:0px;font-size:0.85rem;background:var(--surface2);border:1px solid var(--border);padding:18px;">
+        <div style="color:var(--accent4);font-weight:700;margin-bottom:8px;font-size:0.85rem;">📞 VOIP & VIDEO</div>
+        <div style="font-size:0.82rem;color:#94a3b8;line-height:1.6;">SRTP (Secure Real-Time Protocol) with symmetric keys via DTLS. Real-time encryption without perceptible latency.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card purple">
+    <h3><span class="icon">🎯</span> Key Takeaways — What to Remember Forever</h3>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;">
+      <div style="padding:14px 18px;background:rgba(124,58,237,0.05);border:1px solid rgba(124,58,237,0.25);display:flex;gap:14px;align-items:flex-start;">
+        <span style="font-size:1.2rem;">🔑</span>
+        <div><strong style="color:#a78bfa;">Protect Keys, Not Algorithms</strong><div style="font-size:0.83rem;color:#94a3b8;margin-top:3px;">Security depends on key secrecy and proper management — not hiding the algorithm.</div></div>
+      </div>
+      <div style="padding:14px 18px;background:rgba(124,58,237,0.05);border:1px solid rgba(124,58,237,0.25);display:flex;gap:14px;align-items:flex-start;">
+        <span style="font-size:1.2rem;">🔀</span>
+        <div><strong style="color:#a78bfa;">Hybrid Is the Standard</strong><div style="font-size:0.83rem;color:#94a3b8;margin-top:3px;">Real-world systems combine asymmetric key exchange with symmetric bulk encryption.</div></div>
+      </div>
+      <div style="padding:14px 18px;background:rgba(124,58,237,0.05);border:1px solid rgba(124,58,237,0.25);display:flex;gap:14px;align-items:flex-start;">
+        <span style="font-size:1.2rem;">✅</span>
+        <div><strong style="color:#a78bfa;">Integrity Matters Too</strong><div style="font-size:0.83rem;color:#94a3b8;margin-top:3px;">Use AEAD modes and digital signatures — encryption alone isn't enough.</div></div>
+      </div>
+      <div style="padding:14px 18px;background:rgba(124,58,237,0.05);border:1px solid rgba(124,58,237,0.25);display:flex;gap:14px;align-items:flex-start;">
+        <span style="font-size:1.2rem;">⏩</span>
+        <div><strong style="color:#a78bfa;">Stay Current</strong><div style="font-size:0.83rem;color:#94a3b8;margin-top:3px;">Algorithms age. Migrate away from broken primitives: MD5, DES, RC4, 3DES. Prepare for post-quantum era.</div></div>
+      </div>
+    </div>
+    <div class="highlight" style="margin-top:16px;background:rgba(124,58,237,0.08);border-color:rgba(124,58,237,0.3);color:#a78bfa;font-style:italic;">
+      "Cryptography is not a silver bullet — it is a foundational tool that must be implemented correctly, maintained diligently, and evolved continuously." — Dr. Abdalla Sayed
+    </div>
+  </div>
+</div>
+
+<!-- ===== MASTER COMPARISON ===== -->
+<div id="compare" class="section">
+  <div class="chapter-header" data-num="∑">
+    <h2>Master Comparison Table</h2>
+    <p>All cryptographic primitives side by side</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">📊</span> The Full Primitives Comparison</h3>
+    <table class="compare-table" style="margin-top:10px;">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Symmetric</th>
+          <th>Asymmetric</th>
+          <th>Hash Function</th>
+          <th>Digital Signature</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Keys</strong></td>
+          <td>1 shared key</td>
+          <td>Public + Private pair</td>
+          <td>No key</td>
+          <td>Private key signs</td>
+        </tr>
+        <tr>
+          <td><strong>Reversible?</strong></td>
+          <td><span class="tag green">YES (decrypt)</span></td>
+          <td><span class="tag green">YES (decrypt)</span></td>
+          <td><span class="tag red">NO (one-way)</span></td>
+          <td><span class="tag yellow">Verify only</span></td>
+        </tr>
+        <tr>
+          <td><strong>Speed</strong></td>
+          <td><span class="tag green">Very Fast</span></td>
+          <td><span class="tag red">Slow</span></td>
+          <td><span class="tag green">Fast</span></td>
+          <td><span class="tag yellow">Moderate</span></td>
+        </tr>
+        <tr>
+          <td><strong>Primary Goal</strong></td>
+          <td>Confidentiality</td>
+          <td>Key Exchange, Signatures</td>
+          <td>Integrity</td>
+          <td>Auth + Integrity</td>
+        </tr>
+        <tr>
+          <td><strong>Example</strong></td>
+          <td>AES-256-GCM</td>
+          <td>RSA, ECC, Diffie-Hellman</td>
+          <td>SHA-256, bcrypt</td>
+          <td>RSA + SHA-256</td>
+        </tr>
+        <tr>
+          <td><strong>Solves</strong></td>
+          <td>Fast bulk encryption</td>
+          <td>Key distribution problem</td>
+          <td>Tamper detection</td>
+          <td>Non-repudiation</td>
+        </tr>
+        <tr>
+          <td><strong>Weakness</strong></td>
+          <td>Key distribution</td>
+          <td>Speed, key size</td>
+          <td>No authentication</td>
+          <td>Needs PKI</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card yellow">
+    <h3><span class="icon">☠️</span> Deprecated / Broken Algorithms — NEVER USE</h3>
+    <div class="grid-4">
+      <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);padding:16px;text-align:center;">
+        <div style="font-family:'Space Mono',monospace;font-weight:700;color:var(--danger);margin-bottom:6px;">MD5</div>
+        <div style="font-size:0.78rem;color:#94a3b8;">Collision attacks 2004. Broken hash.</div>
+      </div>
+      <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);padding:16px;text-align:center;">
+        <div style="font-family:'Space Mono',monospace;font-weight:700;color:var(--danger);margin-bottom:6px;">DES</div>
+        <div style="font-size:0.78rem;color:#94a3b8;">Brute-forced 1999. 56-bit key.</div>
+      </div>
+      <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);padding:16px;text-align:center;">
+        <div style="font-family:'Space Mono',monospace;font-weight:700;color:var(--danger);margin-bottom:6px;">RC4</div>
+        <div style="font-size:0.78rem;color:#94a3b8;">Deprecated stream cipher. Multiple vulnerabilities.</div>
+      </div>
+      <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);padding:16px;text-align:center;">
+        <div style="font-family:'Space Mono',monospace;font-weight:700;color:var(--accent4);margin-bottom:6px;">3DES</div>
+        <div style="font-size:0.78rem;color:#94a3b8;">Being phased out. Slow. Use AES.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card green">
+    <h3><span class="icon">✅</span> Recommended Algorithms — USE THESE</h3>
+    <div class="grid-4">
+      <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);padding:16px;text-align:center;">
+        <div style="font-family:'Space Mono',monospace;font-weight:700;color:var(--accent3);margin-bottom:6px;">AES-256</div>
+        <div style="font-size:0.78rem;color:#94a3b8;">Symmetric. Bulk encryption gold standard.</div>
+      </div>
+      <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);padding:16px;text-align:center;">
+        <div style="font-family:'Space Mono',monospace;font-weight:700;color:var(--accent3);margin-bottom:6px;">SHA-256</div>
+        <div style="font-size:0.78rem;color:#94a3b8;">Hashing. Integrity & signatures.</div>
+      </div>
+      <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);padding:16px;text-align:center;">
+        <div style="font-family:'Space Mono',monospace;font-weight:700;color:var(--accent3);margin-bottom:6px;">RSA-2048+</div>
+        <div style="font-size:0.78rem;color:#94a3b8;">Asymmetric. Key exchange & signatures.</div>
+      </div>
+      <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);padding:16px;text-align:center;">
+        <div style="font-family:'Space Mono',monospace;font-weight:700;color:var(--accent3);margin-bottom:6px;">bcrypt/Argon2</div>
+        <div style="font-size:0.78rem;color:#94a3b8;">Passwords ONLY. Slow by design.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MCQ SECTION ===== -->
+<div id="mcq" class="section">
+  <div class="chapter-header" data-num="?">
+    <h2>MCQ Quiz — Test Your Knowledge</h2>
+    <p>All chapters covered · Exam-style questions · Instant feedback</p>
+  </div>
+
+  <div class="score-panel">
+    <div>
+      <div class="score-display" id="scoreDisplay">0 / 0</div>
+      <div class="score-label">Correct Answers</div>
+    </div>
+    <div style="flex:1;max-width:400px;">
+      <div class="progress-bar"><div class="progress-fill" id="progressBar" style="width:0%"></div></div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);" id="progressLabel">0 of 30 answered</div>
+    </div>
+    <button class="btn btn-ghost" onclick="resetQuiz()">↺ Reset All</button>
+  </div>
+
+  <div id="quizContainer"></div>
+</div>
+
+</main>
+
+<script>
+// ===== NAVIGATION =====
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const btns = document.querySelectorAll('.nav-btn');
+  const sectionOrder = ['ch1','ch2','ch3','ch4','ch5','ch6','compare','mcq'];
+  const idx = sectionOrder.indexOf(id);
+  if(btns[idx]) btns[idx].classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ===== QUIZ DATA =====
+const questions = [
+  // Chapter 1 — Foundations
+  {
+    ch: "Ch.1 Foundations",
+    q: "What is the definition of cryptography?",
+    opts: [
+      "The science of hiding data inside images",
+      "The science of securing information by transforming it into an unreadable form",
+      "The practice of destroying data to prevent access",
+      "The science of transmitting data over secure networks"
+    ],
+    ans: 1,
+    exp: "Cryptography is the <strong>science and practice of securing information by transforming it into an unreadable form</strong>, ensuring only authorized parties can access the original content. It converts plaintext into ciphertext using algorithms and keys."
+  },
+  {
+    ch: "Ch.1 Foundations",
+    q: "Which security goal ensures that a sender cannot deny having sent a message?",
+    opts: ["Confidentiality", "Integrity", "Authentication", "Non-repudiation"],
+    ans: 3,
+    exp: "<strong>Non-repudiation</strong> prevents a sender from denying they sent a message. Digital signatures create irrefutable proof of authorship tied to the signer's private key."
+  },
+  {
+    ch: "Ch.1 Foundations",
+    q: "Kerckhoffs' Principle states that the security of a cryptographic system should depend solely on:",
+    opts: ["Hiding the algorithm from attackers", "The secrecy of the key", "Using the longest possible key", "Keeping the ciphertext secret"],
+    ans: 1,
+    exp: "<strong>Kerckhoffs' Principle</strong>: Security depends solely on the secrecy of the KEY — not on hiding the algorithm. AES, RSA, SHA-256 are publicly known and peer-reviewed, yet secure."
+  },
+  {
+    ch: "Ch.1 Foundations",
+    q: "What is the difference between cleartext and plaintext?",
+    opts: [
+      "Cleartext is encrypted; plaintext is not",
+      "They are the same thing",
+      "Cleartext is stored/transmitted without any encryption; plaintext is readable data before encryption",
+      "Plaintext uses a key; cleartext does not"
+    ],
+    ans: 2,
+    exp: "<strong>Cleartext</strong> = data stored or transmitted WITHOUT any encryption (fully exposed). <strong>Plaintext</strong> = the original readable data before encryption (or after decryption). Cleartext is always unencrypted by design or mistake."
+  },
+  {
+    ch: "Ch.1 Foundations",
+    q: "Steganography differs from cryptography in that steganography:",
+    opts: [
+      "Makes data unreadable using a key",
+      "Hides the existence of a message inside other media",
+      "Uses public/private key pairs",
+      "Applies hash functions to data"
+    ],
+    ans: 1,
+    exp: "<strong>Steganography</strong> hides data INSIDE other media (images, audio, video) — the interceptor doesn't even know a message exists. <strong>Cryptography</strong> makes data unreadable — the message's existence IS known, but its content is not."
+  },
+  {
+    ch: "Ch.1 Foundations",
+    q: "Which security goal uses hash functions and MACs to detect even single-bit unauthorized changes?",
+    opts: ["Confidentiality", "Authentication", "Integrity", "Non-repudiation"],
+    ans: 2,
+    exp: "<strong>Integrity</strong> guarantees that data has NOT been altered in transit or storage. Hash functions and MACs detect even single-bit unauthorized changes."
+  },
+  // Chapter 2 — Symmetric
+  {
+    ch: "Ch.2 Symmetric",
+    q: "Which symmetric algorithm is the current gold standard adopted by NIST in 2001?",
+    opts: ["DES", "3DES", "Blowfish", "AES"],
+    ans: 3,
+    exp: "<strong>AES (Advanced Encryption Standard)</strong> was adopted by NIST in 2001 and supports 128, 192, and 256-bit keys. It's used in everything from TLS to full-disk encryption."
+  },
+  {
+    ch: "Ch.2 Symmetric",
+    q: "DES was broken by brute force in what year, and what was its key size?",
+    opts: ["1995, 64-bit", "1999, 56-bit", "2001, 128-bit", "1985, 32-bit"],
+    ans: 1,
+    exp: "<strong>DES</strong> had a <strong>56-bit key</strong> and was broken by brute force in <strong>1999</strong>. It was once the federal standard but is now completely deprecated."
+  },
+  {
+    ch: "Ch.2 Symmetric",
+    q: "How many unique keys are needed for a symmetric network of n=1,000 users?",
+    opts: ["1,000", "499,500", "1,000,000", "2,000"],
+    ans: 1,
+    exp: "The formula is <strong>n(n-1)/2</strong>. For 1,000 users: 1000 × 999 / 2 = <strong>499,500 keys</strong>. This scalability problem is a key weakness of symmetric encryption."
+  },
+  {
+    ch: "Ch.2 Symmetric",
+    q: "Which type of cipher encrypts data in fixed-size blocks (e.g., 128 bits)?",
+    opts: ["Stream cipher", "Block cipher", "Hash cipher", "Hybrid cipher"],
+    ans: 1,
+    exp: "<strong>Block ciphers</strong> encrypt data in fixed-size blocks (AES uses 128-bit blocks). Examples: AES, DES, Blowfish. Requires padding if the data doesn't fill the final block."
+  },
+  {
+    ch: "Ch.2 Symmetric",
+    q: "Which stream cipher is currently recommended and which is deprecated?",
+    opts: ["AES is recommended, DES is deprecated", "ChaCha20 is recommended, RC4 is deprecated", "Blowfish is recommended, 3DES is deprecated", "RSA is recommended, MD5 is deprecated"],
+    ans: 1,
+    exp: "<strong>ChaCha20</strong> is the modern recommended stream cipher. <strong>RC4</strong> is deprecated due to multiple vulnerabilities. Stream ciphers encrypt one bit/byte at a time as a continuous stream."
+  },
+  {
+    ch: "Ch.2 Symmetric",
+    q: "What is the critical danger of reusing an IV (Initialization Vector)?",
+    opts: [
+      "It slows down the encryption process",
+      "It can catastrophically break the security of both block and stream ciphers",
+      "It requires more computational resources",
+      "It makes decryption impossible"
+    ],
+    ans: 1,
+    exp: "Reusing an IV or nonce can <strong>catastrophically break security</strong> for both block and stream ciphers. Correct usage of IVs and nonces is essential — this is a common implementation mistake."
+  },
+  // Chapter 3 — Asymmetric
+  {
+    ch: "Ch.3 Asymmetric",
+    q: "In asymmetric encryption, to send a confidential message to Bob, Alice should:",
+    opts: [
+      "Encrypt with Alice's private key",
+      "Encrypt with Bob's public key",
+      "Encrypt with Alice's public key",
+      "Encrypt with a shared symmetric key"
+    ],
+    ans: 1,
+    exp: "<strong>Confidentiality flow</strong>: Encrypt with the <strong>recipient's PUBLIC key</strong> → only the recipient's PRIVATE key can decrypt. This ensures only Bob can read the message."
+  },
+  {
+    ch: "Ch.3 Asymmetric",
+    q: "RSA is based on which mathematical problem?",
+    opts: [
+      "Elliptic curve discrete logarithm",
+      "Difficulty of factoring large prime numbers",
+      "Discrete logarithm problem",
+      "Integer factorization of small primes"
+    ],
+    ans: 1,
+    exp: "<strong>RSA</strong> is based on the difficulty of <strong>factoring large prime numbers</strong>. Key sizes: 2048-4096 bits. Invented in 1977 and still foundational to TLS/SSL."
+  },
+  {
+    ch: "Ch.3 Asymmetric",
+    q: "A 256-bit ECC key provides equivalent security to approximately which RSA key size?",
+    opts: ["512-bit RSA", "1024-bit RSA", "3072-bit RSA", "8192-bit RSA"],
+    ans: 2,
+    exp: "<strong>256-bit ECC ≈ 3072-bit RSA</strong> in security strength. This is why ECC is preferred for mobile and IoT — same security with MUCH smaller keys and faster computation."
+  },
+  {
+    ch: "Ch.3 Asymmetric",
+    q: "Diffie-Hellman is best described as:",
+    opts: [
+      "A symmetric encryption algorithm",
+      "A hash function for integrity",
+      "A key exchange protocol that establishes a shared secret over an insecure channel",
+      "A digital signature algorithm"
+    ],
+    ans: 2,
+    exp: "<strong>Diffie-Hellman</strong> is a <strong>key exchange protocol</strong> — NOT an encryption algorithm. It allows two parties to establish a shared secret over an open channel without transmitting the secret itself. The shared secret is then used as a symmetric session key."
+  },
+  {
+    ch: "Ch.3 Asymmetric",
+    q: "In hybrid encryption, which protocol uses asymmetric crypto and which uses symmetric?",
+    opts: [
+      "Asymmetric for data transfer; symmetric for key exchange",
+      "Symmetric for key exchange; asymmetric for data transfer",
+      "Asymmetric for key exchange (RSA/DH); symmetric (AES) for bulk data transfer",
+      "Both use asymmetric throughout"
+    ],
+    ans: 2,
+    exp: "<strong>Hybrid encryption</strong>: Step 1 = Asymmetric (RSA/DH) for secure key exchange. Step 2 = Symmetric (AES-GCM) for fast bulk data transfer. This is exactly how TLS/HTTPS works."
+  },
+  {
+    ch: "Ch.3 Asymmetric",
+    q: "To digitally SIGN a message, the sender uses:",
+    opts: [
+      "Recipient's public key",
+      "Sender's public key",
+      "A shared symmetric key",
+      "Sender's private key"
+    ],
+    ans: 3,
+    exp: "<strong>Authenticity flow</strong>: Sign with the <strong>sender's PRIVATE key</strong> → anyone with the sender's PUBLIC key can verify. This proves the message came from the claimed sender."
+  },
+  // Chapter 4 — Hash
+  {
+    ch: "Ch.4 Hash & Integrity",
+    q: "Which property of hash functions means that changing one bit of input produces a completely different hash?",
+    opts: ["Collision resistance", "Pre-image resistance", "Avalanche effect", "Fixed output property"],
+    ans: 2,
+    exp: "The <strong>Avalanche Effect</strong> means that changing even ONE bit of input produces a completely different hash output. This is a critical security property of hash functions."
+  },
+  {
+    ch: "Ch.4 Hash & Integrity",
+    q: "Why are bcrypt, scrypt, and Argon2 preferred over SHA-256 for password hashing?",
+    opts: [
+      "They produce longer hashes",
+      "They are intentionally slow and memory-hard, making brute-force attacks expensive",
+      "They are newer and more secure algorithms",
+      "They support encryption and decryption"
+    ],
+    ans: 1,
+    exp: "bcrypt/scrypt/Argon2 are <strong>intentionally slow by design</strong> with configurable work factors. SHA-256 is too fast — attackers can try billions per second. Slow = good for passwords."
+  },
+  {
+    ch: "Ch.4 Hash & Integrity",
+    q: "What is a salt in password hashing and why is it used?",
+    opts: [
+      "A secret key used for encryption",
+      "A random value added to each password before hashing to prevent rainbow table attacks",
+      "A fixed value added to all passwords for consistency",
+      "Another name for the hash output"
+    ],
+    ans: 1,
+    exp: "A <strong>salt</strong> is a random value prepended to each password before hashing. It prevents rainbow table attacks (precomputed hash tables) and ensures that identical passwords produce DIFFERENT hashes."
+  },
+  {
+    ch: "Ch.4 Hash & Integrity",
+    q: "MD5 was broken in which year, and what type of attack was demonstrated?",
+    opts: ["1999, brute force", "2004, collision attacks", "2010, preimage attacks", "2001, rainbow table attacks"],
+    ans: 1,
+    exp: "<strong>MD5</strong> was broken in <strong>2004</strong> when <strong>collision attacks</strong> were demonstrated (two different inputs producing the same hash). Never use MD5 for security purposes."
+  },
+  {
+    ch: "Ch.4 Hash & Integrity",
+    q: "An HMAC differs from a plain hash in that HMAC:",
+    opts: [
+      "Produces a longer output",
+      "Is a one-way function",
+      "Combines hashing with a shared secret key to authenticate both integrity and origin",
+      "Can only be used for file integrity checks"
+    ],
+    ans: 2,
+    exp: "<strong>HMAC (Hash-based MAC)</strong> combines a hash function with a <strong>shared secret key</strong>. It authenticates both INTEGRITY (data unchanged) and ORIGIN (came from key holder). Plain hashes don't authenticate the sender."
+  },
+  // Chapter 5 — Signatures
+  {
+    ch: "Ch.5 Digital Signatures",
+    q: "What are the THREE properties provided by digital signatures?",
+    opts: [
+      "Confidentiality, Speed, Compression",
+      "Authenticity, Integrity, Non-repudiation",
+      "Encryption, Decryption, Hashing",
+      "Confidentiality, Integrity, Authentication"
+    ],
+    ans: 1,
+    exp: "Digital signatures provide: <strong>Authenticity</strong> (proves who sent it), <strong>Integrity</strong> (detects any modification), and <strong>Non-repudiation</strong> (sender cannot deny signing). Note: signatures do NOT provide confidentiality."
+  },
+  {
+    ch: "Ch.5 Digital Signatures",
+    q: "In digital signature verification, the receiver decrypts the signature using:",
+    opts: [
+      "Receiver's private key",
+      "Sender's private key",
+      "A shared symmetric key",
+      "Sender's public key"
+    ],
+    ans: 3,
+    exp: "Verification: Decrypt the signature using the <strong>sender's PUBLIC key</strong> → recovers the original hash → compare with independently computed hash of received document. Match = valid signature."
+  },
+  {
+    ch: "Ch.5 Digital Signatures",
+    q: "Why is the message HASHED before signing rather than signing the entire message directly?",
+    opts: [
+      "Hashing adds confidentiality",
+      "Hashing makes the signature reversible",
+      "Signing a hash is computationally efficient and produces a fixed-size signature",
+      "Direct signing is not mathematically possible"
+    ],
+    ans: 2,
+    exp: "Hashing first produces a fixed-size digest regardless of message length, making <strong>signing computationally efficient</strong>. Asymmetric operations on large data would be extremely slow."
+  },
+  // Chapter 6 — Applications
+  {
+    ch: "Ch.6 Applications",
+    q: "Which protocol does HTTPS use to establish a secure connection?",
+    opts: ["SSH", "IPSec", "TLS/SSL", "DTLS"],
+    ans: 2,
+    exp: "<strong>HTTPS uses TLS/SSL</strong>. The TLS handshake involves: certificate verification → Diffie-Hellman key exchange → AES-GCM session encryption. This is hybrid encryption in action."
+  },
+  {
+    ch: "Ch.6 Applications",
+    q: "VoIP and video calls use which protocol for real-time encryption?",
+    opts: ["TLS", "SRTP (Secure Real-Time Protocol)", "PGP", "S/MIME"],
+    ans: 1,
+    exp: "Voice and video sessions use <strong>SRTP (Secure Real-Time Protocol)</strong> with symmetric keys negotiated via DTLS. This ensures real-time encryption without perceptible latency."
+  },
+  {
+    ch: "Ch.6 Applications",
+    q: "End-to-end encryption (E2EE) in messaging apps like Signal means:",
+    opts: [
+      "Only the server can read messages",
+      "Only the sender and recipient can read messages — not even the service provider",
+      "Messages are encrypted only during transmission",
+      "Messages are encrypted with a shared company key"
+    ],
+    ans: 1,
+    exp: "<strong>End-to-end encryption (E2EE)</strong> means ONLY the sender and recipient can read messages — <strong>not even the service provider</strong>. Signal, WhatsApp, and iMessage use the Signal Protocol (DH + AES + HMAC)."
+  },
+  {
+    ch: "Ch.6 Applications",
+    q: "Which of the following sets contains ONLY deprecated/broken cryptographic primitives that should NEVER be used?",
+    opts: [
+      "AES, SHA-256, RSA",
+      "MD5, DES, RC4",
+      "bcrypt, ECC, ChaCha20",
+      "AES, MD5, RSA"
+    ],
+    ans: 1,
+    exp: "<strong>MD5</strong> (collision attacks 2004), <strong>DES</strong> (brute-forced 1999, 56-bit), and <strong>RC4</strong> (multiple vulnerabilities, deprecated) are ALL broken and must NEVER be used for security."
+  }
+];
+
+// ===== QUIZ RENDER =====
+let answered = 0;
+let correct = 0;
+
+function renderQuiz() {
+  const container = document.getElementById('quizContainer');
+  let html = '';
+
+  // Group by chapter
+  const chapters = {};
+  questions.forEach((q, i) => {
+    if (!chapters[q.ch]) chapters[q.ch] = [];
+    chapters[q.ch].push({...q, idx: i});
+  });
+
+  for (const [chName, qs] of Object.entries(chapters)) {
+    html += `<div style="margin-bottom:8px;padding:10px 16px;background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.15);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;">${chName} — ${qs.length} Questions</div>`;
+    qs.forEach(q => {
+      const letters = ['A','B','C','D'];
+      html += `
+      <div class="mcq-card" id="q${q.idx}">
+        <div class="mcq-num">Q${q.idx + 1}</div>
+        <div class="mcq-question">${q.q}</div>
+        <div class="mcq-options">
+          ${q.opts.map((opt, oi) => `
+            <button class="mcq-option" onclick="selectAnswer(${q.idx}, ${oi}, ${q.ans})" id="opt_${q.idx}_${oi}">
+              <span class="opt-letter">${letters[oi]}</span>
+              <span>${opt}</span>
+            </button>
+          `).join('')}
+        </div>
+        <div class="mcq-explanation" id="exp_${q.idx}">
+          <strong>Explanation:</strong> ${q.exp}
+        </div>
+      </div>`;
+    });
+  }
+  container.innerHTML = html;
+}
+
+function selectAnswer(qIdx, selectedOpt, correctOpt) {
+  const q = questions[qIdx];
+  const opts = document.querySelectorAll(`[id^="opt_${qIdx}_"]`);
+  const alreadyAnswered = document.getElementById(`opt_${qIdx}_0`).disabled;
+  if (alreadyAnswered) return;
+
+  opts.forEach(btn => btn.disabled = true);
+
+  const isCorrect = selectedOpt === correctOpt;
+  if (isCorrect) {
+    opts[selectedOpt].classList.add('selected-correct');
+    correct++;
+  } else {
+    opts[selectedOpt].classList.add('selected-wrong');
+    opts[correctOpt].classList.add('reveal-correct');
+  }
+
+  document.getElementById(`exp_${qIdx}`).classList.add('show');
+  answered++;
+  updateScore();
+}
+
+function updateScore() {
+  document.getElementById('scoreDisplay').textContent = `${correct} / ${answered}`;
+  document.getElementById('progressBar').style.width = `${(answered / questions.length) * 100}%`;
+  document.getElementById('progressLabel').textContent = `${answered} of ${questions.length} answered`;
+}
+
+function resetQuiz() {
+  answered = 0; correct = 0;
+  updateScore();
+  renderQuiz();
+}
+
+renderQuiz();
+</script>
+</body>
+</html>
