@@ -1,0 +1,1938 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security & Privacy in Information Systems — Exam Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ─── THEME VARIABLES ─────────────────────────────────────────── */
+:root {
+  --bg:          #0b0e14;
+  --bg2:         #111520;
+  --bg3:         #1a1f2e;
+  --border:      #252c3f;
+  --accent:      #4af0c4;
+  --accent2:     #6e7fff;
+  --accent3:     #ff7c5c;
+  --text:        #d4ddf0;
+  --text-dim:    #6b7a9a;
+  --text-bright: #f0f5ff;
+  --card:        #141929;
+  --card2:       #0f1420;
+  --tag-bg:      rgba(74,240,196,0.10);
+  --tag-txt:     #4af0c4;
+  --shadow:      0 8px 40px rgba(0,0,0,0.5);
+  --radius:      14px;
+  --correct:     #2dd48a;
+  --wrong:       #ff5c6e;
+  --warn:        #ffc14a;
+}
+[data-theme="light"] {
+  --bg:          #f0f2f8;
+  --bg2:         #ffffff;
+  --bg3:         #e8eaf2;
+  --border:      #d0d5e8;
+  --accent:      #0d9e7a;
+  --accent2:     #4455cc;
+  --accent3:     #d94f28;
+  --text:        #1e2235;
+  --text-dim:    #7a829e;
+  --text-bright: #0a0d1a;
+  --card:        #ffffff;
+  --card2:       #f7f8fc;
+  --tag-bg:      rgba(13,158,122,0.10);
+  --tag-txt:     #0d9e7a;
+  --shadow:      0 8px 40px rgba(0,0,0,0.12);
+  --correct:     #1a9c63;
+  --wrong:       #cc2233;
+  --warn:        #b8840a;
+}
+
+/* ─── RESET & BASE ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Lora', Georgia, serif;
+  min-height: 100vh;
+  transition: background 0.35s, color 0.35s;
+  overflow-x: hidden;
+}
+
+/* ─── NOISE TEXTURE OVERLAY ───────────────────────────────────── */
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index:0; opacity:0.6;
+}
+
+/* ─── SCROLLBAR ────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* ─── HERO / HEADER ────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  padding: 70px 24px 50px;
+  text-align: center;
+  overflow: hidden;
+}
+.hero::after {
+  content:'';
+  position:absolute; top:-60px; left:50%; transform:translateX(-50%);
+  width:700px; height:400px;
+  background: radial-gradient(ellipse at center, rgba(74,240,196,0.12) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero-tag {
+  display:inline-block;
+  font-family:'DM Mono', monospace;
+  font-size:0.72rem;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--accent);
+  background:var(--tag-bg);
+  border:1px solid rgba(74,240,196,0.25);
+  padding:5px 16px;
+  border-radius:99px;
+  margin-bottom:22px;
+}
+.hero h1 {
+  font-family:'Syne', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.6rem);
+  font-weight:800;
+  color: var(--text-bright);
+  line-height:1.1;
+  letter-spacing:-0.02em;
+  margin-bottom:14px;
+}
+.hero h1 span { color: var(--accent); }
+.hero p {
+  color: var(--text-dim);
+  font-size:1rem;
+  font-style:italic;
+  max-width:520px;
+  margin:0 auto 36px;
+}
+.hero-badges {
+  display:flex; flex-wrap:wrap; gap:10px; justify-content:center;
+}
+.badge {
+  font-family:'DM Mono',monospace;
+  font-size:0.72rem;
+  padding:6px 14px;
+  border-radius:8px;
+  border:1px solid var(--border);
+  color:var(--text-dim);
+  background:var(--bg3);
+  letter-spacing:0.05em;
+}
+
+/* ─── THEME TOGGLE ─────────────────────────────────────────────── */
+.theme-toggle {
+  position:fixed; top:20px; right:20px; z-index:999;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  color:var(--text);
+  border-radius:50%;
+  width:44px; height:44px;
+  font-size:1.2rem;
+  cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:all 0.2s;
+  box-shadow:var(--shadow);
+}
+.theme-toggle:hover { background:var(--accent); color:#000; border-color:var(--accent); }
+
+/* ─── NAV TABS ──────────────────────────────────────────────────── */
+.nav-wrap {
+  position:sticky; top:0; z-index:100;
+  background:rgba(11,14,20,0.85);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);
+  padding:0 16px;
+}
+[data-theme="light"] .nav-wrap {
+  background:rgba(240,242,248,0.88);
+}
+.nav-tabs {
+  display:flex; gap:4px;
+  max-width:1000px; margin:0 auto;
+  overflow-x:auto;
+  scrollbar-width:none;
+  padding:10px 0;
+}
+.nav-tabs::-webkit-scrollbar { display:none; }
+.nav-tab {
+  flex-shrink:0;
+  font-family:'DM Mono', monospace;
+  font-size:0.74rem;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  padding:8px 18px;
+  border-radius:8px;
+  border:1px solid transparent;
+  background:transparent;
+  color:var(--text-dim);
+  cursor:pointer;
+  transition:all 0.2s;
+  white-space:nowrap;
+}
+.nav-tab:hover { color:var(--text); background:var(--bg3); }
+.nav-tab.active {
+  background:var(--accent);
+  color:#000;
+  font-weight:600;
+  border-color:var(--accent);
+}
+
+/* ─── SECTIONS ──────────────────────────────────────────────────── */
+.section { display:none; animation:fadeIn 0.35s ease; }
+.section.active { display:block; }
+@keyframes fadeIn { from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:translateY(0)} }
+.container { max-width:900px; margin:0 auto; padding:40px 20px 80px; }
+
+/* ─── CARDS ─────────────────────────────────────────────────────── */
+.card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:28px 32px;
+  margin-bottom:24px;
+  box-shadow:var(--shadow);
+  position:relative;
+  overflow:hidden;
+}
+.card::before {
+  content:'';
+  position:absolute; top:0; left:0;
+  width:3px; height:100%;
+  background:var(--accent);
+  border-radius:3px 0 0 3px;
+}
+.card.accent2::before { background:var(--accent2); }
+.card.accent3::before { background:var(--accent3); }
+.card.warn-card::before { background:var(--warn); }
+
+/* ─── HEADINGS ──────────────────────────────────────────────────── */
+h2.section-title {
+  font-family:'Syne', sans-serif;
+  font-size:1.9rem;
+  font-weight:800;
+  color:var(--text-bright);
+  margin-bottom:6px;
+  letter-spacing:-0.02em;
+}
+h2.section-title span { color:var(--accent); }
+.section-sub {
+  color:var(--text-dim);
+  font-style:italic;
+  font-size:0.92rem;
+  margin-bottom:32px;
+}
+h3.card-title {
+  font-family:'Syne', sans-serif;
+  font-size:1.15rem;
+  font-weight:700;
+  color:var(--text-bright);
+  margin-bottom:14px;
+  display:flex; align-items:center; gap:10px;
+}
+h3.card-title .icon {
+  width:28px; height:28px;
+  background:var(--tag-bg);
+  border:1px solid rgba(74,240,196,0.2);
+  border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.85rem; flex-shrink:0;
+}
+.card.accent2 .icon { background:rgba(110,127,255,0.12); border-color:rgba(110,127,255,0.2); }
+.card.accent3 .icon { background:rgba(255,124,92,0.12); border-color:rgba(255,124,92,0.2); }
+
+p { line-height:1.78; margin-bottom:12px; }
+p:last-child { margin-bottom:0; }
+strong { color:var(--text-bright); font-weight:600; }
+em { color:var(--accent); font-style:normal; font-weight:600; }
+
+/* ─── DEFINITION BOX ─────────────────────────────────────────────  */
+.def-box {
+  background:var(--bg3);
+  border-left:3px solid var(--accent2);
+  border-radius:0 10px 10px 0;
+  padding:14px 18px;
+  margin:14px 0;
+  font-size:0.95rem;
+}
+.def-box strong { color:var(--accent2); }
+
+/* ─── ANALOGY BOX ────────────────────────────────────────────────  */
+.analogy {
+  background:rgba(255,124,92,0.07);
+  border:1px solid rgba(255,124,92,0.2);
+  border-radius:10px;
+  padding:14px 18px;
+  margin:14px 0;
+  font-size:0.93rem;
+  font-style:italic;
+}
+.analogy::before { content:'💡 Analogy: '; font-style:normal; font-weight:700; color:var(--accent3); }
+
+/* ─── IMPORTANT CALLOUT ──────────────────────────────────────────  */
+.important {
+  background:rgba(74,240,196,0.06);
+  border:1px solid rgba(74,240,196,0.2);
+  border-radius:10px;
+  padding:14px 18px;
+  margin:14px 0;
+  font-size:0.93rem;
+}
+.important::before { content:'⭐ Exam Tip: '; font-weight:700; color:var(--accent); }
+
+/* ─── COMPARISON TABLE ────────────────────────────────────────────  */
+.table-wrap { overflow-x:auto; margin:18px 0; }
+table {
+  width:100%; border-collapse:collapse;
+  font-size:0.9rem;
+}
+th {
+  background:var(--bg3);
+  color:var(--text-bright);
+  font-family:'DM Mono',monospace;
+  font-size:0.75rem;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  padding:10px 14px;
+  text-align:left;
+  border-bottom:1px solid var(--border);
+}
+td {
+  padding:10px 14px;
+  border-bottom:1px solid var(--border);
+  vertical-align:top;
+  line-height:1.6;
+}
+tr:hover td { background:var(--bg3); }
+td:first-child { font-weight:600; color:var(--text-bright); }
+
+/* ─── BULLET LISTS ────────────────────────────────────────────────  */
+ul.styled, ol.styled {
+  padding-left:0;
+  list-style:none;
+  margin:12px 0;
+}
+ul.styled li, ol.styled li {
+  padding:7px 0 7px 26px;
+  position:relative;
+  line-height:1.7;
+  border-bottom:1px solid var(--border);
+  font-size:0.95rem;
+}
+ul.styled li:last-child, ol.styled li:last-child { border-bottom:none; }
+ul.styled li::before {
+  content:'›';
+  position:absolute; left:6px;
+  color:var(--accent); font-weight:700; font-size:1.1rem;
+}
+ol.styled { counter-reset:item; }
+ol.styled li { counter-increment:item; }
+ol.styled li::before {
+  content:counter(item);
+  position:absolute; left:0;
+  color:var(--accent2);
+  font-family:'DM Mono',monospace;
+  font-size:0.78rem;
+  font-weight:700;
+  top:9px;
+}
+
+/* ─── MNEMONIC BOX ───────────────────────────────────────────────  */
+.mnemonic {
+  background:rgba(110,127,255,0.08);
+  border:1px solid rgba(110,127,255,0.25);
+  border-radius:10px;
+  padding:16px 20px;
+  margin:16px 0;
+  text-align:center;
+}
+.mnemonic .word {
+  font-family:'Syne',sans-serif;
+  font-size:1.6rem;
+  font-weight:800;
+  letter-spacing:0.04em;
+  color:var(--accent2);
+  display:block;
+  margin-bottom:8px;
+}
+.mnemonic-desc { font-size:0.9rem; color:var(--text-dim); }
+
+/* ─── MCQ SECTION ─────────────────────────────────────────────────  */
+.mcq-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:24px 28px;
+  margin-bottom:20px;
+  transition:border-color 0.2s;
+}
+.mcq-card:hover { border-color:var(--accent2); }
+.mcq-num {
+  font-family:'DM Mono',monospace;
+  font-size:0.72rem;
+  letter-spacing:0.12em;
+  color:var(--text-dim);
+  text-transform:uppercase;
+  margin-bottom:10px;
+}
+.mcq-q {
+  font-size:1rem;
+  color:var(--text-bright);
+  font-weight:600;
+  margin-bottom:16px;
+  line-height:1.6;
+}
+.mcq-options { display:flex; flex-direction:column; gap:8px; }
+.mcq-opt {
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:9px;
+  padding:11px 16px;
+  cursor:pointer;
+  font-size:0.92rem;
+  color:var(--text);
+  transition:all 0.18s;
+  text-align:left;
+  display:flex; align-items:flex-start; gap:10px;
+}
+.mcq-opt .opt-letter {
+  font-family:'DM Mono',monospace;
+  font-size:0.78rem;
+  font-weight:700;
+  color:var(--accent2);
+  flex-shrink:0;
+  margin-top:1px;
+}
+.mcq-opt:hover:not(.disabled) { border-color:var(--accent2); background:rgba(110,127,255,0.08); }
+.mcq-opt.correct { background:rgba(45,212,138,0.12); border-color:var(--correct); color:var(--correct); }
+.mcq-opt.correct .opt-letter { color:var(--correct); }
+.mcq-opt.wrong { background:rgba(255,92,110,0.10); border-color:var(--wrong); color:var(--wrong); }
+.mcq-opt.wrong .opt-letter { color:var(--wrong); }
+.mcq-opt.disabled { cursor:default; pointer-events:none; }
+.mcq-explanation {
+  display:none;
+  margin-top:14px;
+  padding:14px 16px;
+  background:var(--bg3);
+  border-left:3px solid var(--correct);
+  border-radius:0 8px 8px 0;
+  font-size:0.9rem;
+  line-height:1.65;
+  color:var(--text);
+}
+.mcq-explanation.show { display:block; animation:fadeIn 0.25s ease; }
+.diff-badge {
+  display:inline-block;
+  font-family:'DM Mono',monospace;
+  font-size:0.65rem;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  padding:3px 10px;
+  border-radius:99px;
+  margin-left:8px;
+  vertical-align:middle;
+}
+.diff-easy { background:rgba(45,212,138,0.12); color:var(--correct); border:1px solid rgba(45,212,138,0.25); }
+.diff-medium { background:rgba(255,193,74,0.12); color:var(--warn); border:1px solid rgba(255,193,74,0.25); }
+.diff-hard { background:rgba(255,92,110,0.12); color:var(--wrong); border:1px solid rgba(255,92,110,0.25); }
+
+/* ─── MCQ PROGRESS ────────────────────────────────────────────────  */
+.mcq-toolbar {
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+  margin-bottom:28px;
+  padding:16px 20px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+}
+.score-display {
+  font-family:'DM Mono',monospace;
+  font-size:0.88rem;
+  color:var(--text-dim);
+}
+.score-display span { color:var(--accent); font-weight:700; }
+.btn {
+  font-family:'DM Mono',monospace;
+  font-size:0.76rem;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  padding:8px 18px;
+  border-radius:8px;
+  cursor:pointer;
+  border:1px solid var(--border);
+  background:var(--bg3);
+  color:var(--text);
+  transition:all 0.2s;
+}
+.btn:hover { border-color:var(--accent); color:var(--accent); }
+.btn.primary { background:var(--accent); color:#000; border-color:var(--accent); font-weight:700; }
+.btn.primary:hover { opacity:0.85; }
+
+/* ─── WRITTEN QUESTIONS ───────────────────────────────────────────  */
+.wq-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:26px 30px;
+  margin-bottom:22px;
+}
+.wq-type {
+  font-family:'DM Mono',monospace;
+  font-size:0.68rem;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:var(--accent2);
+  margin-bottom:10px;
+}
+.wq-q {
+  font-size:1.05rem;
+  font-weight:600;
+  color:var(--text-bright);
+  margin-bottom:16px;
+  line-height:1.55;
+}
+.wq-toggle {
+  font-family:'DM Mono',monospace;
+  font-size:0.72rem;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  cursor:pointer;
+  color:var(--accent2);
+  background:rgba(110,127,255,0.08);
+  border:1px solid rgba(110,127,255,0.2);
+  padding:7px 16px;
+  border-radius:7px;
+  transition:all 0.2s;
+}
+.wq-toggle:hover { background:rgba(110,127,255,0.18); }
+.wq-answer {
+  display:none;
+  margin-top:16px;
+  padding:18px 20px;
+  background:var(--bg3);
+  border-radius:10px;
+  font-size:0.93rem;
+  line-height:1.75;
+  border:1px solid var(--border);
+}
+.wq-answer.show { display:block; animation:fadeIn 0.3s ease; }
+.model-label {
+  font-family:'DM Mono',monospace;
+  font-size:0.68rem;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--correct);
+  margin-bottom:10px;
+  display:block;
+}
+
+/* ─── REVISION SHEET ─────────────────────────────────────────────  */
+.rev-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+@media(max-width:600px) { .rev-grid { grid-template-columns:1fr; } }
+.rev-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:20px;
+}
+.rev-card h4 {
+  font-family:'Syne',sans-serif;
+  font-size:0.95rem;
+  font-weight:700;
+  color:var(--text-bright);
+  margin-bottom:12px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+.rev-item {
+  font-size:0.86rem;
+  padding:5px 0;
+  border-bottom:1px solid var(--border);
+  color:var(--text);
+  display:flex; justify-content:space-between; gap:8px;
+  line-height:1.55;
+}
+.rev-item:last-child { border-bottom:none; }
+.rev-item .key { color:var(--accent); font-weight:600; font-family:'DM Mono',monospace; font-size:0.8rem; flex-shrink:0; }
+.formula-box {
+  background:var(--bg);
+  border:2px solid var(--accent);
+  border-radius:10px;
+  padding:18px 24px;
+  text-align:center;
+  margin:16px 0;
+}
+.formula-box .formula {
+  font-family:'DM Mono',monospace;
+  font-size:1.1rem;
+  color:var(--accent);
+  font-weight:700;
+  letter-spacing:0.05em;
+}
+.formula-box .formula-desc { font-size:0.82rem; color:var(--text-dim); margin-top:6px; }
+
+/* ─── COLLAPSIBLE ─────────────────────────────────────────────────  */
+.collapsible-btn {
+  width:100%;
+  text-align:left;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:14px 20px;
+  cursor:pointer;
+  font-family:'Syne',sans-serif;
+  font-size:0.95rem;
+  font-weight:700;
+  color:var(--text-bright);
+  display:flex; justify-content:space-between; align-items:center;
+  transition:all 0.2s;
+  margin-bottom:4px;
+}
+.collapsible-btn:hover { border-color:var(--accent2); color:var(--accent2); }
+.collapsible-btn .arrow { transition:transform 0.25s; font-size:0.85rem; color:var(--text-dim); }
+.collapsible-btn.open .arrow { transform:rotate(180deg); }
+.collapsible-content { display:none; padding:4px 0 16px; }
+.collapsible-content.open { display:block; animation:fadeIn 0.25s ease; }
+
+/* ─── CHIP TAGS ──────────────────────────────────────────────────  */
+.chip {
+  display:inline-block;
+  background:var(--tag-bg);
+  color:var(--tag-txt);
+  border:1px solid rgba(74,240,196,0.2);
+  font-family:'DM Mono',monospace;
+  font-size:0.72rem;
+  padding:3px 11px;
+  border-radius:99px;
+  margin:3px 2px;
+}
+.chip.blue { background:rgba(110,127,255,0.1); color:var(--accent2); border-color:rgba(110,127,255,0.2); }
+.chip.red { background:rgba(255,92,110,0.1); color:var(--wrong); border-color:rgba(255,92,110,0.2); }
+
+/* ─── PROGRESS BAR ───────────────────────────────────────────────  */
+.progress-bar {
+  height:4px;
+  background:var(--border);
+  border-radius:99px;
+  margin-top:12px;
+  overflow:hidden;
+}
+.progress-fill {
+  height:100%;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border-radius:99px;
+  transition:width 0.4s ease;
+}
+
+/* ─── DIVIDER ────────────────────────────────────────────────────  */
+.divider {
+  border:none;
+  border-top:1px solid var(--border);
+  margin:30px 0;
+}
+
+/* ─── FOOTER ─────────────────────────────────────────────────────  */
+.footer {
+  text-align:center;
+  padding:30px 20px;
+  color:var(--text-dim);
+  font-family:'DM Mono',monospace;
+  font-size:0.75rem;
+  border-top:1px solid var(--border);
+}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────────  */
+@media(max-width:600px) {
+  .card { padding:20px; }
+  .mcq-card, .wq-card { padding:18px; }
+  .hero h1 { font-size:1.9rem; }
+  .container { padding:24px 14px 60px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Theme Toggle -->
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">☀️</button>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-tag">📚 Exam Preparation System</div>
+  <h1>Security & Privacy in<br><span>Information Systems</span></h1>
+  <p>Foundations, Threats, and Protection Strategies — Dr. Abdalla Sayed</p>
+  <div class="hero-badges">
+    <span class="badge">🎯 6 Phases</span>
+    <span class="badge">❓ 30+ MCQs</span>
+    <span class="badge">✍️ Written Q&A</span>
+    <span class="badge">⚡ Revision Sheet</span>
+    <span class="badge">🧠 Mnemonics</span>
+    <span class="badge">🌙 Dark / Light</span>
+  </div>
+</div>
+
+<!-- Nav -->
+<div class="nav-wrap">
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showSection('explain')">📖 Deep Explanation</button>
+    <button class="nav-tab" onclick="showSection('summary')">📋 Smart Summary</button>
+    <button class="nav-tab" onclick="showSection('memory')">🧠 Memory Tricks</button>
+    <button class="nav-tab" onclick="showSection('mcq')">❓ MCQ Practice</button>
+    <button class="nav-tab" onclick="showSection('written')">✍️ Written Q&A</button>
+    <button class="nav-tab" onclick="showSection('revision')">⚡ Revision Sheet</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 1: DEEP EXPLANATION -->
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<div class="section active" id="section-explain">
+<div class="container">
+
+  <h2 class="section-title">Phase 1: <span>Deep Understanding</span></h2>
+  <p class="section-sub">Every concept explained clearly with analogies and exam-critical details</p>
+
+  <!-- WHY CYBERSECURITY MATTERS -->
+  <div class="card">
+    <h3 class="card-title"><span class="icon">🌐</span>Why Cybersecurity Matters Today</h3>
+    <p>We live in a world where almost every business, government, hospital, and individual depends on digital systems. This <strong>digital transformation</strong> means more data is online than ever before — and that data is extremely valuable to both legitimate organizations and malicious attackers.</p>
+    <p>There are four key reasons cybersecurity has become critical:</p>
+    <ul class="styled">
+      <li><strong>Digital Transformation:</strong> Every industry — banking, healthcare, education, retail — has moved operations online. More connectivity means more entry points for attackers.</li>
+      <li><strong>High Stakes:</strong> A single breach can cost millions in financial losses, destroy customer trust, and permanently damage an organization's reputation.</li>
+      <li><strong>Rising Threats:</strong> Cyberattacks grow more frequent and sophisticated every year. Attackers use AI, automation, and coordinated campaigns.</li>
+      <li><strong>Data as the Most Valuable Asset:</strong> Information (customer records, financial data, intellectual property) is now more valuable than physical assets for many organizations.</li>
+    </ul>
+    <div class="analogy">Think of it like this: In the past, a bank robber had to physically break into a vault. Today, an attacker sitting anywhere in the world can attempt to steal from millions of banks simultaneously through their online systems.</div>
+  </div>
+
+  <!-- WHAT IS INFORMATION SECURITY -->
+  <div class="card accent2">
+    <h3 class="card-title"><span class="icon">🔒</span>What is Information Security?</h3>
+    <div class="def-box">
+      <strong>Definition:</strong> Information security encompasses the <strong>practices, technologies, and policies</strong> designed to protect digital and physical information assets from <strong>unauthorized access, disclosure, modification, or destruction</strong>.
+    </div>
+    <p>Note the three components of the definition:</p>
+    <ul class="styled">
+      <li><strong>Practices:</strong> What people do (following procedures, training, good habits).</li>
+      <li><strong>Technologies:</strong> Tools used (firewalls, encryption, antivirus).</li>
+      <li><strong>Policies:</strong> Rules and regulations (acceptable use policies, data retention rules).</li>
+    </ul>
+    <p>It applies <strong>universally</strong> — to personal data, corporate data, and government records alike.</p>
+    <div class="important">Exams often test whether students understand that information security covers BOTH digital AND physical information. A printed medical record on a desk is also an information asset that needs protection.</div>
+  </div>
+
+  <!-- OBJECTIVES -->
+  <div class="card">
+    <h3 class="card-title"><span class="icon">🎯</span>Three Primary Objectives of Information Security</h3>
+    <ul class="styled">
+      <li><strong>Protect Sensitive Data:</strong> Implement controls (technical and administrative) to prevent unauthorized access or theft of confidential information.</li>
+      <li><strong>Maintain Trust:</strong> Organizations depend on stakeholder confidence. A breach destroys reputation and customer loyalty. Security maintains that trust.</li>
+      <li><strong>Ensure Business Continuity:</strong> Systems must remain operational even during incidents. A hospital whose systems go down cannot treat patients safely.</li>
+    </ul>
+    <div class="analogy">Like a bank: it must keep your money safe (protect data), ensure you trust it enough to deposit money (maintain trust), and remain open even on stormy days (business continuity).</div>
+  </div>
+
+  <!-- CIA TRIAD -->
+  <div class="card accent3">
+    <h3 class="card-title"><span class="icon">🔺</span>The CIA Triad — Foundation of All Security</h3>
+    <p>The CIA Triad is the most fundamental concept in information security. Every security decision, technology, and policy is ultimately aimed at upholding one or more of these three principles.</p>
+
+    <button class="collapsible-btn" onclick="toggleCollapse(this)">
+      🔵 Confidentiality — Keeping Information Private <span class="arrow">▼</span>
+    </button>
+    <div class="collapsible-content">
+      <div class="def-box">
+        <strong>Confidentiality:</strong> Ensures that information is accessible <em>only</em> to those <strong>authorized</strong> to view it. It protects against unauthorized disclosure.
+      </div>
+      <p>Three mechanisms enforce confidentiality:</p>
+      <ul class="styled">
+        <li><strong>Access Control:</strong> Authentication (proving who you are — login/password) and Authorization (deciding what you can access — permissions/roles).</li>
+        <li><strong>Encryption:</strong> Data is mathematically scrambled so that only someone with the decryption key can read it — both <em>data in transit</em> (being sent over a network) and <em>data at rest</em> (stored on a drive).</li>
+        <li><strong>Limited Exposure (Least Privilege):</strong> Users are given access ONLY to the data they need to do their job — nothing more.</li>
+      </ul>
+      <div class="analogy">A letter in a sealed envelope (encryption) delivered only to the named recipient (access control) with no copies made (limited exposure).</div>
+    </div>
+
+    <button class="collapsible-btn" onclick="toggleCollapse(this)">
+      🟢 Integrity — Ensuring Data Accuracy <span class="arrow">▼</span>
+    </button>
+    <div class="collapsible-content">
+      <div class="def-box">
+        <strong>Integrity:</strong> Ensures information remains <strong>accurate, complete, and unaltered</strong> except through authorized processes.
+      </div>
+      <p>Integrity is about trustworthiness of data. If an attacker silently changes a price in a database from $10 to $1, confidentiality may not be violated (no data was "read" by the attacker), but integrity is destroyed.</p>
+      <ul class="styled">
+        <li><strong>Hash Functions:</strong> A mathematical fingerprint of data. If even one character changes, the hash changes — immediately revealing tampering.</li>
+        <li><strong>Digital Signatures:</strong> Cryptographically verify that data came from a trusted source and hasn't been modified.</li>
+        <li><strong>Version Control:</strong> Track and record every change to data, enabling rollback and audit trails.</li>
+      </ul>
+      <div class="important"><strong>Critical Medical Records Example:</strong> In healthcare, integrity is literally life-or-death. If a patient's medication dosage is changed in their records (e.g., from 10mg to 100mg), a nurse following those records could fatally overdose the patient. Integrity failures kill people.</div>
+    </div>
+
+    <button class="collapsible-btn" onclick="toggleCollapse(this)">
+      🔴 Availability — Systems When You Need Them <span class="arrow">▼</span>
+    </button>
+    <div class="collapsible-content">
+      <div class="def-box">
+        <strong>Availability:</strong> Ensures that information and systems remain <strong>accessible to authorized users whenever needed</strong>.
+      </div>
+      <p>Even perfectly confidential and perfectly accurate data is useless if the system is down. Availability requires:</p>
+      <ul class="styled">
+        <li><strong>System Accessibility:</strong> Systems must be operational and responsive during all required hours (24/7 for critical infrastructure).</li>
+        <li><strong>Redundancy:</strong> Backup systems, servers, and power supplies mean no single point of failure can cause a complete outage.</li>
+        <li><strong>DDoS Attack Defense:</strong> Distributed Denial of Service attacks flood a server with millions of fake requests until it crashes. Availability controls defend against this.</li>
+      </ul>
+      <div class="analogy">Think of an ATM network. Even if every ATM is perfectly secure and the data is accurate, if all ATMs go offline Friday night, customers cannot access their money — availability fails, and trust is destroyed.</div>
+    </div>
+
+    <div class="important">The CIA Triad is the MOST tested concept. Know each definition, an example for each, and the technology/control that enforces each one.</div>
+  </div>
+
+  <!-- PRIVACY -->
+  <div class="card">
+    <h3 class="card-title"><span class="icon">🧑‍💼</span>What is Privacy?</h3>
+    <div class="def-box">
+      <strong>Privacy:</strong> The <strong>right of individuals</strong> to control how their personal information is <strong>collected, used, and shared</strong>.
+    </div>
+    <p>Privacy is related to security but distinct. Security protects <em>all</em> organizational assets. Privacy specifically protects <em>individuals' personal data</em> and their rights over it.</p>
+    <ul class="styled">
+      <li><strong>Protection of Personal Information:</strong> Personally Identifiable Information (PII) — names, addresses, financial records, health records, online behavior.</li>
+      <li><strong>User Control (Consent):</strong> Individuals decide what data to share, with whom, and for what purpose. Consent is paramount.</li>
+      <li><strong>Legal Requirements:</strong> Laws like GDPR (Europe), CCPA (California), and HIPAA (US healthcare) legally mandate privacy protections.</li>
+    </ul>
+  </div>
+
+  <!-- SECURITY vs PRIVACY TABLE -->
+  <div class="card accent2">
+    <h3 class="card-title"><span class="icon">⚖️</span>Security vs. Privacy — Key Differences</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Dimension</th><th>Security</th><th>Privacy</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Primary Focus</td><td>Protects all data and systems</td><td>Protects personal information</td></tr>
+          <tr><td>Objective</td><td>Defense against threats</td><td>Individual rights and control</td></tr>
+          <tr><td>Scope</td><td>Organizational assets</td><td>Personal data (PII)</td></tr>
+          <tr><td>Implementation</td><td>Technical controls</td><td>Policies and consent</td></tr>
+          <tr><td>Compliance Frameworks</td><td>ISO 27001, NIST</td><td>GDPR, CCPA, HIPAA</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="important">A system can be secure but not private (e.g., an employer can securely store and read all employee emails — secure, but arguably not private). They must work TOGETHER.</div>
+  </div>
+
+  <!-- THREE KEY ASSETS -->
+  <div class="card">
+    <h3 class="card-title"><span class="icon">🏗️</span>Three Key Assets to Protect</h3>
+    <p>Information security protects three categories of assets, each with unique vulnerabilities:</p>
+
+    <button class="collapsible-btn" onclick="toggleCollapse(this)">
+      🖥️ Hardware Security <span class="arrow">▼</span>
+    </button>
+    <div class="collapsible-content">
+      <p>Physical devices: computers, servers, networking equipment, smartphones.</p>
+      <ul class="styled">
+        <li><strong>Device Theft:</strong> A stolen laptop exposes all data on it and may give attackers access to corporate networks.</li>
+        <li><strong>Physical Damage:</strong> Floods, fires, or deliberate sabotage destroy hardware and the data on it.</li>
+        <li><strong>Protection Measures:</strong> Full-disk encryption (so stolen devices are unreadable), cable locks, secure server rooms, CCTV, and asset tracking.</li>
+      </ul>
+    </div>
+
+    <button class="collapsible-btn" onclick="toggleCollapse(this)">
+      💾 Software Security <span class="arrow">▼</span>
+    </button>
+    <div class="collapsible-content">
+      <p>Operating systems, applications, databases — the logic that processes information.</p>
+      <ul class="styled">
+        <li><strong>Malware:</strong> Viruses (self-replicating), Trojans (disguised malware), Spyware (covertly monitor), Ransomware (encrypt and demand payment).</li>
+        <li><strong>Unpatched Systems:</strong> Every piece of software has bugs. When vulnerabilities are discovered, vendors release patches. Unpatched systems are sitting ducks for known exploits.</li>
+        <li><strong>Defense:</strong> Firewalls, antivirus, regular patching, application whitelisting (only approved programs can run).</li>
+      </ul>
+    </div>
+
+    <button class="collapsible-btn" onclick="toggleCollapse(this)">
+      📊 Data Security <span class="arrow">▼</span>
+    </button>
+    <div class="collapsible-content">
+      <p>The actual information stored, processed, or transmitted — the most valuable and targeted asset.</p>
+      <ul class="styled">
+        <li><strong>Data Breaches:</strong> Unauthorized access exposing sensitive records (customer data, financial information, health records).</li>
+        <li><strong>Ransomware:</strong> Attackers encrypt a company's data and demand payment (often cryptocurrency) for the decryption key.</li>
+        <li><strong>Protection:</strong> Strong encryption, regular backups (stored separately), access controls (who can read/write data), and Data Loss Prevention (DLP) tools.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- THREAT LANDSCAPE -->
+  <div class="card accent3">
+    <h3 class="card-title"><span class="icon">⚠️</span>Key Cyber Threats — Five Attack Vectors</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Threat</th><th>What Happens</th><th>CIA Impact</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td>Loss</td><td>Permanent deletion/destruction of data</td><td>Availability</td><td>Hard drive failure destroys financial records</td></tr>
+          <tr><td>Interception</td><td>Unauthorized capture during transmission</td><td>Confidentiality</td><td>Attacker reads unencrypted WiFi traffic</td></tr>
+          <tr><td>Interruption</td><td>Disruption of system availability</td><td>Availability</td><td>DDoS attack takes bank website offline</td></tr>
+          <tr><td>Modification</td><td>Unauthorized data alteration</td><td>Integrity</td><td>Attacker changes medical dosage records</td></tr>
+          <tr><td>Fabrication</td><td>Creation of false data/records</td><td>Integrity + Confidentiality</td><td>Attacker inserts fake transactions</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MALWARE AND PHISHING -->
+  <div class="card">
+    <h3 class="card-title"><span class="icon">🦠</span>Malware Types & Social Engineering</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Type</th><th>How It Works</th><th>Goal</th></tr></thead>
+        <tbody>
+          <tr><td>Virus</td><td>Attaches to legitimate programs; spreads when executed</td><td>Damage systems, spread</td></tr>
+          <tr><td>Trojan</td><td>Disguises as legitimate software; runs malicious code in background</td><td>Steal data, backdoor access</td></tr>
+          <tr><td>Ransomware</td><td>Encrypts victim's files; demands payment for decryption key</td><td>Financial extortion</td></tr>
+          <tr><td>Spyware</td><td>Covertly monitors user activity and collects data</td><td>Credential theft, espionage</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>Social Engineering / Phishing:</strong> These attacks target <em>humans</em>, not systems. Attackers impersonate trusted entities (banks, colleagues, IT support) via email, phone, or messages to trick victims into:</p>
+    <ul class="styled">
+      <li>Revealing login credentials or passwords</li>
+      <li>Downloading malware attachments</li>
+      <li>Transferring money to attacker-controlled accounts</li>
+    </ul>
+    <div class="analogy">Phishing is like a con artist dressed as a police officer who asks you for your wallet to "verify your ID." The uniform (spoofed email/website) creates false trust. The attack exploits human psychology, not technology.</div>
+  </div>
+
+  <!-- SECURITY TECHNOLOGIES -->
+  <div class="card accent2">
+    <h3 class="card-title"><span class="icon">🛡️</span>Four Core Security Technologies</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Technology</th><th>How It Works</th><th>What It Protects</th></tr></thead>
+        <tbody>
+          <tr><td>Encryption</td><td>Converts data into unreadable code requiring a key to decrypt</td><td>Confidentiality (data at rest and in transit)</td></tr>
+          <tr><td>Firewalls</td><td>Monitor/control network traffic based on rules</td><td>Network perimeter, unauthorized access</td></tr>
+          <tr><td>Multi-Factor Authentication (MFA)</td><td>Requires 2+ verification factors (know/have/are)</td><td>Account compromise, identity theft</td></tr>
+          <tr><td>Intrusion Detection Systems (IDS)</td><td>Monitors traffic/activity for suspicious behavior; sends alerts</td><td>Real-time breach detection</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="important">MFA factors: Something you <strong>Know</strong> (password), Something you <strong>Have</strong> (phone/token), Something you <strong>Are</strong> (fingerprint/face). Exam often asks to identify which factor type is being used.</div>
+  </div>
+
+  <!-- RISK MANAGEMENT -->
+  <div class="card">
+    <h3 class="card-title"><span class="icon">📊</span>Risk Management</h3>
+    <div class="formula-box">
+      <div class="formula">Risk = Threat × Vulnerability × Impact</div>
+      <div class="formula-desc">Organizations cannot eliminate ALL risk — the goal is managing risk to an acceptable level</div>
+    </div>
+    <ul class="styled">
+      <li><strong>Threat:</strong> Any potential danger to an information system (e.g., hackers, natural disasters, disgruntled employees).</li>
+      <li><strong>Vulnerability:</strong> A weakness that could be exploited (e.g., unpatched software, weak passwords, unlocked doors).</li>
+      <li><strong>Impact:</strong> The damage that occurs if a threat successfully exploits a vulnerability (financial loss, data loss, reputational damage).</li>
+    </ul>
+    <p>The three-step risk management process:</p>
+    <ol class="styled">
+      <li><strong>Identify Risks:</strong> Catalog all threats, vulnerabilities, and assets through comprehensive assessments.</li>
+      <li><strong>Assess Impact:</strong> Evaluate the likelihood and potential damage of each risk to prioritize responses.</li>
+      <li><strong>Apply Controls:</strong> Implement security measures (technical, administrative, physical) to reduce risk to acceptable levels based on cost-benefit analysis.</li>
+    </ol>
+  </div>
+
+  <!-- EMERGING TRENDS -->
+  <div class="card accent3">
+    <h3 class="card-title"><span class="icon">🚀</span>Emerging Trends in Cybersecurity</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Trend</th><th>Core Concept</th><th>Key Challenge</th></tr></thead>
+        <tbody>
+          <tr><td>Cloud Security</td><td>Shared responsibility model — cloud provider secures infrastructure; customer secures data/applications</td><td>Multi-cloud management, data visibility</td></tr>
+          <tr><td>AI in Cybersecurity</td><td>Machine learning detects patterns; automates threat response; enables predictive analytics</td><td>Attackers also use AI for sophisticated attacks (arms race)</td></tr>
+          <tr><td>Zero Trust Model</td><td>"Never trust, always verify" — requires continuous authentication regardless of network location</td><td>Complex implementation; replaces traditional perimeter security</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="def-box">
+      <strong>Zero Trust:</strong> Assumes the network has already been breached. Every access request — even from inside the corporate network — must be verified. Uses <strong>micro-segmentation</strong> (dividing the network into tiny zones) and <strong>least-privilege access</strong>.
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 2: SMART SUMMARY -->
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<div class="section" id="section-summary">
+<div class="container">
+
+  <h2 class="section-title">Phase 2: <span>Smart Summary</span></h2>
+  <p class="section-sub">High-yield bullet points organized for maximum retention</p>
+
+  <div class="card">
+    <h3 class="card-title"><span class="icon">🌐</span>Why Cybersecurity Matters</h3>
+    <ul class="styled">
+      <li>Digital transformation → every industry online → more attack surface</li>
+      <li>Stakes: financial loss + reputational damage</li>
+      <li>Data = most valuable organizational asset today</li>
+      <li>Threats are growing in frequency AND sophistication</li>
+    </ul>
+  </div>
+
+  <div class="card accent2">
+    <h3 class="card-title"><span class="icon">🔒</span>Information Security — Core Definition</h3>
+    <ul class="styled">
+      <li><strong>Practices + Technologies + Policies</strong> protecting digital AND physical assets</li>
+      <li>Protects against: unauthorized <strong>access, disclosure, modification, destruction</strong></li>
+      <li>Applies universally: personal, corporate, government data</li>
+      <li><strong>3 Objectives:</strong> Protect sensitive data → Maintain trust → Ensure business continuity</li>
+    </ul>
+  </div>
+
+  <div class="card accent3">
+    <h3 class="card-title"><span class="icon">🔺</span>CIA Triad — THE Most Tested Topic</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Principle</th><th>Core Idea</th><th>Key Controls</th><th>Attack That Violates It</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Confidentiality</strong></td><td>Only authorized parties see data</td><td>Encryption, Access Control, Least Privilege</td><td>Interception, Data Breach</td></tr>
+          <tr><td><strong>Integrity</strong></td><td>Data is accurate and unaltered</td><td>Hash Functions, Digital Signatures, Version Control</td><td>Modification, Fabrication</td></tr>
+          <tr><td><strong>Availability</strong></td><td>Systems accessible when needed</td><td>Redundancy, Backups, DDoS Protection</td><td>DDoS, Ransomware, Hardware Failure</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 class="card-title"><span class="icon">🧑‍💼</span>Privacy — Key Points</h3>
+    <ul class="styled">
+      <li>Individual right to control personal data (PII)</li>
+      <li><strong>Consent</strong> is the core principle of privacy</li>
+      <li>Key laws: <strong>GDPR</strong> (EU), <strong>CCPA</strong> (California), <strong>HIPAA</strong> (US Healthcare)</li>
+      <li>Security ≠ Privacy — both needed together</li>
+      <li>Security = protects assets; Privacy = protects individuals' rights</li>
+    </ul>
+  </div>
+
+  <div class="card accent2">
+    <h3 class="card-title"><span class="icon">🏗️</span>Three Asset Categories</h3>
+    <ul class="styled">
+      <li><strong>Hardware:</strong> Physical devices → threats: theft, physical damage → protection: encryption, locks, secure facilities</li>
+      <li><strong>Software:</strong> Applications/OS → threats: malware, unpatched vulnerabilities → protection: firewalls, antivirus, patching</li>
+      <li><strong>Data:</strong> Most valuable → threats: breaches, ransomware → protection: encryption, backups, access controls</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3 class="card-title"><span class="icon">⚠️</span>Five Threat Types</h3>
+    <ul class="styled">
+      <li><strong>Loss</strong> → data destroyed → Availability</li>
+      <li><strong>Interception</strong> → data captured in transit → Confidentiality</li>
+      <li><strong>Interruption</strong> → service blocked (DDoS) → Availability</li>
+      <li><strong>Modification</strong> → data altered → Integrity</li>
+      <li><strong>Fabrication</strong> → false data inserted → Integrity</li>
+    </ul>
+  </div>
+
+  <div class="card accent3">
+    <h3 class="card-title"><span class="icon">🦠</span>Malware Types (Quick Reference)</h3>
+    <ul class="styled">
+      <li><strong>Virus</strong> → self-replicates, attaches to programs</li>
+      <li><strong>Trojan</strong> → disguised as legitimate software</li>
+      <li><strong>Ransomware</strong> → encrypts data, demands payment</li>
+      <li><strong>Phishing/Social Engineering</strong> → exploits humans, not systems</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3 class="card-title"><span class="icon">🛡️</span>Security Technologies</h3>
+    <ul class="styled">
+      <li><strong>Encryption:</strong> Data unreadable without key (at rest + in transit)</li>
+      <li><strong>Firewall:</strong> Monitors/filters network traffic by rules</li>
+      <li><strong>MFA:</strong> Know (password) + Have (phone) + Are (fingerprint)</li>
+      <li><strong>IDS:</strong> Monitors and alerts on suspicious activity in real-time</li>
+    </ul>
+  </div>
+
+  <div class="card accent2">
+    <h3 class="card-title"><span class="icon">📊</span>Risk Formula + Process</h3>
+    <div class="formula-box">
+      <div class="formula">Risk = Threat × Vulnerability × Impact</div>
+    </div>
+    <ul class="styled">
+      <li>Step 1: <strong>Identify</strong> risks</li>
+      <li>Step 2: <strong>Assess</strong> likelihood and impact</li>
+      <li>Step 3: <strong>Apply controls</strong> to reduce to acceptable level</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3 class="card-title"><span class="icon">🚀</span>Emerging Trends</h3>
+    <ul class="styled">
+      <li><strong>Cloud Security:</strong> Shared responsibility model — provider secures infrastructure, customer secures data</li>
+      <li><strong>AI in Security:</strong> Pattern detection, automated response, predictive analytics — but attackers use AI too</li>
+      <li><strong>Zero Trust:</strong> "Never trust, always verify" — continuous authentication, micro-segmentation, least-privilege</li>
+    </ul>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 3: MEMORY OPTIMIZATION -->
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<div class="section" id="section-memory">
+<div class="container">
+
+  <h2 class="section-title">Phase 3: <span>Memory Tricks</span></h2>
+  <p class="section-sub">Mnemonics, chunking, and common exam traps</p>
+
+  <!-- CIA MNEMONIC -->
+  <div class="card">
+    <h3 class="card-title"><span class="icon">🧠</span>Mnemonic: The CIA Triad</h3>
+    <div class="mnemonic">
+      <span class="word">C — I — A</span>
+      <div class="mnemonic-desc">
+        <strong>C</strong>onfidentiality = Can only the <em>right people</em> see it?<br>
+        <strong>I</strong>ntegrity = Is the data <em>correct and untouched</em>?<br>
+        <strong>A</strong>vailability = Can <em>authorized users access</em> it <em>when needed</em>?
+      </div>
+    </div>
+    <p style="margin-top:12px">Memory hook: Imagine the CIA (intelligence agency) — they <em>keep secrets</em> (Confidentiality), their intel must be <em>accurate</em> (Integrity), and their agents need <em>constant access to information</em> (Availability).</p>
+  </div>
+
+  <!-- MFA MNEMONIC -->
+  <div class="card accent2">
+    <h3 class="card-title"><span class="icon">🔑</span>Mnemonic: MFA Factors — "KHA"</h3>
+    <div class="mnemonic">
+      <span class="word" style="color:var(--accent2)">K · H · A</span>
+      <div class="mnemonic-desc">
+        <strong>K</strong>now (password, PIN, security question)<br>
+        <strong>H</strong>ave (phone, hardware token, smart card)<br>
+        <strong>A</strong>re (biometrics: fingerprint, face, voice)
+      </div>
+    </div>
+  </div>
+
+  <!-- FIVE THREATS MNEMONIC -->
+  <div class="card">
+    <h3 class="card-title"><span class="icon">⚠️</span>Mnemonic: Five Threats — "LIIMF"</h3>
+    <div class="mnemonic">
+      <span class="word">L · I · I · M · F</span>
+      <div class="mnemonic-desc">
+        <strong>L</strong>oss &nbsp;|&nbsp; <strong>I</strong>nterception &nbsp;|&nbsp; <strong>I</strong>nterruption &nbsp;|&nbsp; <strong>M</strong>odification &nbsp;|&nbsp; <strong>F</strong>abrication<br><br>
+        Memory phrase: <em>"Let's Identify Incidents, Mistakes &amp; Fakes"</em>
+      </div>
+    </div>
+  </div>
+
+  <!-- MALWARE MNEMONIC -->
+  <div class="card accent3">
+    <h3 class="card-title"><span class="icon">🦠</span>Mnemonic: Malware Types — "VTRS"</h3>
+    <div class="mnemonic">
+      <span class="word" style="color:var(--accent3)">V · T · R · S</span>
+      <div class="mnemonic-desc">
+        <strong>V</strong>irus — replicates &amp; spreads<br>
+        <strong>T</strong>rojan — disguised impostor<br>
+        <strong>R</strong>ansomware — holds data hostage<br>
+        <strong>S</strong>pyware — silent watcher
+      </div>
+    </div>
+  </div>
+
+  <!-- RISK FORMULA CHUNKED -->
+  <div class="card">
+    <h3 class="card-title"><span class="icon">📐</span>Chunking: Risk Formula</h3>
+    <div class="formula-box">
+      <div class="formula">Risk = Threat × Vulnerability × Impact</div>
+      <div class="formula-desc">T × V × I — "Television Is Very Interesting" (TV Is…)</div>
+    </div>
+    <p>If <strong>any factor is zero</strong>, risk approaches zero:</p>
+    <ul class="styled">
+      <li>No threat exists → Risk approaches 0 (rare)</li>
+      <li>No vulnerability → Risk approaches 0 (mitigated)</li>
+      <li>No impact → Risk is insignificant (unlikely for real systems)</li>
+    </ul>
+    <div class="analogy">A locked, unplugged computer in a bunker with no data: threat exists (someone could break in), but impact is near zero → low risk. Patch your systems to eliminate vulnerability!</div>
+  </div>
+
+  <!-- SPACED REPETITION GUIDE -->
+  <div class="card accent2">
+    <h3 class="card-title"><span class="icon">📅</span>Spaced Repetition Study Plan</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Day</th><th>Focus Area</th><th>Technique</th></tr></thead>
+        <tbody>
+          <tr><td>Day 1</td><td>CIA Triad — all three principles</td><td>Write definitions from memory 3 times</td></tr>
+          <tr><td>Day 2</td><td>5 Threats + their CIA mapping</td><td>Create a table without looking at notes</td></tr>
+          <tr><td>Day 3</td><td>Malware types + MFA factors</td><td>Teach someone else (or explain out loud)</td></tr>
+          <tr><td>Day 4</td><td>Security vs Privacy comparison</td><td>Write 5 differences without notes</td></tr>
+          <tr><td>Day 5</td><td>Risk formula + emerging trends</td><td>Practice MCQs cold</td></tr>
+          <tr><td>Day 6</td><td>Full review</td><td>Do all MCQs, check wrong answers</td></tr>
+          <tr><td>Night before</td><td>Revision sheet only</td><td>Read, do NOT cram new material</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- COMMON MISTAKES -->
+  <div class="card warn-card">
+    <h3 class="card-title"><span class="icon">🚨</span>Common Exam Mistakes & Traps</h3>
+    <ul class="styled">
+      <li><strong>TRAP:</strong> "Security and Privacy mean the same thing" → FALSE. Security protects all assets; Privacy protects individuals' rights over personal data. They overlap but are distinct.</li>
+      <li><strong>TRAP:</strong> Confusing Confidentiality with Privacy → Confidentiality is a security principle protecting any data; Privacy is a legal/ethical right about personal information.</li>
+      <li><strong>TRAP:</strong> A DDoS attack violates Confidentiality → FALSE. DDoS attacks disrupt Availability (the service goes down). No data is read.</li>
+      <li><strong>TRAP:</strong> Ransomware primarily violates Confidentiality → WRONG. Ransomware encrypts data (attacks Availability, as you can't access your own data). Confidentiality is secondary.</li>
+      <li><strong>TRAP:</strong> A Trojan is the same as a Virus → FALSE. A Virus self-replicates. A Trojan disguises itself as legitimate software but does NOT self-replicate.</li>
+      <li><strong>TRAP:</strong> MFA requires 2 passwords → FALSE. MFA requires two DIFFERENT FACTOR TYPES (e.g., password + fingerprint). Two passwords = same factor type = NOT proper MFA.</li>
+      <li><strong>TRAP:</strong> Zero Trust means trusting no external users → FALSE. Zero Trust means trusting NO ONE — not even internal users — without verification.</li>
+    </ul>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 4: MCQ PRACTICE -->
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<div class="section" id="section-mcq">
+<div class="container">
+
+  <h2 class="section-title">Phase 4: <span>MCQ Practice</span></h2>
+  <p class="section-sub">30 questions across easy, medium, and hard difficulty — click an option to reveal the answer</p>
+
+  <div class="mcq-toolbar">
+    <div class="score-display">Score: <span id="score-correct">0</span> / <span id="score-total">0</span> answered</div>
+    <div class="progress-bar" style="flex:1; min-width:80px">
+      <div class="progress-fill" id="score-bar" style="width:0%"></div>
+    </div>
+    <button class="btn" onclick="resetMCQ()">Reset All</button>
+  </div>
+
+  <div id="mcq-container"></div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 5: WRITTEN QUESTIONS -->
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<div class="section" id="section-written">
+<div class="container">
+
+  <h2 class="section-title">Phase 5: <span>Written Questions</span></h2>
+  <p class="section-sub">Short answer and essay questions with model answers — click to reveal</p>
+
+  <div id="written-container"></div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 6: REVISION SHEET -->
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<div class="section" id="section-revision">
+<div class="container">
+
+  <h2 class="section-title">Phase 6: <span>⚡ Rapid Revision Sheet</span></h2>
+  <p class="section-sub">Everything you need for the night before the exam — ultra-condensed</p>
+
+  <div class="formula-box" style="margin-bottom:24px">
+    <div class="formula">Risk = Threat × Vulnerability × Impact</div>
+    <div class="formula-desc">THE most important formula in the entire course</div>
+  </div>
+
+  <div class="rev-grid">
+
+    <div class="rev-card">
+      <h4>🔺 CIA Triad</h4>
+      <div class="rev-item"><span class="key">C</span><span>Confidentiality — only authorized access</span></div>
+      <div class="rev-item"><span class="key">I</span><span>Integrity — accurate, unaltered data</span></div>
+      <div class="rev-item"><span class="key">A</span><span>Availability — accessible when needed</span></div>
+    </div>
+
+    <div class="rev-card">
+      <h4>🔑 MFA Factors (KHA)</h4>
+      <div class="rev-item"><span class="key">Know</span><span>Password, PIN, secret answer</span></div>
+      <div class="rev-item"><span class="key">Have</span><span>Phone, hardware token, smart card</span></div>
+      <div class="rev-item"><span class="key">Are</span><span>Fingerprint, face scan, retina</span></div>
+    </div>
+
+    <div class="rev-card">
+      <h4>⚠️ 5 Threat Types</h4>
+      <div class="rev-item"><span class="key">Loss</span><span>Data destroyed → Availability</span></div>
+      <div class="rev-item"><span class="key">Interception</span><span>Captured in transit → Confidentiality</span></div>
+      <div class="rev-item"><span class="key">Interruption</span><span>Service blocked → Availability</span></div>
+      <div class="rev-item"><span class="key">Modification</span><span>Data altered → Integrity</span></div>
+      <div class="rev-item"><span class="key">Fabrication</span><span>False data inserted → Integrity</span></div>
+    </div>
+
+    <div class="rev-card">
+      <h4>🦠 Malware (VTRS)</h4>
+      <div class="rev-item"><span class="key">Virus</span><span>Self-replicates, attaches to programs</span></div>
+      <div class="rev-item"><span class="key">Trojan</span><span>Disguised as legit software</span></div>
+      <div class="rev-item"><span class="key">Ransomware</span><span>Encrypts data, demands payment</span></div>
+      <div class="rev-item"><span class="key">Spyware</span><span>Silently monitors user activity</span></div>
+    </div>
+
+    <div class="rev-card">
+      <h4>🛡️ Security Technologies</h4>
+      <div class="rev-item"><span class="key">Encryption</span><span>Scrambles data; needs key to read</span></div>
+      <div class="rev-item"><span class="key">Firewall</span><span>Filters traffic by rules</span></div>
+      <div class="rev-item"><span class="key">MFA</span><span>2+ different factor types</span></div>
+      <div class="rev-item"><span class="key">IDS</span><span>Monitors & alerts suspicious activity</span></div>
+    </div>
+
+    <div class="rev-card">
+      <h4>⚖️ Security vs Privacy</h4>
+      <div class="rev-item"><span class="key">Security</span><span>Protects all assets from threats</span></div>
+      <div class="rev-item"><span class="key">Privacy</span><span>Protects individuals' data rights</span></div>
+      <div class="rev-item"><span class="key">Sec Law</span><span>ISO 27001, NIST</span></div>
+      <div class="rev-item"><span class="key">Priv Law</span><span>GDPR, CCPA, HIPAA</span></div>
+    </div>
+
+    <div class="rev-card">
+      <h4>🏗️ Three Asset Types</h4>
+      <div class="rev-item"><span class="key">Hardware</span><span>Devices → theft, damage → encryption, locks</span></div>
+      <div class="rev-item"><span class="key">Software</span><span>Apps → malware, patches → firewall, AV</span></div>
+      <div class="rev-item"><span class="key">Data</span><span>Info → breaches → encryption, backups</span></div>
+    </div>
+
+    <div class="rev-card">
+      <h4>🚀 Emerging Trends</h4>
+      <div class="rev-item"><span class="key">Cloud</span><span>Shared responsibility model</span></div>
+      <div class="rev-item"><span class="key">AI</span><span>Pattern detection + automated response</span></div>
+      <div class="rev-item"><span class="key">Zero Trust</span><span>"Never trust, always verify"</span></div>
+    </div>
+
+    <div class="rev-card">
+      <h4>📌 Risk Process (3 Steps)</h4>
+      <div class="rev-item"><span class="key">1</span><span>Identify risks (threats, vulnerabilities, assets)</span></div>
+      <div class="rev-item"><span class="key">2</span><span>Assess impact and likelihood</span></div>
+      <div class="rev-item"><span class="key">3</span><span>Apply controls (cost-benefit basis)</span></div>
+    </div>
+
+    <div class="rev-card">
+      <h4>🚨 Key Traps to Avoid</h4>
+      <div class="rev-item"><span class="key">DDoS</span><span>Attacks Availability (NOT Confidentiality)</span></div>
+      <div class="rev-item"><span class="key">Ransomware</span><span>Attacks Availability (NOT just Confidentiality)</span></div>
+      <div class="rev-item"><span class="key">Trojan ≠ Virus</span><span>Trojan does NOT self-replicate</span></div>
+      <div class="rev-item"><span class="key">MFA</span><span>Needs DIFFERENT factor types, not 2 passwords</span></div>
+    </div>
+
+  </div>
+
+  <div class="card" style="margin-top:24px">
+    <h3 class="card-title"><span class="icon">📋</span>All Key Definitions — One Place</h3>
+    <div class="rev-item" style="padding:10px 0; border-bottom:1px solid var(--border)"><span class="key">InfoSec</span><span>Practices, technologies, policies protecting data from unauthorized access/disclosure/modification/destruction</span></div>
+    <div class="rev-item" style="padding:10px 0; border-bottom:1px solid var(--border)"><span class="key">Privacy</span><span>Individual's right to control collection, use, and sharing of personal information</span></div>
+    <div class="rev-item" style="padding:10px 0; border-bottom:1px solid var(--border)"><span class="key">Confidentiality</span><span>Information accessible only to authorized parties</span></div>
+    <div class="rev-item" style="padding:10px 0; border-bottom:1px solid var(--border)"><span class="key">Integrity</span><span>Data remains accurate, complete, and unaltered except by authorized processes</span></div>
+    <div class="rev-item" style="padding:10px 0; border-bottom:1px solid var(--border)"><span class="key">Availability</span><span>Information and systems accessible to authorized users whenever needed</span></div>
+    <div class="rev-item" style="padding:10px 0; border-bottom:1px solid var(--border)"><span class="key">Phishing</span><span>Social engineering attack impersonating trusted entity to steal credentials or install malware</span></div>
+    <div class="rev-item" style="padding:10px 0; border-bottom:1px solid var(--border)"><span class="key">Zero Trust</span><span>"Never trust, always verify" — continuous authentication with least-privilege and micro-segmentation</span></div>
+    <div class="rev-item" style="padding:10px 0"><span class="key">DDoS</span><span>Distributed Denial of Service — floods systems with traffic to make them unavailable to legitimate users</span></div>
+  </div>
+
+  <div class="card accent3" style="text-align:center">
+    <h3 class="card-title" style="justify-content:center"><span class="icon">🌙</span>Night Before Exam Checklist</h3>
+    <div style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:8px">
+      <span class="chip">✅ Know CIA Triad cold</span>
+      <span class="chip">✅ Know Risk formula</span>
+      <span class="chip">✅ Know 5 threat types + CIA mapping</span>
+      <span class="chip">✅ Know MFA 3 factors</span>
+      <span class="chip">✅ Know 4 malware types</span>
+      <span class="chip">✅ Know Security ≠ Privacy</span>
+      <span class="chip">✅ Know DDoS → Availability</span>
+      <span class="chip">✅ Know Zero Trust concept</span>
+      <span class="chip">✅ Know 4 security technologies</span>
+      <span class="chip">✅ Rest — no new material tonight</span>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<div class="footer">
+  Security &amp; Privacy in Information Systems · Exam Prep System · Dr. Abdalla Sayed · Built with ❤️
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<!-- JAVASCRIPT -->
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<script>
+// ─── NAV ────────────────────────────────────────────────────────────
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('section-' + id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// ─── THEME ──────────────────────────────────────────────────────────
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.querySelector('.theme-toggle').textContent = isDark ? '🌙' : '☀️';
+}
+
+// ─── COLLAPSIBLE ────────────────────────────────────────────────────
+function toggleCollapse(btn) {
+  btn.classList.toggle('open');
+  const content = btn.nextElementSibling;
+  content.classList.toggle('open');
+}
+
+// ─── MCQ DATA ───────────────────────────────────────────────────────
+const mcqData = [
+  {
+    q: "What does the 'C' in the CIA Triad stand for?",
+    opts: ["Cybersecurity","Confidentiality","Compliance","Control"],
+    ans: 1,
+    diff: "easy",
+    exp: "The CIA Triad stands for Confidentiality, Integrity, and Availability — the three core principles of information security."
+  },
+  {
+    q: "Which principle of the CIA Triad ensures that information systems remain accessible to authorized users?",
+    opts: ["Confidentiality","Integrity","Availability","Authentication"],
+    ans: 2,
+    diff: "easy",
+    exp: "Availability ensures systems are operational and accessible to authorized users whenever needed. DDoS attacks directly target this principle."
+  },
+  {
+    q: "A hospital's patient records are altered by an attacker, changing medication dosages. Which CIA principle is MOST directly violated?",
+    opts: ["Confidentiality","Availability","Integrity","Privacy"],
+    ans: 2,
+    diff: "easy",
+    exp: "Integrity ensures data remains accurate and unaltered. Modifying medication dosages violates data integrity, which in healthcare is literally life-or-death."
+  },
+  {
+    q: "What is the primary difference between security and privacy?",
+    opts: [
+      "Security uses technology while privacy uses only policies",
+      "Security protects all organizational assets while privacy focuses on individuals' rights over personal data",
+      "Privacy applies only to government data while security applies to corporate data",
+      "There is no meaningful difference"
+    ],
+    ans: 1,
+    diff: "easy",
+    exp: "Security protects all data and systems from threats. Privacy specifically protects individuals' rights to control how their personal information is collected, used, and shared."
+  },
+  {
+    q: "Which of the following is an example of a 'Trojan' malware?",
+    opts: [
+      "A program that spreads to other files when you open an infected document",
+      "Software that appears to be a legitimate free game but secretly steals your passwords",
+      "A program that encrypts your files and demands payment",
+      "An attack that floods a website with fake requests"
+    ],
+    ans: 1,
+    diff: "easy",
+    exp: "A Trojan disguises itself as legitimate software (like a free game) while secretly performing malicious actions. Unlike a virus, it does not self-replicate."
+  },
+  {
+    q: "Which regulation specifically governs health data privacy in the United States?",
+    opts: ["GDPR","CCPA","HIPAA","ISO 27001"],
+    ans: 2,
+    diff: "easy",
+    exp: "HIPAA (Health Insurance Portability and Accountability Act) mandates privacy and security protections for health information in the United States."
+  },
+  {
+    q: "A DDoS (Distributed Denial of Service) attack primarily targets which CIA principle?",
+    opts: ["Confidentiality","Integrity","Availability","Authentication"],
+    ans: 2,
+    diff: "medium",
+    exp: "DDoS attacks flood systems with traffic to overwhelm servers and make websites unavailable. This directly attacks Availability — no data is stolen or altered."
+  },
+  {
+    q: "Multi-Factor Authentication (MFA) requires which combination of factors?",
+    opts: [
+      "Two passwords from different accounts",
+      "Two or more different types of verification (know + have + are)",
+      "A username and a password",
+      "Any two pieces of personal information"
+    ],
+    ans: 1,
+    diff: "medium",
+    exp: "MFA requires two or more different TYPES of factors: Something you Know (password), Something you Have (phone), or Something you Are (biometric). Two passwords are the same factor type — not valid MFA."
+  },
+  {
+    q: "What does the Zero Trust security model assume about the network?",
+    opts: [
+      "Internal users are always trustworthy",
+      "Firewalls are sufficient for protection",
+      "The network has already been breached and no one should be trusted without verification",
+      "Only external traffic should be monitored"
+    ],
+    ans: 2,
+    diff: "medium",
+    exp: "Zero Trust operates on the principle of 'Never trust, always verify.' It assumes a breach has already occurred and requires continuous authentication and least-privilege access regardless of network location."
+  },
+  {
+    q: "Which threat type involves creating and inserting false data into a legitimate system?",
+    opts: ["Interception","Modification","Fabrication","Interruption"],
+    ans: 2,
+    diff: "medium",
+    exp: "Fabrication involves creating entirely false data or records and inserting them into legitimate systems (e.g., creating fake financial transactions). Modification changes existing data; Fabrication creates new fake data."
+  },
+  {
+    q: "An attacker captures login credentials as they are being sent over an unencrypted WiFi network. Which threat type is this?",
+    opts: ["Loss","Fabrication","Modification","Interception"],
+    ans: 3,
+    diff: "medium",
+    exp: "Interception involves unauthorized capture of data during transmission. The attacker is 'eavesdropping' on network traffic to read sensitive communications — a confidentiality violation."
+  },
+  {
+    q: "Which of the following BEST protects data 'in transit'?",
+    opts: [
+      "Full-disk encryption",
+      "Transport Layer Security (TLS/SSL) encryption",
+      "Cable locks on devices",
+      "Intrusion Detection Systems"
+    ],
+    ans: 1,
+    diff: "medium",
+    exp: "Data 'in transit' means data being transmitted over a network. TLS/SSL encrypts the communication channel. Full-disk encryption protects data 'at rest' (stored on a device)."
+  },
+  {
+    q: "According to the risk formula, if a system has zero vulnerabilities, what happens to risk?",
+    opts: [
+      "Risk remains unchanged",
+      "Risk doubles because threats remain",
+      "Risk approaches zero",
+      "Risk cannot be calculated"
+    ],
+    ans: 2,
+    diff: "medium",
+    exp: "Risk = Threat × Vulnerability × Impact. If Vulnerability = 0, then 0 multiplied by anything = 0. Eliminating vulnerabilities (through patching, controls) reduces risk to near zero regardless of threat level."
+  },
+  {
+    q: "What is 'phishing' specifically designed to exploit?",
+    opts: [
+      "Software vulnerabilities in web browsers",
+      "Hardware weaknesses in servers",
+      "Human psychology and trust",
+      "Database configuration errors"
+    ],
+    ans: 2,
+    diff: "medium",
+    exp: "Phishing is a social engineering attack. Unlike technical exploits targeting system flaws, phishing manipulates human psychology — exploiting trust, urgency, and authority to trick people into revealing credentials or installing malware."
+  },
+  {
+    q: "Which security technology acts as a barrier between trusted internal networks and untrusted external sources?",
+    opts: ["Encryption","Intrusion Detection System","Firewall","Multi-Factor Authentication"],
+    ans: 2,
+    diff: "medium",
+    exp: "A firewall is a network security system that monitors and controls incoming/outgoing traffic based on predetermined security rules. It acts as a perimeter barrier between trusted and untrusted networks."
+  },
+  {
+    q: "Ransomware PRIMARILY violates which CIA principle?",
+    opts: [
+      "Confidentiality — attackers read your data",
+      "Integrity — attackers alter your data",
+      "Availability — your data is encrypted and inaccessible to you",
+      "Privacy — personal information is exposed"
+    ],
+    ans: 2,
+    diff: "hard",
+    exp: "Ransomware encrypts the victim's data, making it inaccessible to the owner — a direct attack on Availability. The data is not stolen or read (Confidentiality) and not altered (Integrity). The victim CANNOT ACCESS their own data, which is the Availability violation."
+  },
+  {
+    q: "Under the 'shared responsibility model' for cloud security, what does the customer primarily remain responsible for?",
+    opts: [
+      "Physical data center security",
+      "Network hardware maintenance",
+      "Securing their own data and applications",
+      "Hypervisor and virtualization security"
+    ],
+    ans: 2,
+    diff: "hard",
+    exp: "In cloud's shared responsibility model: the cloud provider secures the infrastructure (physical servers, networking, hypervisors). The customer is responsible for securing their data, applications, user access, and configurations."
+  },
+  {
+    q: "A company stores customer passwords as plain text in its database. This is a failure of which concept?",
+    opts: [
+      "Availability — passwords should always be accessible",
+      "Confidentiality — passwords should be encrypted to prevent unauthorized reading",
+      "Integrity — passwords should be hashed",
+      "Non-repudiation — passwords should be signed"
+    ],
+    ans: 1,
+    diff: "hard",
+    exp: "Plain text passwords can be read by anyone with database access (insider threats, breached databases). Passwords must be hashed (integrity technique) and stored so they cannot be reversed. This is primarily a Confidentiality failure — the sensitive data (passwords) is not adequately protected from unauthorized reading."
+  },
+  {
+    q: "An IDS (Intrusion Detection System) DIFFERS from a firewall in that an IDS:",
+    opts: [
+      "Blocks unauthorized traffic from entering the network",
+      "Encrypts data before it is transmitted",
+      "Monitors and alerts on suspicious activity rather than blocking it",
+      "Authenticates users before granting network access"
+    ],
+    ans: 2,
+    diff: "hard",
+    exp: "A Firewall BLOCKS traffic based on rules (preventive). An IDS MONITORS and ALERTS on suspicious activity (detective). An IPS (Intrusion Prevention System) can both detect AND block. IDS = detection; Firewall = prevention."
+  },
+  {
+    q: "Which scenario BEST demonstrates a violation of 'Integrity' without violating 'Confidentiality'?",
+    opts: [
+      "An attacker reads encrypted emails by breaking the cipher",
+      "An unauthorized employee copies the CEO's files to a USB drive",
+      "An attacker silently changes the unit price of a product in a database without stealing any data",
+      "A DDoS attack takes down an e-commerce website"
+    ],
+    ans: 2,
+    diff: "hard",
+    exp: "Changing the price in a database (e.g., from $100 to $1) alters data without the attacker reading/stealing anything — pure Integrity violation. The attacker didn't access (Confidentiality) or deny service (Availability). This is the classic Integrity-only attack scenario."
+  },
+  {
+    q: "What distinguishes 'social engineering' from traditional cyberattacks?",
+    opts: [
+      "Social engineering uses more advanced technical tools",
+      "Social engineering exploits human psychology rather than technical vulnerabilities",
+      "Social engineering only targets government systems",
+      "Social engineering requires physical presence"
+    ],
+    ans: 1,
+    diff: "medium",
+    exp: "Social engineering attacks (like phishing, pretexting, baiting) manipulate human psychology — exploiting trust, fear, urgency, and authority — rather than technical system flaws. They are effective because humans are often the weakest link in the security chain."
+  },
+  {
+    q: "Which European regulation gives individuals the right to control their personal data and requires explicit consent?",
+    opts: ["HIPAA","NIST","GDPR","ISO 27001"],
+    ans: 2,
+    diff: "easy",
+    exp: "GDPR (General Data Protection Regulation) is the EU's comprehensive data privacy law. It grants individuals rights including the right to access, correct, delete, and control their personal data, with consent as a central requirement."
+  },
+  {
+    q: "The principle of 'Least Privilege' primarily enforces which CIA triad component?",
+    opts: ["Availability","Integrity","Confidentiality","Non-repudiation"],
+    ans: 2,
+    diff: "medium",
+    exp: "Least Privilege means giving users ONLY the minimum access needed to do their job — nothing more. This limits data exposure and directly enforces Confidentiality by minimizing the number of people who can access sensitive data."
+  },
+  {
+    q: "Which of the following CORRECTLY pairs a hash function with its security purpose?",
+    opts: [
+      "Hash functions encrypt data so it cannot be read",
+      "Hash functions create a digital fingerprint to detect if data has been altered",
+      "Hash functions compress data for faster transmission",
+      "Hash functions authenticate users by comparing passwords"
+    ],
+    ans: 1,
+    diff: "hard",
+    exp: "Hash functions produce a fixed-size 'fingerprint' of data. If even one bit of the original data changes, the hash changes completely. This makes them ideal for detecting unauthorized modifications — directly enforcing Data Integrity."
+  },
+  {
+    q: "An organization discovers that an employee accidentally deleted a critical database. Which threat type does this represent?",
+    opts: ["Fabrication","Modification","Interception","Loss"],
+    ans: 3,
+    diff: "easy",
+    exp: "Loss refers to the permanent deletion or destruction of data — whether through hardware failure, human error (like accidental deletion), or malicious action. This directly impacts Availability (and potentially Integrity)."
+  },
+  {
+    q: "Which THREE steps correctly describe the risk management process in the correct order?",
+    opts: [
+      "Apply controls → Assess impact → Identify risks",
+      "Identify risks → Assess impact → Apply controls",
+      "Assess impact → Identify risks → Apply controls",
+      "Apply controls → Identify risks → Assess impact"
+    ],
+    ans: 1,
+    diff: "medium",
+    exp: "The correct order: (1) Identify Risks — find all threats, vulnerabilities, assets; (2) Assess Impact — evaluate likelihood and damage; (3) Apply Controls — implement measures based on cost-benefit analysis. You must KNOW the risks before you can MEASURE them and before you can FIX them."
+  },
+  {
+    q: "What is 'micro-segmentation' in the context of Zero Trust?",
+    opts: [
+      "Breaking the network into tiny isolated zones to limit breach impact",
+      "Creating very small encrypted data packets",
+      "A technique for compressing security logs",
+      "Dividing the security team into specialized units"
+    ],
+    ans: 0,
+    diff: "hard",
+    exp: "Micro-segmentation divides the network into many small, isolated zones. Even if an attacker breaches one segment, they cannot move freely to other segments without re-verification. This limits 'lateral movement' and is a core Zero Trust technique."
+  },
+  {
+    q: "Which statement about the 'defense-in-depth' strategy is MOST accurate?",
+    opts: [
+      "One very strong security control is sufficient to protect all assets",
+      "Multiple overlapping security layers create redundancy so that if one fails, others remain",
+      "Defense-in-depth only applies to physical security",
+      "Defense-in-depth means duplicating the same security control multiple times"
+    ],
+    ans: 1,
+    diff: "medium",
+    exp: "Defense-in-depth uses multiple, overlapping layers of security. If an attacker bypasses the firewall, encryption still protects data. If credentials are stolen, MFA still blocks access. No single control is a silver bullet — layering creates true resilience."
+  },
+  {
+    q: "A self-replicating program that attaches to legitimate executable files and spreads when those files are run best describes:",
+    opts: ["Trojan","Ransomware","Virus","Spyware"],
+    ans: 2,
+    diff: "easy",
+    exp: "A Virus self-replicates by attaching to legitimate programs and spreads when those programs are executed. Key differentiator: self-replication. A Trojan does NOT self-replicate; it disguises itself as legitimate software."
+  },
+  {
+    q: "HARD: A company uses the same encryption key for all employees' data. An attacker who obtains this key can decrypt EVERYONE's data. This scenario represents a failure of which concept?",
+    opts: [
+      "Availability — the key should always be available",
+      "Integrity — the key should be hashed",
+      "Confidentiality AND poor key management — a single key creates a single point of failure",
+      "Non-repudiation — the key cannot be attributed to one user"
+    ],
+    ans: 2,
+    diff: "hard",
+    exp: "This is a Confidentiality failure caused by poor key management. Using a single shared key means compromising one key exposes ALL data. Best practice: unique keys per user/dataset, key rotation, and strict key management (e.g., using a Hardware Security Module). The scenario shows both a confidentiality risk AND a key management failure."
+  }
+];
+
+// ─── BUILD MCQ ──────────────────────────────────────────────────────
+let answered = 0, correct = 0;
+const letters = ['A','B','C','D'];
+
+function buildMCQ() {
+  const container = document.getElementById('mcq-container');
+  container.innerHTML = '';
+  mcqData.forEach((q, qi) => {
+    const card = document.createElement('div');
+    card.className = 'mcq-card';
+    card.id = 'mcq-' + qi;
+
+    const diffClass = q.diff === 'easy' ? 'diff-easy' : q.diff === 'medium' ? 'diff-medium' : 'diff-hard';
+
+    let optsHTML = q.opts.map((o, oi) =>
+      `<button class="mcq-opt" onclick="answerMCQ(${qi},${oi})">
+         <span class="opt-letter">${letters[oi]}</span>
+         <span>${o}</span>
+       </button>`
+    ).join('');
+
+    card.innerHTML = `
+      <div class="mcq-num">Question ${qi+1} of ${mcqData.length} <span class="diff-badge ${diffClass}">${q.diff}</span></div>
+      <div class="mcq-q">${q.q}</div>
+      <div class="mcq-options" id="opts-${qi}">${optsHTML}</div>
+      <div class="mcq-explanation" id="exp-${qi}"><strong>✅ Explanation:</strong> ${q.exp}</div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function answerMCQ(qi, selected) {
+  const opts = document.querySelectorAll(`#opts-${qi} .mcq-opt`);
+  const exp = document.getElementById('exp-' + qi);
+  const q = mcqData[qi];
+
+  if (opts[0].classList.contains('disabled')) return;
+
+  opts.forEach((opt, oi) => {
+    opt.classList.add('disabled');
+    if (oi === q.ans) opt.classList.add('correct');
+    else if (oi === selected && selected !== q.ans) opt.classList.add('wrong');
+  });
+
+  exp.classList.add('show');
+  answered++;
+  if (selected === q.ans) correct++;
+  updateScore();
+}
+
+function updateScore() {
+  document.getElementById('score-correct').textContent = correct;
+  document.getElementById('score-total').textContent = answered;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-bar').style.width = pct + '%';
+}
+
+function resetMCQ() {
+  answered = 0; correct = 0;
+  updateScore();
+  buildMCQ();
+}
+
+// ─── WRITTEN Q DATA ──────────────────────────────────────────────────
+const writtenData = [
+  {
+    type:"Short Answer",
+    q:"Define the CIA Triad and briefly explain each component with one example.",
+    answer:`The CIA Triad is the foundation of information security, representing three core principles:
+
+<strong>1. Confidentiality:</strong> Ensures that information is accessible only to authorized individuals. Controls include encryption and access management. Example: Encrypting patient medical records so only treating physicians can read them.
+
+<strong>2. Integrity:</strong> Ensures that data remains accurate, complete, and unaltered except through authorized processes. Controls include hash functions and digital signatures. Example: Using checksums to verify a software download has not been tampered with.
+
+<strong>3. Availability:</strong> Ensures that information and systems are accessible to authorized users whenever needed. Controls include redundancy and backup systems. Example: Hospital systems using redundant servers so patient data is always accessible, even if one server fails.`
+  },
+  {
+    type:"Short Answer",
+    q:"Explain the difference between Security and Privacy. Why do organizations need both?",
+    answer:`<strong>Security</strong> refers to the practices, technologies, and policies that protect all organizational assets (hardware, software, data) from threats such as unauthorized access, modification, or destruction. It is implemented through technical controls like firewalls and encryption, and governed by standards like ISO 27001 and NIST.
+
+<strong>Privacy</strong> is the right of individuals to control how their personal information is collected, used, and shared. It focuses specifically on personal data (PII) and individual consent, governed by regulations like GDPR, CCPA, and HIPAA.
+
+<strong>Why both are needed:</strong> A system can be secure without being private. For example, an employer can securely store all employee emails (security maintained) but read them without consent (privacy violated). Organizations need security to protect assets from external and internal threats, and privacy to respect individuals' legal rights and maintain public trust. Effective information protection requires both working together: security provides the technical foundation, while privacy provides the ethical and legal framework.`
+  },
+  {
+    type:"Short Answer",
+    q:"What is the Risk formula? Define each component and explain what happens if one component is zero.",
+    answer:`<strong>Risk = Threat × Vulnerability × Impact</strong>
+
+<strong>Threat:</strong> Any potential danger to an information system — e.g., hackers, malware, natural disasters, insider threats.
+
+<strong>Vulnerability:</strong> A weakness in the system that could be exploited — e.g., unpatched software, weak passwords, lack of encryption.
+
+<strong>Impact:</strong> The damage that results if a threat successfully exploits a vulnerability — e.g., financial loss, data theft, reputational damage, legal liability.
+
+<strong>If any component equals zero, risk approaches zero:</strong>
+- Zero Threat: If no threat exists, no attack can occur (rare in practice).
+- Zero Vulnerability: If vulnerabilities are eliminated through patching and controls, even present threats cannot succeed. This is the most actionable lever.
+- Zero Impact: If data has no value or systems have no critical role, successful attacks cause negligible harm (unlikely for real organizations).
+
+Organizations focus on reducing vulnerabilities and impact since threats (external actors, nature) cannot be fully controlled.`
+  },
+  {
+    type:"Short Answer",
+    q:"Describe THREE types of malware and how each works.",
+    answer:`<strong>1. Virus:</strong> A virus is self-replicating malicious code that attaches itself to legitimate programs or files. It spreads when the infected file is executed or shared. When activated, viruses can corrupt files, steal data, or cause system damage. Example: A virus embedded in an email attachment spreads to all contacts in a victim's address book.
+
+<strong>2. Trojan:</strong> A Trojan disguises itself as legitimate, useful software (e.g., a free game or a utility program) while secretly performing malicious actions in the background, such as creating backdoors, stealing credentials, or downloading additional malware. Unlike viruses, Trojans do NOT self-replicate. Example: Fake antivirus software that actually installs spyware.
+
+<strong>3. Ransomware:</strong> Ransomware encrypts the victim's files or entire drive, making them completely inaccessible. The attacker then demands payment (usually cryptocurrency) in exchange for the decryption key. Even if paid, the key may not be provided. Ransomware attacks Availability by rendering data unusable. Example: The WannaCry ransomware attack in 2017 affected hundreds of thousands of systems globally, including UK hospitals.`
+  },
+  {
+    type:"Long Essay",
+    q:"Discuss the five categories of cyber threats (Loss, Interception, Interruption, Modification, Fabrication). For each, identify which CIA principle it violates and give a real-world example.",
+    answer:`Cyber threats can be categorized into five types based on how they impact information assets:
+
+<strong>1. Loss</strong>
+Loss refers to the permanent deletion or destruction of data, whether through hardware failure, human error, or deliberate malicious action.
+- <em>CIA Violation:</em> Availability (data is gone and cannot be accessed) and potentially Integrity.
+- <em>Example:</em> A ransomware attack destroys file backups before encrypting data, making recovery impossible. A natural disaster floods a data center, destroying servers.
+
+<strong>2. Interception</strong>
+Interception occurs when an unauthorized party captures data while it is being transmitted over a network.
+- <em>CIA Violation:</em> Confidentiality — an unauthorized party can now read the data.
+- <em>Example:</em> An attacker on a public WiFi network uses packet-sniffing tools to capture unencrypted login credentials being transmitted to a website (a 'man-in-the-middle' attack).
+
+<strong>3. Interruption</strong>
+Interruption involves disrupting the availability of a system or service, preventing legitimate users from accessing it.
+- <em>CIA Violation:</em> Availability — authorized users cannot use the system.
+- <em>Example:</em> A Distributed Denial of Service (DDoS) attack floods an online banking platform with millions of fake requests, overwhelming the servers and making the site unavailable to real customers for hours.
+
+<strong>4. Modification</strong>
+Modification involves unauthorized alteration of existing data, changing it from its correct value to something incorrect or harmful.
+- <em>CIA Violation:</em> Integrity — data is no longer trustworthy or accurate.
+- <em>Example:</em> An attacker with database access changes a patient's medication dosage from 10mg to 100mg. The data remains accessible (Availability intact), but it is now fatally wrong (Integrity destroyed).
+
+<strong>5. Fabrication</strong>
+Fabrication involves creating entirely false data or records and inserting them into a legitimate system.
+- <em>CIA Violation:</em> Integrity (false data corrupts records) and potentially Confidentiality.
+- <em>Example:</em> A fraudulent insider creates fake financial transactions in an accounting system, inserting non-existent purchases to embezzle money. The system is unaware that the new records are entirely fabricated.
+
+<strong>Conclusion:</strong> Understanding these five threat categories helps organizations identify which CIA principles are at risk and select appropriate defensive controls. Encryption counters Interception; backups counter Loss; DDoS protection counters Interruption; hash functions and audit logs counter Modification and Fabrication.`
+  },
+  {
+    type:"Long Essay",
+    q:"What is Multi-Factor Authentication (MFA)? Describe its three factor types, explain why it is more secure than passwords alone, and give an example of each factor type.",
+    answer:`<strong>Multi-Factor Authentication (MFA)</strong> is a security mechanism that requires users to provide two or more different types of verification before gaining access to a system. The key requirement is that factors must be from DIFFERENT categories — not simply two passwords.
+
+<strong>The Three Factor Types:</strong>
+
+<strong>1. Something You Know (Knowledge Factor)</strong>
+Information that only the user should know.
+- Examples: Password, PIN, secret question answer, passphrase.
+- Weakness: Can be guessed, phished, or observed over the shoulder.
+
+<strong>2. Something You Have (Possession Factor)</strong>
+A physical device or object the user possesses.
+- Examples: Smartphone with authenticator app (Google Authenticator), hardware token (YubiKey), smart card, one-time SMS code.
+- Weakness: Can be lost, stolen, or SIM-swapped.
+
+<strong>3. Something You Are (Inherence Factor)</strong>
+A biometric characteristic unique to the user's body.
+- Examples: Fingerprint scan, facial recognition, voice recognition, retina scan.
+- Weakness: Cannot be changed if compromised; privacy concerns with biometric storage.
+
+<strong>Why MFA is more secure than passwords alone:</strong>
+A password alone represents a single point of failure. If an attacker phishes, guesses, or buys a stolen password on the dark web, they gain full access. MFA requires an attacker to compromise TWO DIFFERENT types of factors simultaneously — a dramatically more difficult task. Even if a password is stolen, the attacker cannot access the account without also possessing the user's physical phone (Have) or bypassing their biometrics (Are).
+
+<strong>Real-World MFA Example:</strong> Online banking requires a password (Know) + a one-time code sent to your registered mobile phone (Have). An attacker who steals your password cannot log in without also stealing your phone.
+
+MFA is considered one of the most effective and cost-efficient security controls available.`
+  },
+  {
+    type:"Short Answer",
+    q:"Explain the Zero Trust security model. What problem does it solve compared to traditional perimeter security?",
+    answer:`<strong>Traditional Perimeter Security</strong> operates on a 'castle and moat' model: robust defenses protect the perimeter (firewall at network edge), but once inside the network, users and systems are implicitly trusted. This worked when employees only worked from office networks.
+
+<strong>The Problem:</strong> Modern environments involve remote workers, cloud services, mobile devices, and third-party vendors — all accessing corporate data from outside the traditional perimeter. Once attackers breach or bypass the perimeter (through VPN vulnerabilities, phishing, or insider threats), they can move freely inside the 'trusted' network.
+
+<strong>Zero Trust Model</strong> operates on the principle: <em>"Never trust, always verify."</em> It assumes that the network has ALREADY been compromised and that no user, device, or system — inside or outside the network — should be trusted automatically.
+
+<strong>Key Zero Trust Principles:</strong>
+1. <strong>Continuous Authentication:</strong> Every access request is verified, every time, regardless of location.
+2. <strong>Least-Privilege Access:</strong> Users get only the minimum permissions needed for their specific task.
+3. <strong>Micro-Segmentation:</strong> The network is divided into tiny isolated zones; breaching one zone doesn't grant access to others.
+4. <strong>Assume Breach:</strong> Security controls are designed assuming an attacker is already inside.
+
+<strong>Real-World Application:</strong> Even an employee logged in from the corporate office must authenticate again to access the HR database — their location inside the network grants them no automatic trust.
+
+Zero Trust is especially valuable in cloud environments and with remote workforces where the traditional network perimeter no longer exists.`
+  }
+];
+
+function buildWritten() {
+  const container = document.getElementById('written-container');
+  container.innerHTML = '';
+  writtenData.forEach((wq, wi) => {
+    const card = document.createElement('div');
+    card.className = 'wq-card';
+    card.innerHTML = `
+      <div class="wq-type">${wq.type}</div>
+      <div class="wq-q">Q${wi+1}: ${wq.q}</div>
+      <button class="wq-toggle" onclick="toggleWQ(${wi})">▶ Show Model Answer</button>
+      <div class="wq-answer" id="wq-${wi}">
+        <span class="model-label">✅ Model Answer</span>
+        ${wq.answer}
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function toggleWQ(wi) {
+  const ans = document.getElementById('wq-' + wi);
+  const btn = ans.previousElementSibling;
+  const isOpen = ans.classList.toggle('show');
+  btn.textContent = isOpen ? '▼ Hide Model Answer' : '▶ Show Model Answer';
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────
+buildMCQ();
+buildWritten();
+</script>
+</body>
+</html>
