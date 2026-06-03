@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cryptography Exam Prep — Dr. Abdalla Sayed</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f12;
+    --bg2: #151820;
+    --bg3: #1c2030;
+    --bg4: #242840;
+    --border: rgba(100,120,200,0.15);
+    --border2: rgba(100,120,200,0.3);
+    --text: #e8ecf8;
+    --text2: #9aa5c4;
+    --text3: #5a6380;
+    --accent: #6c8fff;
+    --accent2: #a78bfa;
+    --accent3: #34d399;
+    --accent4: #f59e0b;
+    --accent5: #f87171;
+    --accent6: #38bdf8;
+    --card: #161b2e;
+    --card2: #1e2540;
+    --correct: #064e3b;
+    --correct-border: #34d399;
+    --wrong: #450a0a;
+    --wrong-border: #f87171;
+    --tag-bg: rgba(108,143,255,0.12);
+    --tag-text: #93b4ff;
+    --highlight: rgba(108,143,255,0.15);
+  }
+  [data-theme="light"] {
+    --bg: #f0f2f8;
+    --bg2: #ffffff;
+    --bg3: #e8ecf5;
+    --bg4: #dce2f0;
+    --border: rgba(60,80,160,0.12);
+    --border2: rgba(60,80,160,0.25);
+    --text: #1a1f36;
+    --text2: #4a5278;
+    --text3: #8890b0;
+    --accent: #3b6fff;
+    --accent2: #7c3aed;
+    --accent3: #059669;
+    --accent4: #d97706;
+    --accent5: #dc2626;
+    --accent6: #0284c7;
+    --card: #ffffff;
+    --card2: #f0f4ff;
+    --correct: #d1fae5;
+    --correct-border: #059669;
+    --wrong: #fee2e2;
+    --wrong-border: #dc2626;
+    --tag-bg: rgba(59,111,255,0.08);
+    --tag-text: #3b6fff;
+    --highlight: rgba(59,111,255,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
+  }
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; gap: 0; height: 60px;
+    backdrop-filter: blur(10px);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 1rem;
+    color: var(--accent);
+    margin-right: 2rem;
+    white-space: nowrap;
+    letter-spacing: -0.02em;
+  }
+  .nav-logo span { color: var(--text2); font-weight: 400; }
+  .nav-tabs {
+    display: flex; gap: 2px; flex: 1; overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    background: none; border: none; cursor: pointer;
+    color: var(--text3); font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px;
+    white-space: nowrap; transition: all 0.2s;
+    letter-spacing: 0.02em;
+  }
+  .nav-btn:hover { color: var(--text); background: var(--bg3); }
+  .nav-btn.active { color: var(--accent); background: var(--tag-bg); }
+  .nav-right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+  .theme-btn {
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text2); cursor: pointer; border-radius: 8px;
+    padding: 7px 12px; font-size: 0.85rem; transition: all 0.2s;
+  }
+  .theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+  /* MAIN LAYOUT */
+  main { padding-top: 60px; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .container { max-width: 900px; margin: 0 auto; padding: 3rem 2rem; }
+
+  /* HERO */
+  .hero {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 3.5rem 2rem 2.5rem;
+    text-align: center;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: var(--tag-bg); color: var(--tag-text);
+    border: 1px solid var(--border2);
+    font-size: 0.75rem; font-weight: 500; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 4px 14px; border-radius: 20px;
+    margin-bottom: 1.2rem;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    letter-spacing: -0.03em; line-height: 1.15;
+    color: var(--text); margin-bottom: 0.75rem;
+  }
+  .hero h1 .gradient {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    color: var(--text2); font-size: 1.05rem; max-width: 560px; margin: 0 auto 2rem;
+  }
+  .hero-stats {
+    display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap;
+  }
+  .hero-stat { text-align: center; }
+  .hero-stat .num {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.8rem;
+    color: var(--accent);
+  }
+  .hero-stat .lbl { font-size: 0.78rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; }
+  /* PHASE HEADER */
+  .phase-header {
+    display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem; border-bottom: 1px solid var(--border);
+  }
+  .phase-num {
+    background: var(--accent); color: #fff;
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: 0.75rem; letter-spacing: 0.1em;
+    padding: 4px 10px; border-radius: 4px; text-transform: uppercase;
+  }
+  .phase-title {
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: 1.6rem; letter-spacing: -0.02em;
+  }
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--border2); }
+  .card h3 {
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: 1.1rem; color: var(--text); margin-bottom: 0.75rem;
+    letter-spacing: -0.01em;
+  }
+  .card p { color: var(--text2); line-height: 1.75; }
+  .card-accent { border-left: 3px solid var(--accent); }
+  .card-green { border-left: 3px solid var(--accent3); }
+  .card-yellow { border-left: 3px solid var(--accent4); }
+  .card-red { border-left: 3px solid var(--accent5); }
+  /* CHAPTER SECTION */
+  .chapter {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; margin-bottom: 1.5rem; overflow: hidden;
+  }
+  .chapter-head {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1.2rem 1.5rem; cursor: pointer;
+    transition: background 0.2s;
+  }
+  .chapter-head:hover { background: var(--bg3); }
+  .ch-num {
+    background: var(--tag-bg); color: var(--tag-text);
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: 0.8rem; padding: 4px 10px; border-radius: 6px; white-space: nowrap;
+  }
+  .ch-title {
+    font-family: 'Syne', sans-serif; font-weight: 600;
+    font-size: 1.05rem; flex: 1;
+  }
+  .ch-arrow {
+    color: var(--text3); font-size: 1.2rem; transition: transform 0.3s;
+  }
+  .chapter.open .ch-arrow { transform: rotate(180deg); }
+  .chapter-body { display: none; padding: 0 1.5rem 1.5rem; }
+  .chapter.open .chapter-body { display: block; }
+  /* CONCEPT GRID */
+  .concept-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem; margin: 1.25rem 0;
+  }
+  .concept-card {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.2rem;
+  }
+  .concept-card .icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+  .concept-card h4 {
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: 0.95rem; color: var(--accent); margin-bottom: 0.4rem;
+  }
+  .concept-card p { font-size: 0.9rem; color: var(--text2); line-height: 1.6; }
+  /* HIGHLIGHT BOX */
+  .highlight-box {
+    background: var(--highlight); border: 1px solid var(--border2);
+    border-radius: 10px; padding: 1.1rem 1.4rem; margin: 1rem 0;
+  }
+  .highlight-box .label {
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 0.4rem;
+  }
+  .highlight-box p { color: var(--text); font-size: 0.95rem; }
+  /* ANALOGY BOX */
+  .analogy-box {
+    background: rgba(52,211,153,0.05); border: 1px solid rgba(52,211,153,0.2);
+    border-radius: 10px; padding: 1.1rem 1.4rem; margin: 1rem 0;
+  }
+  .analogy-box .label {
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--accent3); margin-bottom: 0.4rem;
+  }
+  .analogy-box p { color: var(--text); font-size: 0.93rem; }
+  /* EXAM TIP */
+  .exam-tip {
+    background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.2);
+    border-radius: 10px; padding: 1rem 1.4rem; margin: 1rem 0;
+    display: flex; gap: 0.75rem; align-items: flex-start;
+  }
+  .exam-tip .tip-icon { font-size: 1.1rem; margin-top: 2px; }
+  .exam-tip .tip-label { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent4); }
+  .exam-tip p { font-size: 0.92rem; color: var(--text2); margin-top: 0.2rem; }
+  /* COMPARISON TABLE */
+  .comp-table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: 0.9rem; }
+  .comp-table th {
+    background: var(--bg4); color: var(--accent);
+    font-family: 'Syne', sans-serif; font-weight: 600;
+    padding: 10px 14px; text-align: left; font-size: 0.82rem;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .comp-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text2); }
+  .comp-table tr:hover td { background: var(--bg3); color: var(--text); }
+  .comp-table td:first-child { color: var(--text); font-weight: 500; }
+  /* STEPS */
+  .steps { margin: 1rem 0; }
+  .step {
+    display: flex; gap: 1rem; margin-bottom: 1rem; align-items: flex-start;
+  }
+  .step-num {
+    background: var(--accent); color: #fff;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.8rem;
+    min-width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 2px;
+  }
+  .step-content h4 { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.95rem; margin-bottom: 0.2rem; }
+  .step-content p { font-size: 0.92rem; color: var(--text2); }
+  /* SUMMARY SECTION */
+  .summary-chapter { margin-bottom: 2rem; }
+  .summary-chapter h3 {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem;
+    color: var(--accent); margin-bottom: 0.75rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .bullet-list { list-style: none; padding: 0; }
+  .bullet-list li {
+    display: flex; gap: 0.6rem; padding: 0.35rem 0;
+    font-size: 0.93rem; color: var(--text2); align-items: flex-start;
+  }
+  .bullet-list li::before {
+    content: "→"; color: var(--accent); font-weight: 700;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .bullet-list li strong { color: var(--text); }
+  /* MNEMONIC */
+  .mnemonic {
+    background: var(--card2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.2rem; margin: 1rem 0;
+  }
+  .mnemonic .mnemo-title {
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent2); margin-bottom: 0.75rem;
+  }
+  .mnemo-word { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; letter-spacing: 0.05em; }
+  .mnemo-word span { color: var(--accent); }
+  .mnemo-breakdown { margin-top: 0.6rem; }
+  .mnemo-item { display: flex; gap: 0.5rem; font-size: 0.9rem; color: var(--text2); padding: 2px 0; }
+  .mnemo-item strong { color: var(--accent); min-width: 20px; }
+  /* MCQ SECTION */
+  .mcq-controls {
+    display: flex; gap: 0.75rem; margin-bottom: 2rem; flex-wrap: wrap; align-items: center;
+  }
+  .filter-btn {
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text2); font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem; padding: 6px 14px; border-radius: 6px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .mcq-progress {
+    margin-left: auto; font-size: 0.83rem; color: var(--text3);
+  }
+  .mcq-question {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.5rem; margin-bottom: 1.25rem;
+    transition: border-color 0.2s;
+  }
+  .mcq-question:hover { border-color: var(--border2); }
+  .mcq-meta {
+    display: flex; gap: 0.5rem; margin-bottom: 0.85rem; flex-wrap: wrap;
+  }
+  .diff-badge {
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; padding: 3px 9px; border-radius: 4px;
+  }
+  .diff-easy { background: rgba(52,211,153,0.12); color: var(--accent3); }
+  .diff-medium { background: rgba(245,158,11,0.12); color: var(--accent4); }
+  .diff-hard { background: rgba(248,113,113,0.12); color: var(--accent5); }
+  .topic-tag {
+    font-size: 0.7rem; color: var(--tag-text); background: var(--tag-bg);
+    padding: 3px 9px; border-radius: 4px; font-weight: 500;
+  }
+  .mcq-q-text {
+    font-size: 0.97rem; font-weight: 500; color: var(--text);
+    margin-bottom: 1rem; line-height: 1.65;
+  }
+  .mcq-options { display: flex; flex-direction: column; gap: 0.5rem; }
+  .mcq-opt {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.75rem 1rem; cursor: pointer;
+    font-size: 0.92rem; color: var(--text2); transition: all 0.2s;
+    text-align: left; width: 100%;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .mcq-opt:hover { border-color: var(--accent); color: var(--text); background: var(--highlight); }
+  .mcq-opt.correct { background: var(--correct); border-color: var(--correct-border); color: var(--accent3); }
+  .mcq-opt.wrong { background: var(--wrong); border-color: var(--wrong-border); color: var(--accent5); }
+  .opt-letter {
+    background: var(--bg4); color: var(--text3);
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.78rem;
+    min-width: 26px; height: 26px; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .mcq-opt.correct .opt-letter { background: rgba(52,211,153,0.3); color: var(--accent3); }
+  .mcq-opt.wrong .opt-letter { background: rgba(248,113,113,0.3); color: var(--accent5); }
+  .mcq-explanation {
+    display: none; margin-top: 1rem;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1rem;
+    font-size: 0.9rem; color: var(--text2); line-height: 1.65;
+  }
+  .mcq-explanation.visible { display: block; animation: fadeIn 0.3s ease; }
+  .explanation-label {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.78rem;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);
+    margin-bottom: 0.4rem;
+  }
+  /* WRITTEN QUESTIONS */
+  .wq-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; margin-bottom: 1.25rem; overflow: hidden;
+  }
+  .wq-header {
+    padding: 1.2rem 1.5rem; cursor: pointer;
+    display: flex; align-items: flex-start; gap: 1rem;
+    transition: background 0.2s;
+  }
+  .wq-header:hover { background: var(--bg3); }
+  .wq-num {
+    background: var(--accent2); color: #fff;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.78rem;
+    padding: 4px 10px; border-radius: 4px; white-space: nowrap; margin-top: 1px;
+  }
+  .wq-type {
+    font-size: 0.72rem; color: var(--text3); text-transform: uppercase;
+    letter-spacing: 0.08em; font-weight: 500; margin-bottom: 0.3rem;
+  }
+  .wq-q { font-size: 0.97rem; color: var(--text); font-weight: 500; line-height: 1.6; }
+  .wq-toggle {
+    margin-left: auto; color: var(--text3); font-size: 1.1rem;
+    transition: transform 0.3s; flex-shrink: 0;
+  }
+  .wq-card.open .wq-toggle { transform: rotate(180deg); }
+  .wq-answer { display: none; padding: 0 1.5rem 1.5rem; }
+  .wq-card.open .wq-answer { display: block; animation: fadeIn 0.3s ease; }
+  .wq-answer h4 {
+    font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.8rem;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent3);
+    margin-bottom: 0.75rem;
+  }
+  .wq-answer p, .wq-answer li { font-size: 0.93rem; color: var(--text2); line-height: 1.7; margin-bottom: 0.5rem; }
+  .wq-answer ul { padding-left: 1.2rem; }
+  .wq-answer strong { color: var(--text); }
+  /* REVISION SHEET */
+  .revision-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+  .rev-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.2rem;
+  }
+  .rev-card h4 {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem;
+    letter-spacing: 0.04em; text-transform: uppercase; color: var(--accent);
+    margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);
+  }
+  .rev-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 0.3rem 0; border-bottom: 1px solid var(--border); gap: 0.5rem; }
+  .rev-item:last-child { border-bottom: none; }
+  .rev-key { font-size: 0.82rem; color: var(--text2); flex: 1; }
+  .rev-val { font-size: 0.82rem; color: var(--text); font-weight: 500; text-align: right; font-family: 'DM Mono', monospace; }
+  .quick-list { list-style: none; padding: 0; }
+  .quick-list li {
+    font-size: 0.85rem; color: var(--text2); padding: 0.3rem 0;
+    border-bottom: 1px solid var(--border); display: flex; gap: 0.4rem;
+    align-items: flex-start;
+  }
+  .quick-list li:last-child { border-bottom: none; }
+  .quick-list li::before { content: "•"; color: var(--accent); flex-shrink: 0; }
+  .cheatsheet-banner {
+    background: linear-gradient(135deg, rgba(108,143,255,0.1), rgba(167,139,250,0.1));
+    border: 1px solid var(--border2); border-radius: 12px;
+    padding: 1.5rem; margin-bottom: 2rem; text-align: center;
+  }
+  .cheatsheet-banner h2 {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.3rem;
+    letter-spacing: -0.02em; margin-bottom: 0.3rem;
+  }
+  .cheatsheet-banner p { font-size: 0.88rem; color: var(--text3); }
+  /* MISC */
+  kbd {
+    background: var(--bg4); border: 1px solid var(--border2);
+    border-radius: 4px; padding: 2px 7px; font-family: 'DM Mono', monospace;
+    font-size: 0.82rem; color: var(--text);
+  }
+  .tag {
+    display: inline-block; background: var(--tag-bg); color: var(--tag-text);
+    font-size: 0.78rem; padding: 2px 9px; border-radius: 4px; font-weight: 500;
+    margin: 2px;
+  }
+  .score-box {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1rem 1.5rem;
+    display: flex; gap: 2rem; flex-wrap: wrap; margin-bottom: 1rem;
+  }
+  .score-item { text-align: center; }
+  .score-num { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; color: var(--accent); }
+  .score-lbl { font-size: 0.78rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
+  .reset-btn {
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text2); cursor: pointer; border-radius: 8px;
+    padding: 8px 16px; font-size: 0.85rem; font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem;
+  }
+  .reset-btn:hover { border-color: var(--accent5); color: var(--accent5); }
+  hr.divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+  h2.section-h2 {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.3rem;
+    letter-spacing: -0.02em; margin: 2rem 0 1rem;
+    color: var(--text); display: flex; align-items: center; gap: 0.6rem;
+  }
+  h2.section-h2::before {
+    content: ""; display: block; width: 4px; height: 20px;
+    background: var(--accent); border-radius: 2px;
+  }
+  p.body-text { color: var(--text2); line-height: 1.75; margin-bottom: 0.75rem; font-size: 0.97rem; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+  .section.active { animation: fadeIn 0.3s ease; }
+  @media (max-width: 640px) {
+    .container { padding: 2rem 1rem; }
+    .hero { padding: 2rem 1rem 1.5rem; }
+    nav { padding: 0 1rem; }
+    .nav-logo { font-size: 0.85rem; margin-right: 1rem; }
+    .hero-stats { gap: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">🔐 Crypto<span>Prep</span></div>
+  <div class="nav-tabs">
+    <button class="nav-btn active" onclick="showSection('home')">Home</button>
+    <button class="nav-btn" onclick="showSection('explanation')">📖 Explanation</button>
+    <button class="nav-btn" onclick="showSection('summary')">📋 Summary</button>
+    <button class="nav-btn" onclick="showSection('memory')">🧠 Memory</button>
+    <button class="nav-btn" onclick="showSection('mcq')">❓ MCQs</button>
+    <button class="nav-btn" onclick="showSection('written')">✍️ Written</button>
+    <button class="nav-btn" onclick="showSection('revision')">⚡ Revision</button>
+  </div>
+  <div class="nav-right">
+    <button class="theme-btn" onclick="toggleTheme()">☀️ Light</button>
+  </div>
+</nav>
+
+<main>
+<!-- HOME -->
+<div id="section-home" class="section active">
+  <div class="hero">
+    <div class="hero-badge">Cybersecurity Fundamentals · Dr. Abdalla Sayed</div>
+    <h1>Introduction to <span class="gradient">Cryptography</span></h1>
+    <p>A complete exam preparation system covering all 6 chapters — from foundations to real-world applications.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">6</div><div class="lbl">Chapters</div></div>
+      <div class="hero-stat"><div class="num">30</div><div class="lbl">MCQs</div></div>
+      <div class="hero-stat"><div class="num">12</div><div class="lbl">Written Qs</div></div>
+      <div class="hero-stat"><div class="num">5</div><div class="lbl">Phases</div></div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="concept-grid">
+      <div class="concept-card" style="cursor:pointer" onclick="showSection('explanation')">
+        <div class="icon">📖</div>
+        <h4>Deep Explanation</h4>
+        <p>Step-by-step breakdowns with real-world analogies for every concept in the course.</p>
+      </div>
+      <div class="concept-card" style="cursor:pointer" onclick="showSection('summary')">
+        <div class="icon">📋</div>
+        <h4>Smart Summary</h4>
+        <p>High-yield bullet-point summaries organized by chapter for rapid review.</p>
+      </div>
+      <div class="concept-card" style="cursor:pointer" onclick="showSection('memory')">
+        <div class="icon">🧠</div>
+        <h4>Memory Tools</h4>
+        <p>Mnemonics, comparison tables, common traps, and spaced-repetition hints.</p>
+      </div>
+      <div class="concept-card" style="cursor:pointer" onclick="showSection('mcq')">
+        <div class="icon">❓</div>
+        <h4>30 MCQs</h4>
+        <p>Easy → hard questions with instant feedback and full explanations on click.</p>
+      </div>
+      <div class="concept-card" style="cursor:pointer" onclick="showSection('written')">
+        <div class="icon">✍️</div>
+        <h4>Written Questions</h4>
+        <p>Short and long-form questions with model exam-quality answers.</p>
+      </div>
+      <div class="concept-card" style="cursor:pointer" onclick="showSection('revision')">
+        <div class="icon">⚡</div>
+        <h4>Rapid Revision</h4>
+        <p>One-page cheat sheet — everything you need the night before the exam.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EXPLANATION -->
+<div id="section-explanation" class="section">
+  <div class="container">
+    <div class="phase-header">
+      <span class="phase-num">Phase 01</span>
+      <span class="phase-title">Deep Understanding</span>
+    </div>
+
+    <!-- Ch1 -->
+    <div class="chapter open">
+      <div class="chapter-head" onclick="toggleChapter(this)">
+        <span class="ch-num">Chapter 1</span>
+        <span class="ch-title">Foundations of Cryptography</span>
+        <span class="ch-arrow">▾</span>
+      </div>
+      <div class="chapter-body">
+        <p class="body-text"><strong>Cryptography</strong> is the science of securing information by transforming it into an unreadable form. Think of it as a secret language only you and your friend understand. The original readable message is called <strong>plaintext</strong>; the scrambled output is <strong>ciphertext</strong>.</p>
+        <div class="analogy-box">
+          <div class="label">🔑 Real-World Analogy</div>
+          <p>Imagine sending a letter in a locked box. Only the person with the right key can open it and read the message. Cryptography is the "lock" for digital information — and the algorithm is the lock mechanism, while the key is the secret that controls it.</p>
+        </div>
+        <h2 class="section-h2">Why Do We Need Cryptography?</h2>
+        <p class="body-text">Every piece of data you send — an email, a payment, a password — travels through untrusted networks (public Wi-Fi, shared infrastructure, the open internet). Without cryptography, attackers can:</p>
+        <div class="concept-grid">
+          <div class="concept-card">
+            <div class="icon">👂</div>
+            <h4>Intercept</h4>
+            <p>Eavesdrop and steal sensitive data in transit (like reading someone else's mail).</p>
+          </div>
+          <div class="concept-card">
+            <div class="icon">✏️</div>
+            <h4>Modify</h4>
+            <p>Alter message contents without sender or receiver knowing (changing a bank transfer amount).</p>
+          </div>
+          <div class="concept-card">
+            <div class="icon">🎭</div>
+            <h4>Impersonate</h4>
+            <p>Pretend to be a trusted party to deceive victims (fake websites stealing login credentials).</p>
+          </div>
+        </div>
+        <div class="highlight-box">
+          <div class="label">⚠️ Critical Point</div>
+          <p>Cryptography reduces risk — it is NOT "magic immunity." Proper implementation, key management, and protocol design are equally critical.</p>
+        </div>
+        <h2 class="section-h2">The 4 Security Goals (CIA + Non-Repudiation)</h2>
+        <div class="concept-grid">
+          <div class="concept-card"><div class="icon">🔒</div><h4>Confidentiality</h4><p>Data stays secret and accessible only to authorized parties. Achieved by encryption.</p></div>
+          <div class="concept-card"><div class="icon">✔️</div><h4>Integrity</h4><p>Data hasn't been altered. Hash functions and MACs detect even single-bit changes.</p></div>
+          <div class="concept-card"><div class="icon">🪪</div><h4>Authentication</h4><p>Verifies the identity of communicating parties. Digital certificates prove who sent a message.</p></div>
+          <div class="concept-card"><div class="icon">📝</div><h4>Non-Repudiation</h4><p>Prevents a sender from denying they sent a message. Digital signatures create irrefutable proof.</p></div>
+        </div>
+        <h2 class="section-h2">Kerckhoffs' Principle — The Golden Rule</h2>
+        <p class="body-text">Security should depend <em>only</em> on the secrecy of the <strong>key</strong>, not on hiding the algorithm. Most algorithms (AES, RSA, SHA-256) are publicly known and peer-reviewed — this makes them stronger, not weaker, because thousands of experts have tried to break them.</p>
+        <div class="exam-tip"><div class="tip-icon">🎯</div><div><div class="tip-label">Exam Trap</div><p>Students often think hiding the algorithm adds security. It doesn't — this is called "security through obscurity" and is considered a weak design practice.</p></div></div>
+        <h2 class="section-h2">Cryptography vs. Steganography</h2>
+        <table class="comp-table">
+          <tr><th>Feature</th><th>Cryptography</th><th>Steganography</th></tr>
+          <tr><td>Goal</td><td>Make data <em>unreadable</em></td><td>Make data <em>invisible</em></td></tr>
+          <tr><td>Message existence</td><td>Known (ciphertext visible)</td><td>Hidden (no one knows it exists)</td></tr>
+          <tr><td>Method</td><td>Mathematical transformation</td><td>Hiding inside images, audio, video</td></tr>
+          <tr><td>Example</td><td>AES-encrypted email</td><td>Text hidden in image pixel data</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Ch2 -->
+    <div class="chapter">
+      <div class="chapter-head" onclick="toggleChapter(this)">
+        <span class="ch-num">Chapter 2</span>
+        <span class="ch-title">Symmetric Encryption</span>
+        <span class="ch-arrow">▾</span>
+      </div>
+      <div class="chapter-body">
+        <p class="body-text">Symmetric encryption uses the <strong>same key</strong> for both encryption and decryption. Both the sender and receiver must possess this shared secret before communication begins.</p>
+        <div class="analogy-box">
+          <div class="label">🔑 Analogy</div>
+          <p>Think of a safe with one key. Both you and your friend have a copy of the same key. You lock items with it, your friend unlocks them with the identical key. If anyone else gets a copy of that key, all security is lost.</p>
+        </div>
+        <h2 class="section-h2">Symmetric Algorithms Comparison</h2>
+        <table class="comp-table">
+          <tr><th>Algorithm</th><th>Key Size</th><th>Status</th><th>Use Case</th></tr>
+          <tr><td>AES</td><td>128/192/256-bit</td><td>✅ Current gold standard</td><td>TLS, disk encryption, databases</td></tr>
+          <tr><td>DES</td><td>56-bit</td><td>❌ Broken (1999)</td><td>Legacy only — avoid</td></tr>
+          <tr><td>3DES</td><td>112/168-bit</td><td>⚠️ Being phased out</td><td>Older banking systems</td></tr>
+          <tr><td>Blowfish</td><td>Up to 448-bit</td><td>🟡 Unbroken but old</td><td>Password hashing (bcrypt uses it)</td></tr>
+          <tr><td>ChaCha20</td><td>256-bit</td><td>✅ Modern stream cipher</td><td>TLS 1.3, mobile devices</td></tr>
+        </table>
+        <h2 class="section-h2">Block Ciphers vs. Stream Ciphers</h2>
+        <div class="concept-grid">
+          <div class="concept-card">
+            <div class="icon">🧱</div>
+            <h4>Block Ciphers</h4>
+            <p>Encrypt fixed-size chunks (e.g., 128-bit blocks). Require padding for incomplete final blocks. Examples: <strong>AES, DES, Blowfish</strong>. Used in most modern systems.</p>
+          </div>
+          <div class="concept-card">
+            <div class="icon">🌊</div>
+            <h4>Stream Ciphers</h4>
+            <p>Encrypt one bit/byte at a time as a continuous flow. Generate a pseudorandom keystream XORed with plaintext. Best for: <strong>voice/video, real-time data</strong>. Examples: ChaCha20, RC4 (deprecated).</p>
+          </div>
+        </div>
+        <div class="exam-tip"><div class="tip-icon">🎯</div><div><div class="tip-label">Critical Detail</div><p>Reusing an IV (Initialization Vector) or nonce can <strong>catastrophically break</strong> both block and stream cipher security. This is a favorite exam question.</p></div></div>
+        <h2 class="section-h2">The Key Distribution Problem</h2>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-content"><h4>The Challenge</h4><p>Both parties must have the same key before communication. But how do you share it securely if you have no secure channel yet?</p></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content"><h4>The Interception Risk</h4><p>If an attacker intercepts the key, every future message is compromised — neither party may even know.</p></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content"><h4>The Scalability Problem</h4><p>In a network of n users, you need n(n−1)/2 unique keys. For 1,000 users = ~500,000 keys to manage!</p></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-content"><h4>The Solution</h4><p>This problem motivated the invention of asymmetric cryptography and Diffie–Hellman key exchange.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ch3 -->
+    <div class="chapter">
+      <div class="chapter-head" onclick="toggleChapter(this)">
+        <span class="ch-num">Chapter 3</span>
+        <span class="ch-title">Asymmetric Encryption</span>
+        <span class="ch-arrow">▾</span>
+      </div>
+      <div class="chapter-body">
+        <p class="body-text">Asymmetric (public-key) cryptography was a <strong>revolutionary breakthrough</strong> that solved the key distribution problem. Instead of one shared key, each party generates a mathematically linked <strong>key pair</strong>: a public key and a private key.</p>
+        <div class="analogy-box">
+          <div class="label">📬 Analogy — The Mailbox</div>
+          <p>Your <strong>public key</strong> is like a mailbox slot: anyone can drop a message in. Your <strong>private key</strong> is the key that only you have to open the mailbox and read the messages. You can share your mailbox location with the world — only you can access what's inside.</p>
+        </div>
+        <div class="concept-grid">
+          <div class="concept-card">
+            <div class="icon">🔓</div>
+            <h4>Public Key</h4>
+            <p>Shared openly with the world. Anyone can use it to encrypt messages intended for the key owner. Cannot decrypt — only encrypt or verify.</p>
+          </div>
+          <div class="concept-card">
+            <div class="icon">🔐</div>
+            <h4>Private Key</h4>
+            <p>Kept strictly secret. Only the owner uses it to decrypt messages or create digital signatures. Never shared or transmitted.</p>
+          </div>
+        </div>
+        <h2 class="section-h2">Two Directions of Use</h2>
+        <table class="comp-table">
+          <tr><th>Flow</th><th>Encrypt With</th><th>Decrypt/Verify With</th><th>Purpose</th></tr>
+          <tr><td>Confidentiality</td><td>Recipient's public key</td><td>Recipient's private key</td><td>Only intended party can read</td></tr>
+          <tr><td>Authenticity</td><td>Sender's private key (sign)</td><td>Sender's public key (verify)</td><td>Proves identity and integrity</td></tr>
+        </table>
+        <h2 class="section-h2">Asymmetric Algorithms</h2>
+        <table class="comp-table">
+          <tr><th>Algorithm</th><th>Based On</th><th>Key Size</th><th>Use Case</th></tr>
+          <tr><td>RSA</td><td>Factoring large primes</td><td>2048–4096 bits</td><td>TLS/SSL, encryption, signatures</td></tr>
+          <tr><td>ECC</td><td>Elliptic curve discrete log</td><td>256 bits (≈ 3072-bit RSA)</td><td>Mobile, IoT — smaller, faster</td></tr>
+          <tr><td>Diffie–Hellman</td><td>Discrete logarithm</td><td>Variable</td><td>Key exchange only (not encryption)</td></tr>
+        </table>
+        <h2 class="section-h2">Diffie–Hellman — Paint Mixing Analogy</h2>
+        <div class="analogy-box">
+          <div class="label">🎨 Paint Analogy</div>
+          <p><strong>Step 1:</strong> Alice and Bob both agree on a public color (yellow). <strong>Step 2:</strong> Each adds their secret color privately (Alice: red → orange; Bob: blue → green). <strong>Step 3:</strong> They exchange their mixed colors publicly. <strong>Step 4:</strong> Each adds their own secret to the received mix → both end up with the same final color (their shared secret). An eavesdropper sees only the exchanged mixtures but cannot reverse-engineer the private colors.</p>
+        </div>
+        <h2 class="section-h2">Hybrid Encryption — Best of Both Worlds</h2>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-content"><h4>Asymmetric Handshake</h4><p>Use RSA or Diffie–Hellman to securely exchange a random <strong>symmetric session key</strong>. Solves the key distribution problem.</p></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content"><h4>Symmetric Data Transfer</h4><p>Use the exchanged session key with <strong>AES-GCM</strong> for fast bulk encryption of actual data.</p></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content"><h4>Result: HTTPS/TLS</h4><p>This is exactly how every HTTPS connection works. Secure key exchange + high-speed encryption combined.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ch4 -->
+    <div class="chapter">
+      <div class="chapter-head" onclick="toggleChapter(this)">
+        <span class="ch-num">Chapter 4</span>
+        <span class="ch-title">Hash Functions & Integrity</span>
+        <span class="ch-arrow">▾</span>
+      </div>
+      <div class="chapter-body">
+        <p class="body-text">A hash function is a <strong>one-way mathematical transformation</strong> that takes any-size input and produces a <strong>fixed-length digest</strong>. Unlike encryption, hashing is <em>not reversible</em> — you cannot recover the original input from its hash.</p>
+        <div class="analogy-box">
+          <div class="label">🧪 Analogy — Mixing Paint</div>
+          <p>Hashing is like mixing paint. You can mix red and blue to get purple (easy), but you cannot un-mix purple back into red and blue (impossible). Even a tiny change in input produces a completely different output — the <strong>avalanche effect</strong>.</p>
+        </div>
+        <div class="highlight-box">
+          <div class="label">⚡ Key Properties of Hash Functions</div>
+          <p><strong>1. Deterministic:</strong> Same input always gives same output. <strong>2. Fixed output:</strong> SHA-256 always produces 256 bits. <strong>3. Avalanche effect:</strong> 1-bit input change → completely different hash. <strong>4. One-way:</strong> Cannot reverse a hash to find input. <strong>5. Collision-resistant:</strong> Extremely hard to find two inputs with same hash.</p>
+        </div>
+        <h2 class="section-h2">Hash Algorithm Landscape</h2>
+        <table class="comp-table">
+          <tr><th>Algorithm</th><th>Output</th><th>Status</th><th>Use</th></tr>
+          <tr><td>MD5</td><td>128-bit</td><td>❌ Broken (2004) — collisions found</td><td>Never for security. Legacy checksums only.</td></tr>
+          <tr><td>SHA-1</td><td>160-bit</td><td>❌ Deprecated — collisions found (2017)</td><td>Avoid — deprecated in certificates</td></tr>
+          <tr><td>SHA-256</td><td>256-bit</td><td>✅ Current standard</td><td>Digital signatures, certificates, blockchain</td></tr>
+          <tr><td>SHA-3</td><td>Variable</td><td>✅ New standard (NIST 2015)</td><td>Alternative to SHA-2 family</td></tr>
+          <tr><td>bcrypt</td><td>Fixed</td><td>✅ For passwords</td><td>Intentionally slow, configurable work factor</td></tr>
+          <tr><td>Argon2</td><td>Variable</td><td>✅ Best for passwords (PHC winner)</td><td>Memory-hard, GPU-resistant password hashing</td></tr>
+        </table>
+        <h2 class="section-h2">Password Hashing — Doing It Right</h2>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-content"><h4>Never Store Plaintext</h4><p>If an attacker gains database access, plaintext passwords are immediately compromised. Always store the hash.</p></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content"><h4>Use a Unique Salt Per User</h4><p>A salt is a random value prepended to each password before hashing. Prevents rainbow table attacks and ensures identical passwords produce different hashes.</p></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content"><h4>Use Slow Hashing Algorithms</h4><p>SHA-256 is too fast for passwords — attackers can try billions per second. Use bcrypt, scrypt, or Argon2 which are intentionally slow and memory-hard.</p></div></div>
+        </div>
+        <h2 class="section-h2">Hash vs. MAC vs. HMAC</h2>
+        <table class="comp-table">
+          <tr><th>Feature</th><th>Plain Hash</th><th>MAC / HMAC</th></tr>
+          <tr><td>Key required</td><td>No</td><td>Yes (shared secret)</td></tr>
+          <tr><td>Detects modification</td><td>Yes (accidental)</td><td>Yes (both accidental and malicious)</td></tr>
+          <tr><td>Authenticates sender</td><td>No</td><td>Yes</td></tr>
+          <tr><td>Attacker can forge</td><td>Yes (recompute)</td><td>No (needs key)</td></tr>
+          <tr><td>Use case</td><td>File download integrity</td><td>API authentication, message integrity</td></tr>
+        </table>
+        <div class="exam-tip"><div class="tip-icon">🎯</div><div><div class="tip-label">Exam Trap</div><p>A plain hash does NOT authenticate the sender. An attacker can modify data and recompute the hash. MACs/HMACs solve this by requiring a shared secret key.</p></div></div>
+      </div>
+    </div>
+
+    <!-- Ch5 -->
+    <div class="chapter">
+      <div class="chapter-head" onclick="toggleChapter(this)">
+        <span class="ch-num">Chapter 5</span>
+        <span class="ch-title">Digital Signatures</span>
+        <span class="ch-arrow">▾</span>
+      </div>
+      <div class="chapter-body">
+        <p class="body-text">A digital signature provides <strong>mathematical proof</strong> that a message was created by a specific party and hasn't been altered. It's far more secure than a handwritten signature — it's uniquely tied to both the signer and the content.</p>
+        <div class="concept-grid">
+          <div class="concept-card"><div class="icon">🪪</div><h4>Authenticity</h4><p>Proved via public key verification — the message truly came from the claimed sender.</p></div>
+          <div class="concept-card"><div class="icon">🛡️</div><h4>Integrity</h4><p>Any modification to the signed data invalidates the signature — tampering is immediately detectable.</p></div>
+          <div class="concept-card"><div class="icon">⛓️</div><h4>Non-Repudiation</h4><p>The signer cannot deny having signed — only their private key could have produced the signature.</p></div>
+        </div>
+        <h2 class="section-h2">How Digital Signatures Work — 3 Steps</h2>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-content"><h4>Hash the Message</h4><p>The sender runs the document through a hash function (e.g., SHA-256) to produce a digest — a fingerprint of the message.</p></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content"><h4>Sign the Hash</h4><p>The sender <strong>encrypts the digest with their private key</strong>. This encrypted digest is the digital signature. It's appended to the message.</p></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content"><h4>Verify</h4><p>The receiver: (a) decrypts the signature using sender's public key to get original hash, (b) hashes the received message themselves, (c) compares both hashes. If they match → valid signature!</p></div></div>
+        </div>
+        <div class="exam-tip"><div class="tip-icon">🎯</div><div><div class="tip-label">Key Insight</div><p>In digital signatures, you <strong>sign with the private key and verify with the public key</strong> — the opposite of encryption (where you encrypt with public key, decrypt with private key). Students frequently confuse these directions.</p></div></div>
+      </div>
+    </div>
+
+    <!-- Ch6 -->
+    <div class="chapter">
+      <div class="chapter-head" onclick="toggleChapter(this)">
+        <span class="ch-num">Chapter 6</span>
+        <span class="ch-title">Real-World Applications</span>
+        <span class="ch-arrow">▾</span>
+      </div>
+      <div class="chapter-body">
+        <h2 class="section-h2">HTTPS / TLS — How It Actually Works</h2>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-content"><h4>Certificate Verification</h4><p>Browser verifies the server's digital certificate (signed by a trusted Certificate Authority) using asymmetric crypto.</p></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content"><h4>Key Exchange</h4><p>Diffie–Hellman key exchange establishes a shared session key over the insecure channel.</p></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content"><h4>Symmetric Encryption</h4><p>All subsequent communication uses AES-GCM with the shared session key for high-speed, authenticated encryption.</p></div></div>
+        </div>
+        <h2 class="section-h2">Cryptography in Daily Life</h2>
+        <table class="comp-table">
+          <tr><th>Activity</th><th>Cryptographic Operation</th><th>Algorithm Used</th></tr>
+          <tr><td>🔓 Unlock Phone</td><td>Biometric verification against encrypted template</td><td>AES (full-disk encryption)</td></tr>
+          <tr><td>🌐 Browse HTTPS</td><td>TLS handshake + session encryption</td><td>DH key exchange + AES-GCM</td></tr>
+          <tr><td>💬 Send Message (WhatsApp)</td><td>End-to-end encryption (E2EE)</td><td>Signal Protocol (DH + AES + HMAC)</td></tr>
+          <tr><td>💳 Make Payment</td><td>Data encryption + tokenization + signing</td><td>AES + RSA/ECC</td></tr>
+          <tr><td>📧 Secure Email</td><td>Hybrid encryption + digital signature</td><td>PGP or S/MIME</td></tr>
+          <tr><td>🔑 VPN Connection</td><td>Encrypted tunnel establishment</td><td>IPSec / WireGuard (ChaCha20)</td></tr>
+        </table>
+        <h2 class="section-h2">Master Comparison Table</h2>
+        <table class="comp-table">
+          <tr><th>Feature</th><th>Symmetric</th><th>Asymmetric</th><th>Hashing</th><th>Digital Signature</th></tr>
+          <tr><td>Keys</td><td>1 shared key</td><td>Public + Private pair</td><td>No key</td><td>Private key signs</td></tr>
+          <tr><td>Reversible</td><td>Yes (decrypt)</td><td>Yes (decrypt)</td><td>No (one-way)</td><td>Verify only</td></tr>
+          <tr><td>Speed</td><td>Very fast</td><td>Slow</td><td>Fast</td><td>Moderate</td></tr>
+          <tr><td>Primary Goal</td><td>Confidentiality</td><td>Key exchange, signatures</td><td>Integrity</td><td>Auth + Integrity</td></tr>
+          <tr><td>Example</td><td>AES-256-GCM</td><td>RSA, ECC</td><td>SHA-256</td><td>RSA + SHA-256</td></tr>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SUMMARY -->
+<div id="section-summary" class="section">
+  <div class="container">
+    <div class="phase-header">
+      <span class="phase-num">Phase 02</span>
+      <span class="phase-title">Smart Summary</span>
+    </div>
+    <div class="summary-chapter">
+      <h3>🏗️ Chapter 1 — Foundations</h3>
+      <ul class="bullet-list">
+        <li><strong>Cryptography</strong>: Science of securing information via transformation — <strong>plaintext → ciphertext</strong></li>
+        <li><strong>3 threat types</strong>: Intercept, Modify, Impersonate</li>
+        <li><strong>4 security goals</strong>: <strong>C</strong>onfidentiality, <strong>I</strong>ntegrity, <strong>A</strong>uthentication, <strong>N</strong>on-repudiation (CIAN)</li>
+        <li><strong>Kerckhoffs' Principle</strong>: Security depends on key secrecy, NOT algorithm secrecy</li>
+        <li><strong>Cryptography vs. Steganography</strong>: Unreadable vs. Invisible</li>
+        <li><strong>2 components</strong>: Algorithm (public, peer-reviewed) + Key (secret, random)</li>
+      </ul>
+    </div>
+    <hr class="divider">
+    <div class="summary-chapter">
+      <h3>🔐 Chapter 2 — Symmetric Encryption</h3>
+      <ul class="bullet-list">
+        <li><strong>Same key</strong> used for both encryption and decryption</li>
+        <li><strong>Advantages</strong>: Very fast, efficient for bulk data</li>
+        <li><strong>Weakness</strong>: Key distribution problem + n(n-1)/2 key scalability issue</li>
+        <li><strong>AES</strong>: Current gold standard — 128/192/256-bit — adopted by NIST 2001</li>
+        <li><strong>DES</strong>: Broken (56-bit, cracked 1999) — never use</li>
+        <li><strong>Block ciphers</strong> (AES, DES): fixed-size blocks, need padding</li>
+        <li><strong>Stream ciphers</strong> (ChaCha20): bit-by-bit, XOR with keystream, real-time use</li>
+        <li><strong>CRITICAL</strong>: Never reuse IV/nonce — catastrophic security failure</li>
+      </ul>
+    </div>
+    <hr class="divider">
+    <div class="summary-chapter">
+      <h3>🔑 Chapter 3 — Asymmetric Encryption</h3>
+      <ul class="bullet-list">
+        <li><strong>Key pair</strong>: Public key (shared openly) + Private key (kept secret)</li>
+        <li><strong>Confidentiality flow</strong>: Encrypt with recipient's public → decrypt with recipient's private</li>
+        <li><strong>Authentication flow</strong>: Sign with sender's private → verify with sender's public</li>
+        <li><strong>RSA</strong>: Based on prime factorization, 2048–4096 bits, widely deployed</li>
+        <li><strong>ECC</strong>: Elliptic curve, 256-bit ≈ 3072-bit RSA security, preferred for mobile/IoT</li>
+        <li><strong>Diffie–Hellman</strong>: Key exchange only (not encryption), basis for Perfect Forward Secrecy</li>
+        <li><strong>Hybrid encryption</strong>: Asymmetric key exchange → symmetric bulk encryption (how HTTPS works)</li>
+      </ul>
+    </div>
+    <hr class="divider">
+    <div class="summary-chapter">
+      <h3>#️⃣ Chapter 4 — Hash Functions & Integrity</h3>
+      <ul class="bullet-list">
+        <li><strong>One-way</strong>: Cannot reverse hash → cannot recover original input</li>
+        <li><strong>Fixed output</strong>: SHA-256 always produces 256 bits regardless of input size</li>
+        <li><strong>Avalanche effect</strong>: 1-bit input change → completely different hash</li>
+        <li><strong>MD5</strong>: BROKEN — collisions found 2004. <strong>SHA-256</strong>: Current standard ✅</li>
+        <li><strong>Password hashing</strong>: Use bcrypt/scrypt/Argon2 (slow + memory-hard) + unique salt per user</li>
+        <li><strong>HMAC</strong>: Hash + secret key → authenticates both integrity AND sender identity</li>
+        <li><strong>Plain hash</strong>: Only verifies integrity, NOT sender identity — attacker can forge</li>
+      </ul>
+    </div>
+    <hr class="divider">
+    <div class="summary-chapter">
+      <h3>✍️ Chapter 5 — Digital Signatures</h3>
+      <ul class="bullet-list">
+        <li><strong>3 properties</strong>: Authenticity, Integrity, Non-Repudiation</li>
+        <li><strong>Process</strong>: Hash message → Encrypt hash with private key → Attach signature</li>
+        <li><strong>Verification</strong>: Decrypt signature with public key → Compare to hash of received message</li>
+        <li><strong>Sign with PRIVATE key</strong>, <strong>Verify with PUBLIC key</strong> (opposite of encryption!)</li>
+        <li>Used billions of times daily: TLS certificates, software updates, document signing</li>
+      </ul>
+    </div>
+    <hr class="divider">
+    <div class="summary-chapter">
+      <h3>🌐 Chapter 6 — Real-World Applications</h3>
+      <ul class="bullet-list">
+        <li><strong>HTTPS/TLS</strong>: DH key exchange + AES-GCM session encryption (hybrid)</li>
+        <li><strong>E2EE Messaging</strong>: Signal Protocol — DH + AES + HMAC (WhatsApp, Signal, iMessage)</li>
+        <li><strong>Email</strong>: PGP or S/MIME (hybrid encryption + digital signatures)</li>
+        <li><strong>VPN</strong>: IPSec or WireGuard (ChaCha20 stream cipher)</li>
+        <li><strong>VoIP/Video</strong>: SRTP with DTLS key negotiation</li>
+        <li><strong>Key Principle</strong>: Algorithms age — migrate from MD5, DES, RC4. Prepare for post-quantum.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- MEMORY -->
+<div id="section-memory" class="section">
+  <div class="container">
+    <div class="phase-header">
+      <span class="phase-num">Phase 03</span>
+      <span class="phase-title">Memory Optimization</span>
+    </div>
+    <h2 class="section-h2">Mnemonics for Hard Concepts</h2>
+    <div class="mnemonic">
+      <div class="mnemo-title">🔤 Mnemonic #1 — The 4 Security Goals (CIA-N)</div>
+      <div class="mnemo-word"><span>C</span>an <span>I</span> <span>A</span>ttend <span>N</span>ight?</div>
+      <div class="mnemo-breakdown">
+        <div class="mnemo-item"><strong>C</strong><span>Confidentiality — Data stays secret</span></div>
+        <div class="mnemo-item"><strong>I</strong><span>Integrity — Data isn't altered</span></div>
+        <div class="mnemo-item"><strong>A</strong><span>Authentication — Identity is verified</span></div>
+        <div class="mnemo-item"><strong>N</strong><span>Non-Repudiation — Can't deny sending</span></div>
+      </div>
+    </div>
+    <div class="mnemonic">
+      <div class="mnemo-title">🔤 Mnemonic #2 — Broken Algorithms (Don't Use)</div>
+      <div class="mnemo-word"><span>M</span>y <span>D</span>og <span>R</span>uns <span>C</span>razy</div>
+      <div class="mnemo-breakdown">
+        <div class="mnemo-item"><strong>M</strong><span>MD5 — Broken (2004 collisions)</span></div>
+        <div class="mnemo-item"><strong>D</strong><span>DES — Broken (1999 brute force)</span></div>
+        <div class="mnemo-item"><strong>R</strong><span>RC4 — Deprecated stream cipher</span></div>
+        <div class="mnemo-item"><strong>C</strong><span>SHA-1 Certificates — Deprecated (2017)</span></div>
+      </div>
+    </div>
+    <div class="mnemonic">
+      <div class="mnemo-title">🔤 Mnemonic #3 — Digital Signature Direction</div>
+      <div class="mnemo-word"><span>S</span>ign <span>P</span>rivately, <span>V</span>erify <span>P</span>ublicly</div>
+      <div class="mnemo-breakdown">
+        <div class="mnemo-item"><strong>SP</strong><span>Sign with Private key (only you can sign)</span></div>
+        <div class="mnemo-item"><strong>VP</strong><span>Verify with Public key (anyone can verify)</span></div>
+      </div>
+    </div>
+    <h2 class="section-h2">Common Mistakes & Exam Traps</h2>
+    <div class="card card-red">
+      <h3>⚠️ Top 8 Common Mistakes</h3>
+      <table class="comp-table" style="margin:0.5rem 0 0">
+        <tr><th>Mistake</th><th>Correct Understanding</th></tr>
+        <tr><td>Thinking hidden algorithms are secure</td><td>Security = key secrecy (Kerckhoffs' Principle)</td></tr>
+        <tr><td>Confusing sign/verify direction</td><td>Sign with PRIVATE, verify with PUBLIC</td></tr>
+        <tr><td>Using MD5 for passwords</td><td>Use bcrypt, scrypt, or Argon2 only</td></tr>
+        <tr><td>Plain hash authenticates sender</td><td>Plain hash does NOT — use HMAC</td></tr>
+        <tr><td>Asymmetric = faster</td><td>Symmetric is MUCH faster — asymmetric is slow</td></tr>
+        <tr><td>DH is an encryption algorithm</td><td>DH is a key EXCHANGE protocol only</td></tr>
+        <tr><td>Reusing IV/nonce is okay</td><td>Reusing IV/nonce CATASTROPHICALLY breaks security</td></tr>
+        <tr><td>Crypto = cryptography + steganography</td><td>They are separate techniques with different goals</td></tr>
+      </table>
+    </div>
+    <h2 class="section-h2">Chunked Information — Quick Recall Groups</h2>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h4>✅ Currently Safe Algorithms</h4>
+        <p>AES-256 · SHA-256 · SHA-3 · RSA-2048+ · ECC-256 · ChaCha20 · bcrypt · Argon2</p>
+      </div>
+      <div class="concept-card">
+        <h4>❌ Deprecated / Broken</h4>
+        <p>MD5 · SHA-1 · DES · 3DES (phasing) · RC4 · Blowfish (largely)</p>
+      </div>
+      <div class="concept-card">
+        <h4>⚡ Key Sizes to Memorize</h4>
+        <p>AES: 128/192/256 · DES: 56 · RSA: 2048–4096 · ECC: 256 ≈ RSA 3072</p>
+      </div>
+      <div class="concept-card">
+        <h4>🔄 Hybrid Systems</h4>
+        <p>HTTPS/TLS · Signal Protocol · PGP · S/MIME · All use asymmetric for key exchange, symmetric for data</p>
+      </div>
+    </div>
+    <h2 class="section-h2">Spaced Repetition Hints</h2>
+    <div class="card card-accent">
+      <h3>📅 Recommended Study Schedule</h3>
+      <ul class="bullet-list">
+        <li><strong>Day 1:</strong> Read all chapters → Do all MCQs (mark wrong answers)</li>
+        <li><strong>Day 2:</strong> Review wrong answers → Re-read those chapters → Written questions 1–6</li>
+        <li><strong>Day 3:</strong> Full MCQ pass (target 90%+) → Written questions 7–12</li>
+        <li><strong>Day 7:</strong> Mnemonics only + Master comparison table</li>
+        <li><strong>Night before:</strong> Revision sheet only — just the cheat sheet!</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- MCQ -->
+<div id="section-mcq" class="section">
+  <div class="container">
+    <div class="phase-header">
+      <span class="phase-num">Phase 04</span>
+      <span class="phase-title">MCQ Exam Training</span>
+    </div>
+    <div class="score-box">
+      <div class="score-item"><div class="score-num" id="score-answered">0</div><div class="score-lbl">Answered</div></div>
+      <div class="score-item"><div class="score-num" id="score-correct">0</div><div class="score-lbl">Correct</div></div>
+      <div class="score-item"><div class="score-num" id="score-wrong">0</div><div class="score-lbl">Wrong</div></div>
+      <div class="score-item"><div class="score-num" id="score-pct">—</div><div class="score-lbl">Score</div></div>
+      <button class="reset-btn" onclick="resetMCQ()">↺ Reset All</button>
+    </div>
+    <div class="mcq-controls">
+      <button class="filter-btn active" onclick="filterMCQ('all', this)">All (30)</button>
+      <button class="filter-btn" onclick="filterMCQ('easy', this)">🟢 Easy</button>
+      <button class="filter-btn" onclick="filterMCQ('medium', this)">🟡 Medium</button>
+      <button class="filter-btn" onclick="filterMCQ('hard', this)">🔴 Hard</button>
+    </div>
+    <div id="mcq-container"></div>
+  </div>
+</div>
+
+<!-- WRITTEN -->
+<div id="section-written" class="section">
+  <div class="container">
+    <div class="phase-header">
+      <span class="phase-num">Phase 04</span>
+      <span class="phase-title">Written Questions</span>
+    </div>
+    <div id="written-container"></div>
+  </div>
+</div>
+
+<!-- REVISION -->
+<div id="section-revision" class="section">
+  <div class="container">
+    <div class="phase-header">
+      <span class="phase-num">Phase 05</span>
+      <span class="phase-title">Rapid Revision Sheet</span>
+    </div>
+    <div class="cheatsheet-banner">
+      <h2>⚡ Night-Before Cheat Sheet</h2>
+      <p>Everything you need to know — concise, high-yield, exam-ready. Use this 24 hours before your exam.</p>
+    </div>
+    <div class="revision-grid">
+      <div class="rev-card">
+        <h4>🔑 Key Terms</h4>
+        <div class="rev-item"><span class="rev-key">Plaintext</span><span class="rev-val">readable data</span></div>
+        <div class="rev-item"><span class="rev-key">Ciphertext</span><span class="rev-val">encrypted output</span></div>
+        <div class="rev-item"><span class="rev-key">Key</span><span class="rev-val">secret value</span></div>
+        <div class="rev-item"><span class="rev-key">Hash/Digest</span><span class="rev-val">fixed-size fingerprint</span></div>
+        <div class="rev-item"><span class="rev-key">Salt</span><span class="rev-val">random value + password</span></div>
+        <div class="rev-item"><span class="rev-key">Cleartext</span><span class="rev-val">unencrypted data at rest</span></div>
+        <div class="rev-item"><span class="rev-key">Nonce/IV</span><span class="rev-val">initialization value (never reuse!)</span></div>
+      </div>
+      <div class="rev-card">
+        <h4>🔐 Security Goals (CIA-N)</h4>
+        <div class="rev-item"><span class="rev-key">Confidentiality</span><span class="rev-val">= Encryption</span></div>
+        <div class="rev-item"><span class="rev-key">Integrity</span><span class="rev-val">= Hash / MAC</span></div>
+        <div class="rev-item"><span class="rev-key">Authentication</span><span class="rev-val">= Certificates, Signatures</span></div>
+        <div class="rev-item"><span class="rev-key">Non-Repudiation</span><span class="rev-val">= Digital Signatures</span></div>
+        <div class="rev-item"><span class="rev-key">Kerckhoffs</span><span class="rev-val">Key secret, algo public</span></div>
+      </div>
+      <div class="rev-card">
+        <h4>⚡ Algorithm Status</h4>
+        <ul class="quick-list">
+          <li>✅ AES-256 — current standard</li>
+          <li>✅ SHA-256/SHA-3 — current standard</li>
+          <li>✅ RSA-2048+ — secure</li>
+          <li>✅ ECC-256 — efficient</li>
+          <li>✅ bcrypt/Argon2 — passwords</li>
+          <li>❌ MD5 — broken (2004)</li>
+          <li>❌ DES — broken (1999)</li>
+          <li>❌ RC4 — deprecated</li>
+          <li>❌ SHA-1 — deprecated (2017)</li>
+        </ul>
+      </div>
+      <div class="rev-card">
+        <h4>📐 Key Sizes</h4>
+        <div class="rev-item"><span class="rev-key">AES</span><span class="rev-val">128 / 192 / 256 bit</span></div>
+        <div class="rev-item"><span class="rev-key">DES</span><span class="rev-val">56 bit (broken)</span></div>
+        <div class="rev-item"><span class="rev-key">3DES</span><span class="rev-val">112 / 168 bit</span></div>
+        <div class="rev-item"><span class="rev-key">RSA</span><span class="rev-val">2048–4096 bit</span></div>
+        <div class="rev-item"><span class="rev-key">ECC</span><span class="rev-val">256 bit ≈ RSA-3072</span></div>
+        <div class="rev-item"><span class="rev-key">SHA-256</span><span class="rev-val">256 bit output</span></div>
+        <div class="rev-item"><span class="rev-key">Blowfish</span><span class="rev-val">up to 448 bit</span></div>
+      </div>
+      <div class="rev-card">
+        <h4>🔄 Hybrid Encryption Flow</h4>
+        <ul class="quick-list">
+          <li>Step 1: Asymmetric key exchange (RSA/DH)</li>
+          <li>Step 2: Exchange symmetric session key</li>
+          <li>Step 3: Use AES-GCM for bulk data</li>
+          <li>Used by: HTTPS/TLS, PGP, Signal</li>
+        </ul>
+      </div>
+      <div class="rev-card">
+        <h4>✍️ Digital Signature Flow</h4>
+        <ul class="quick-list">
+          <li>1. Hash the message (SHA-256)</li>
+          <li>2. Encrypt hash with PRIVATE key</li>
+          <li>3. Receiver: decrypt with PUBLIC key</li>
+          <li>4. Receiver: re-hash message</li>
+          <li>5. Compare → match = valid!</li>
+          <li>⚠️ Sign=Private, Verify=Public</li>
+        </ul>
+      </div>
+      <div class="rev-card">
+        <h4>📊 Crypto Comparison</h4>
+        <div class="rev-item"><span class="rev-key">Fastest</span><span class="rev-val">Symmetric (AES)</span></div>
+        <div class="rev-item"><span class="rev-key">Slowest</span><span class="rev-val">Asymmetric (RSA)</span></div>
+        <div class="rev-item"><span class="rev-key">One-way</span><span class="rev-val">Hashing</span></div>
+        <div class="rev-item"><span class="rev-key">Key exchange</span><span class="rev-val">DH / RSA</span></div>
+        <div class="rev-item"><span class="rev-key">Forward secrecy</span><span class="rev-val">Diffie-Hellman</span></div>
+        <div class="rev-item"><span class="rev-key">Password hashing</span><span class="rev-val">bcrypt / Argon2</span></div>
+      </div>
+      <div class="rev-card">
+        <h4>🚨 Never Forget</h4>
+        <ul class="quick-list">
+          <li>Never reuse IV/nonce</li>
+          <li>Never store plaintext passwords</li>
+          <li>Always salt passwords (unique per user)</li>
+          <li>Hash ≠ authentication (need HMAC)</li>
+          <li>DH = key exchange, NOT encryption</li>
+          <li>Stego = invisible, Crypto = unreadable</li>
+          <li>Kerckhoffs: security = key, not algo</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 class="section-h2" style="margin-top: 2.5rem;">📱 Where Crypto Appears Daily</h2>
+    <table class="comp-table">
+      <tr><th>Scenario</th><th>Crypto Type</th><th>Algorithm</th></tr>
+      <tr><td>HTTPS browsing</td><td>Hybrid (TLS)</td><td>DH + AES-GCM + RSA cert</td></tr>
+      <tr><td>WhatsApp / Signal</td><td>E2EE</td><td>Signal Protocol</td></tr>
+      <tr><td>Disk encryption</td><td>Symmetric</td><td>AES-256 (BitLocker, FileVault)</td></tr>
+      <tr><td>Login password check</td><td>Hash + Salt</td><td>bcrypt / Argon2</td></tr>
+      <tr><td>Software update signature</td><td>Digital Signature</td><td>RSA / ECDSA + SHA-256</td></tr>
+      <tr><td>API authentication</td><td>HMAC</td><td>HMAC-SHA256</td></tr>
+      <tr><td>VPN tunnel</td><td>Symmetric (with DH exchange)</td><td>WireGuard (ChaCha20) / IPSec</td></tr>
+    </table>
+  </div>
+</div>
+
+</main>
+
+<script>
+const questions = [
+  { id:1, diff:'easy', topic:'Foundations', q:'What is the term for the original readable data before encryption?', opts:['Ciphertext','Plaintext','Cleartext','Digest'], ans:1, exp:'Plaintext is the original, readable data. Ciphertext is the encrypted output. Cleartext refers to unencrypted data stored or transmitted without protection. Digest is a hash output.' },
+  { id:2, diff:'easy', topic:'Foundations', q:'What does Kerckhoffs\' Principle state?', opts:['Keep the algorithm secret for maximum security','Security should depend only on the secrecy of the key','Both algorithm and key must be kept secret','Longer algorithms are more secure than shorter keys'], ans:1, exp:'Kerckhoffs\' Principle: A system\'s security should depend ONLY on key secrecy, not on hiding the algorithm. Publicly known, peer-reviewed algorithms (like AES, RSA) are actually stronger because experts worldwide have tried to break them.' },
+  { id:3, diff:'easy', topic:'Foundations', q:'Which of the following is NOT one of the four main security goals of cryptography?', opts:['Confidentiality','Integrity','Availability','Non-Repudiation'], ans:2, exp:'The 4 cryptographic security goals are: Confidentiality, Integrity, Authentication, and Non-Repudiation (CIA-N). Availability is part of the broader CIA triad in information security, but it is not achieved through cryptography.' },
+  { id:4, diff:'easy', topic:'Symmetric', q:'Which symmetric algorithm is the current gold standard?', opts:['DES','3DES','AES','Blowfish'], ans:2, exp:'AES (Advanced Encryption Standard) is the current gold standard. Adopted by NIST in 2001, it supports 128, 192, and 256-bit keys. DES was broken in 1999 (56-bit key), and 3DES is being phased out.' },
+  { id:5, diff:'easy', topic:'Hash', q:'SHA-256 always produces an output of how many bits, regardless of input size?', opts:['128 bits','160 bits','256 bits','512 bits'], ans:2, exp:'SHA-256 always produces a 256-bit (32-byte) fixed-length output regardless of input size — whether the input is a single character or a 4GB file. This is the "fixed output size" property of hash functions.' },
+  { id:6, diff:'easy', topic:'Asymmetric', q:'In asymmetric encryption, which key is used to encrypt a message for a specific recipient?', opts:['The recipient\'s private key','The sender\'s private key','The recipient\'s public key','The sender\'s public key'], ans:2, exp:'For confidentiality: you encrypt with the RECIPIENT\'S PUBLIC KEY. Only the recipient\'s private key can decrypt it. This ensures only the intended recipient can read the message.' },
+  { id:7, diff:'easy', topic:'Steganography', q:'What is the primary difference between cryptography and steganography?', opts:['Cryptography is faster than steganography','Cryptography makes data unreadable; steganography makes data invisible','Steganography uses keys; cryptography does not','They are the same concept'], ans:1, exp:'Cryptography transforms data to make it UNREADABLE (the ciphertext is visible but incomprehensible). Steganography hides data INSIDE other media (like images) so that the existence of the secret message is not even known.' },
+  { id:8, diff:'medium', topic:'Symmetric', q:'For a network of 1,000 users using symmetric encryption, approximately how many unique keys are needed?', opts:['1,000','10,000','50,000','500,000'], ans:3, exp:'The formula is n(n-1)/2. For 1,000 users: 1000 × 999 / 2 = 499,500 ≈ 500,000. This is the "scalability problem" of symmetric cryptography that motivated asymmetric encryption.' },
+  { id:9, diff:'medium', topic:'Symmetric', q:'Which type of cipher encrypts data one bit or byte at a time as a continuous stream?', opts:['Block cipher','Stream cipher','Hash cipher','Asymmetric cipher'], ans:1, exp:'Stream ciphers (e.g., ChaCha20) encrypt data one bit or byte at a time, generating a pseudorandom keystream XORed with plaintext. They\'re ideal for real-time data like voice and video. Block ciphers (AES) process fixed-size chunks.' },
+  { id:10, diff:'medium', topic:'Symmetric', q:'What catastrophic consequence occurs when an IV (Initialization Vector) is reused with the same key?', opts:['The encryption becomes slower','Security can be completely broken, allowing message recovery','The cipher switches from block to stream mode','The key automatically rotates'], ans:1, exp:'Reusing an IV with the same key can catastrophically break security. In stream ciphers and some block cipher modes, IV reuse allows an attacker to XOR two ciphertexts and recover plaintext — completely defeating the encryption.' },
+  { id:11, diff:'medium', topic:'Asymmetric', q:'What mathematical problem is RSA encryption based on?', opts:['Discrete logarithm problem','Elliptic curve discrete logarithm','The difficulty of factoring large prime numbers','The Diffie-Hellman problem'], ans:2, exp:'RSA is based on the computational difficulty of factoring the product of two large prime numbers. Given n = p × q where p and q are huge primes, it\'s computationally infeasible to find p and q from n alone.' },
+  { id:12, diff:'medium', topic:'Asymmetric', q:'An ECC key of 256 bits provides approximately equivalent security to which RSA key size?', opts:['1024-bit RSA','2048-bit RSA','3072-bit RSA','4096-bit RSA'], ans:2, exp:'256-bit ECC provides approximately the same security level as 3072-bit RSA. This is why ECC is preferred for mobile and IoT devices — smaller keys mean less computation and power usage while maintaining the same security level.' },
+  { id:13, diff:'medium', topic:'Hash', q:'What is the purpose of adding a unique salt when hashing passwords?', opts:['To make the hash function faster','To ensure the same password produces the same hash across all users','To prevent rainbow table attacks and ensure identical passwords produce different hashes','To encrypt the password before hashing'], ans:2, exp:'A salt is a random value prepended to each password before hashing. It prevents precomputed rainbow table attacks (since the salt changes the input) and ensures that even if two users have the same password, their stored hashes will be different.' },
+  { id:14, diff:'medium', topic:'Hash', q:'Which password hashing scheme is MOST recommended for modern applications due to its memory-hardness?', opts:['MD5','SHA-256','bcrypt','Argon2'], ans:3, exp:'Argon2 won the Password Hashing Competition (PHC) and is the most recommended. It is memory-hard (requiring large amounts of RAM), making it resistant to GPU and ASIC attacks. bcrypt is also good but older. SHA-256 is too fast for passwords. MD5 is broken.' },
+  { id:15, diff:'medium', topic:'Signatures', q:'In a digital signature scheme, what is the correct direction of key usage for SIGNING?', opts:['Encrypt with recipient\'s public key','Encrypt hash with sender\'s private key','Decrypt with sender\'s private key','Hash with the shared symmetric key'], ans:1, exp:'Signing: The sender hashes the message, then encrypts the hash with their OWN PRIVATE KEY. This creates the signature. Verification: Anyone uses the sender\'s public key to decrypt the signature and compare hashes. Sign=Private, Verify=Public.' },
+  { id:16, diff:'medium', topic:'Applications', q:'What is Hybrid Encryption and where is it most commonly seen?', opts:['Two hash functions combined','Asymmetric key exchange + symmetric data encryption, used in HTTPS/TLS','A combination of DES and AES','Using two different private keys'], ans:1, exp:'Hybrid encryption combines asymmetric crypto (RSA/DH) to securely exchange a symmetric session key, then uses that session key with AES for fast bulk data encryption. This is EXACTLY how HTTPS/TLS works on every secure website.' },
+  { id:17, diff:'medium', topic:'Applications', q:'What does E2EE (End-to-End Encryption) guarantee in messaging apps?', opts:['Only the service provider can read messages','Messages are encrypted in transit but decryptable by the server','Only the sender and recipient can read messages — not even the service provider','Messages are stored in plaintext on the server'], ans:2, exp:'End-to-End Encryption ensures only the communicating parties (sender and recipient) can decrypt and read messages. The service provider\'s servers see only ciphertext and cannot read the content. WhatsApp, Signal, and iMessage use E2EE.' },
+  { id:18, diff:'hard', topic:'Foundations', q:'A company decides to keep its encryption algorithm completely secret as its primary security measure. What is wrong with this approach?', opts:['Nothing — secret algorithms are more secure','It violates Kerckhoffs\' Principle — security through obscurity is weak; algorithms should withstand public scrutiny','Secret algorithms automatically use longer key sizes','This is the basis of all modern encryption'], ans:1, exp:'This violates Kerckhoffs\' Principle. "Security through obscurity" is a weak design — if the algorithm is ever discovered (through reverse engineering, leaks, or insider threats), all security collapses. Public algorithms like AES are stronger because thousands of cryptographers have reviewed and failed to break them.' },
+  { id:19, diff:'hard', topic:'Symmetric', q:'Why can DES with a 56-bit key no longer be considered secure?', opts:['56 bits is mathematically impossible to use','A 56-bit keyspace (2^56 = ~72 quadrillion) can be brute-forced by modern hardware in acceptable time','DES was never standardized','DES uses stream cipher mode which is inherently weak'], ans:1, exp:'DES uses a 56-bit key, meaning 2^56 ≈ 72 quadrillion possible keys. In 1999, the EFF\'s Deep Crack machine broke DES in about 22 hours. Modern hardware can do this far faster. A key must be computationally infeasible to brute-force — 56 bits no longer meets this bar.' },
+  { id:20, diff:'hard', topic:'Asymmetric', q:'What is Perfect Forward Secrecy (PFS) and which algorithm enables it?', opts:['Making all past keys forward-compatible; enabled by RSA','Ensuring that compromise of long-term keys does not compromise past session keys; enabled by Diffie-Hellman','A technique for making hashes stronger; uses SHA-3','Encrypting the public key with the private key for extra security'], ans:1, exp:'Perfect Forward Secrecy ensures that even if long-term private keys are compromised in the future, past session keys cannot be recovered. It\'s achieved through ephemeral Diffie-Hellman (DHE/ECDHE) key exchange — each session generates a fresh key pair that is discarded after use, leaving no long-term secret that could decrypt past sessions.' },
+  { id:21, diff:'hard', topic:'Hash', q:'An attacker modifies a file and recomputes the SHA-256 hash. Which security mechanism would prevent this attack?', opts:['Using a longer SHA-256 hash','Switching from SHA-256 to SHA-3','Using HMAC-SHA256 with a shared secret key','Using bcrypt instead of SHA-256'], ans:2, exp:'A plain hash (even SHA-256) does NOT prevent a man-in-the-middle from modifying data and recomputing the hash. HMAC (Hash-based MAC) adds a shared secret key to the process — without the key, an attacker cannot produce a valid HMAC, making forgery computationally infeasible.' },
+  { id:22, diff:'hard', topic:'Signatures', q:'During digital signature verification, a receiver decrypts the signature with the sender\'s public key and gets hash_A. They hash the received message and get hash_B. hash_A ≠ hash_B. What does this indicate?', opts:['The message was encrypted incorrectly','The message has been tampered with or the signature is forged','The hash algorithm is broken','The receiver used the wrong public key — retry with private key'], ans:1, exp:'If hash_A (from decrypted signature) ≠ hash_B (from hashing received message), it means EITHER: (1) the message was modified after signing — even a single bit change produces a completely different hash (avalanche effect), OR (2) the signature was forged/doesn\'t belong to the claimed sender.' },
+  { id:23, diff:'hard', topic:'Applications', q:'In a TLS handshake, which specific combination of operations is performed?', opts:['AES encryption only, no key exchange needed','Certificate verification (asymmetric) → Diffie-Hellman key exchange → AES-GCM session encryption','RSA encryption of all data directly','SHA-256 hashing of the connection, then symmetric encryption'], ans:1, exp:'TLS uses a hybrid approach: (1) The server\'s certificate is verified using asymmetric crypto (RSA/ECDSA), proving identity. (2) A Diffie-Hellman key exchange establishes a fresh session key without transmitting it. (3) All data is then encrypted with AES-GCM (authenticated encryption) for speed and integrity.' },
+  { id:24, diff:'hard', topic:'Symmetric', q:'Which is true about AES operating in GCM mode versus ECB mode?', opts:['ECB mode is more secure because it\'s simpler','AES-GCM provides both encryption AND authentication; ECB mode is insecure — identical plaintext blocks produce identical ciphertext blocks','GCM mode is slower than ECB for large files','They are equivalent in security; GCM is just faster'], ans:1, exp:'AES-ECB (Electronic Code Book) mode is insecure because identical plaintext blocks produce identical ciphertext blocks, revealing patterns (the famous "ECB penguin" example). AES-GCM (Galois/Counter Mode) is an AEAD mode — it provides both confidentiality AND authenticity/integrity verification, and it randomizes output.' },
+  { id:25, diff:'hard', topic:'Hash', q:'What is a "collision" in the context of hash functions, and why is it dangerous?', opts:['When two keys produce the same encrypted output','When two different inputs produce the same hash output; allows forging of signed documents','When a hash function runs slower than expected','When salt and password are mixed incorrectly'], ans:1, exp:'A hash collision occurs when two different inputs produce the identical hash output. This is catastrophically dangerous for digital signatures — if an attacker can craft a malicious document with the same hash as a legitimate signed document, they can present the signed hash as "proof" that the malicious document was signed. This is why MD5 (collisions found 2004) must never be used for security.' },
+  { id:26, diff:'hard', topic:'Foundations', q:'Which of the following BEST describes the "avalanche effect" in cryptographic hash functions?', opts:['The algorithm\'s performance degrades with input size','A small change in input (even 1 bit) produces a drastically different hash output','Hash functions produce increasingly larger outputs','Repeated hashing makes the output more secure'], ans:1, exp:'The avalanche effect means that changing even a single bit of the input produces a completely different hash output (approximately 50% of bits flip). This property is critical for hash functions — it prevents attackers from making small, undetectable changes to data. Without this, an attacker could incrementally modify data without significantly changing its hash.' },
+  { id:27, diff:'hard', topic:'Asymmetric', q:'In Diffie-Hellman key exchange, Alice and Bob establish a shared secret over a public channel. Which statement is TRUE?', opts:['The shared secret is transmitted encrypted with RSA','Neither party ever transmits the shared secret — they each compute it independently','The shared secret is the same as Alice\'s private key','DH requires a pre-shared password to initiate'], ans:1, exp:'The genius of Diffie-Hellman is that the shared secret is NEVER transmitted at all. Each party computes the shared secret independently using their private value and the other\'s public value. An eavesdropper who captures all exchanged messages cannot compute the shared secret (discrete logarithm problem).' },
+  { id:28, diff:'hard', topic:'Applications', q:'What makes bcrypt specifically more suitable than SHA-256 for password hashing?', opts:['bcrypt produces shorter, more efficient hashes','bcrypt is intentionally slow with a configurable work factor, making brute-force attacks costly; SHA-256 is too fast','bcrypt uses asymmetric encryption internally','SHA-256 has been broken, making bcrypt the only secure option'], ans:1, exp:'SHA-256 can compute billions of hashes per second on modern hardware (especially with GPUs), making brute-force attacks on password databases fast. bcrypt is deliberately designed to be slow, with a configurable "work factor" that can be increased as hardware improves. This makes each brute-force attempt costly and slows attackers dramatically.' },
+  { id:29, diff:'hard', topic:'Applications', q:'A developer suggests using steganography alone (hiding messages in images) to secure communications. What is the critical weakness of this approach?', opts:['Steganography is too slow for modern applications','If the existence of the hidden message is discovered, the content is immediately exposed — no secrecy protection','Steganography cannot hide text, only images','Steganography requires asymmetric keys which are hard to manage'], ans:1, exp:'Steganography provides security through obscurity — if an adversary discovers (or suspects) that a message is hidden, they can extract it without any key or mathematical barrier. Unlike cryptography, there is no key required to read the hidden content once it\'s found. Best practice: combine steganography with cryptography — encrypt the message first, then hide the ciphertext.' },
+  { id:30, diff:'hard', topic:'Foundations', q:'Which scenario BEST demonstrates the concept of Non-Repudiation?', opts:['A message is encrypted so only the recipient can read it','A hash confirms the file hasn\'t been modified','A user digitally signs a contract with their private key, and later cannot deny having signed it because only they had that private key','A VPN tunnels all traffic to prevent eavesdropping'], ans:2, exp:'Non-Repudiation means the sender cannot credibly deny having sent or signed something. Digital signatures achieve this: the signature is produced with the sender\'s private key, which only they possess. A valid signature is irrefutable mathematical proof of authorship — the sender cannot later claim "I didn\'t sign that" because no one else had their private key.' }
+];
+
+const writtenQuestions = [
+  { type:'Short Answer', q:'Define cryptography and explain the difference between plaintext and ciphertext.', ans:`<p><strong>Cryptography</strong> is the science and practice of securing information by transforming it into an unreadable form, ensuring only authorized parties can access the original content. It uses mathematical algorithms and secret keys to protect data during storage and transmission.</p><ul><li><strong>Plaintext</strong>: The original, readable data before any transformation is applied. This is what you want to protect. Example: "Hello, Bob!"</li><li><strong>Ciphertext</strong>: The scrambled, unreadable output produced after encryption. Without the correct key, this appears as meaningless data. Example: "X7#kP9@mQ2"</li></ul><p>The transformation from plaintext to ciphertext is called <strong>encryption</strong>. The reverse process (ciphertext back to plaintext) is called <strong>decryption</strong>, which requires the correct key.</p>` },
+  { type:'Short Answer', q:'State Kerckhoffs\' Principle and explain why it is important in modern cryptographic system design.', ans:`<p><strong>Kerckhoffs' Principle</strong> states: <em>The security of a cryptographic system should depend solely on the secrecy of the key — not on hiding the algorithm.</em></p><p><strong>Why it matters:</strong></p><ul><li><strong>Algorithms can be reverse-engineered</strong> — keeping them secret provides only temporary protection. Once discovered (via leaks, insider threats, or reverse engineering), all security collapses.</li><li><strong>Public algorithms are stronger</strong> — algorithms like AES and RSA are publicly known and have been scrutinized by thousands of cryptographers worldwide who have failed to break them. This peer review builds true confidence.</li><li><strong>Key management is controllable</strong> — a key can be changed or rotated if compromised. An algorithm cannot be "changed" once deployed in products.</li></ul><p>In contrast, "security through obscurity" (hiding the algorithm) is considered a fundamental design flaw in modern cryptography.</p>` },
+  { type:'Short Answer', q:'Explain the key distribution problem in symmetric encryption and how asymmetric cryptography solves it.', ans:`<p><strong>The Key Distribution Problem:</strong> Symmetric encryption requires both parties to share the same secret key BEFORE communication can begin. The challenge: how do you securely share this key if no secure channel yet exists?</p><ul><li><strong>Interception risk:</strong> If the key is transmitted over an insecure channel, an eavesdropper captures it and can decrypt all future messages.</li><li><strong>Scalability:</strong> n users require n(n-1)/2 unique key pairs. For 1,000 users, this is ~500,000 keys to manage securely.</li></ul><p><strong>Asymmetric Solution:</strong> Each user generates a public/private key pair. The public key is shared openly. When Alice wants to communicate with Bob, she uses Bob's public key to encrypt a session key. Only Bob's private key can decrypt it. The symmetric session key is exchanged securely without ever being transmitted in plaintext — the key distribution problem is solved.</p>` },
+  { type:'Short Answer', q:'What is the difference between a plain hash and HMAC? When should each be used?', ans:`<p><strong>Plain Hash (e.g., SHA-256):</strong></p><ul><li>Computes a fixed-length digest of any input without any key</li><li>Anyone can compute the hash of any data — <strong>no authentication</strong></li><li>Detects accidental data corruption</li><li><strong>Weakness:</strong> An attacker can modify data and recompute the hash, forging a valid checksum</li><li>Use case: File download integrity checks (verifying a downloaded file matches the published checksum)</li></ul><p><strong>HMAC (Hash-based MAC):</strong></p><ul><li>Combines a hash function with a <strong>shared secret key</strong></li><li>Only parties with the secret key can compute or verify the HMAC</li><li>Authenticates both <strong>data integrity AND sender identity</strong></li><li>Use case: API request authentication, message integrity in protocols (TLS, JWT tokens)</li></ul><p><strong>Rule:</strong> Use plain hashes for integrity checks where there's no adversarial threat. Use HMAC whenever you need to verify that data came from a trusted party and hasn't been tampered with.</p>` },
+  { type:'Short Answer', q:'Compare block ciphers and stream ciphers. Give an example of each and describe their ideal use cases.', ans:`<p><strong>Block Ciphers:</strong></p><ul><li>Encrypt data in fixed-size chunks (e.g., 128-bit blocks in AES)</li><li>The same algorithm is applied to each block independently (in simple modes)</li><li>Requires padding if the final block isn't full</li><li>More complex modes (CBC, GCM) add security and features</li><li><strong>Examples:</strong> AES, DES, Blowfish</li><li><strong>Use cases:</strong> File encryption, database encryption, disk encryption — any scenario where data is available in chunks</li></ul><p><strong>Stream Ciphers:</strong></p><ul><li>Encrypt data one bit or byte at a time continuously</li><li>Generate a pseudorandom keystream XORed with plaintext</li><li>No padding required — works on any data length</li><li><strong>Examples:</strong> ChaCha20, RC4 (deprecated)</li><li><strong>Use cases:</strong> Real-time communications — voice calls, video streaming, where low latency matters</li></ul><p><strong>Critical note for both:</strong> Never reuse an IV/nonce with the same key — this can catastrophically break security in both types.</p>` },
+  { type:'Long Answer', q:'Explain Diffie-Hellman key exchange using the paint-mixing analogy. What problem does it solve, and what are its limitations?', ans:`<p><strong>Problem Solved:</strong> Diffie-Hellman (DH) allows two parties who have never met to establish a shared secret over an insecure, public channel — without ever transmitting the secret itself. It solves the key distribution problem of symmetric cryptography.</p><p><strong>Paint-Mixing Analogy:</strong></p><ul><li><strong>Step 1 — Public color:</strong> Alice and Bob publicly agree on a common color (e.g., yellow). An eavesdropper also knows this public color.</li><li><strong>Step 2 — Secret colors:</strong> Alice secretly picks red; Bob secretly picks blue. These are their private keys.</li><li><strong>Step 3 — Mix and exchange:</strong> Alice mixes yellow + red → orange; Bob mixes yellow + blue → green. They exchange these "mixed" colors publicly. The eavesdropper sees orange and green.</li><li><strong>Step 4 — Final combination:</strong> Alice takes Bob's green + her private red → brown (the shared secret). Bob takes Alice's orange + his private blue → the same brown. Both arrive at the identical final color without ever exchanging it!</li></ul><p><strong>Why it's secure:</strong> Separating colors (reversing the mixing) is computationally infeasible. This maps to the "discrete logarithm problem" — an eavesdropper who sees the mixed colors cannot derive the private secret colors.</p><p><strong>Limitations:</strong></p><ul><li>DH is a <strong>key exchange protocol only</strong> — it does NOT encrypt data directly</li><li>Vulnerable to <strong>man-in-the-middle attacks</strong> without authentication (an attacker intercepts and performs two separate DH exchanges)</li><li>Solution: Combine DH with digital certificates (as in TLS) to authenticate parties</li><li>Static DH keys are also a risk — ephemeral DH (EDH/ECDHE) creates fresh keys per session for Perfect Forward Secrecy</li></ul>` },
+  { type:'Long Answer', q:'Describe in detail how digital signatures work, what they prove, and how they differ from encryption.', ans:`<p><strong>What Digital Signatures Prove:</strong></p><ul><li><strong>Authenticity:</strong> The message genuinely came from the claimed sender</li><li><strong>Integrity:</strong> The message has not been altered since signing</li><li><strong>Non-Repudiation:</strong> The sender cannot deny having signed it</li></ul><p><strong>How Digital Signatures Work — Step by Step:</strong></p><ul><li><strong>Step 1 — Hash:</strong> The sender passes the document through a cryptographic hash function (e.g., SHA-256) to produce a fixed-length digest (fingerprint). This digest represents the document's content uniquely.</li><li><strong>Step 2 — Sign:</strong> The sender encrypts the digest using their <strong>own private key</strong>. This encrypted digest is the digital signature, which is appended to the document.</li><li><strong>Step 3 — Verify:</strong> The recipient: (a) decrypts the signature using the sender's <strong>public key</strong> to recover the original digest; (b) independently hashes the received document to produce a new digest; (c) compares both digests. If they match → the signature is valid (authentic and unaltered). If they differ → tampering detected or wrong signer.</li></ul><p><strong>Key Difference from Encryption:</strong></p><ul><li><strong>Encryption for confidentiality:</strong> Encrypt with RECIPIENT's public key → only recipient can decrypt with their private key</li><li><strong>Signing for authenticity:</strong> Sign with SENDER's private key → anyone can verify with sender's public key</li><li>Encryption hides content from others; signatures prove authorship to all</li><li>You can sign without encrypting (public document, verifiable by all) or encrypt without signing (private message, no proof of origin)</li></ul>` },
+  { type:'Long Answer', q:'Compare symmetric and asymmetric encryption across all major dimensions. Explain why hybrid encryption is used in practice.', ans:`<p><strong>Comparison:</strong></p><ul><li><strong>Keys:</strong> Symmetric uses ONE shared key for both encryption and decryption. Asymmetric uses a KEY PAIR — public key (shared) for encryption/verification, private key (secret) for decryption/signing.</li><li><strong>Speed:</strong> Symmetric is MUCH faster (simple mathematical operations — XOR, substitution, permutation). Asymmetric is slow (complex modular exponentiation with large numbers — 1000x slower than symmetric).</li><li><strong>Key distribution:</strong> Symmetric has the key distribution problem — securely sharing the shared key is challenging. Asymmetric solves this — public keys can be distributed openly without risk.</li><li><strong>Key management:</strong> Symmetric requires n(n-1)/2 keys for n users. Asymmetric requires only one key pair per user.</li><li><strong>Security basis:</strong> Symmetric — strength of the algorithm + key length. Asymmetric — computational hardness of mathematical problems (prime factorization for RSA, discrete logarithm for DH, elliptic curve for ECC).</li><li><strong>Primary use:</strong> Symmetric — bulk data encryption. Asymmetric — key exchange, digital signatures, certificates.</li></ul><p><strong>Why Hybrid Encryption:</strong> Neither system alone is practical for modern communication:</p><ul><li>Asymmetric alone: Too slow for bulk data (imagine encrypting a 4K video with RSA)</li><li>Symmetric alone: Cannot solve key distribution over untrusted networks</li></ul><p><strong>Hybrid solution (used in HTTPS/TLS):</strong></p><ul><li>Use asymmetric (DH/RSA) to securely exchange a fresh symmetric session key</li><li>Use symmetric (AES-GCM) for all actual data communication</li><li>Result: Security of asymmetric key exchange + speed of symmetric encryption</li><li>Examples: HTTPS/TLS, PGP email encryption, Signal messaging protocol</li></ul>` },
+  { type:'Long Answer', q:'Explain the risks of improper password storage. What constitutes best practice, and why?', ans:`<p><strong>Risks of Improper Password Storage:</strong></p><ul><li><strong>Plaintext storage:</strong> Database breach immediately exposes all passwords. Attacker gains instant access to all accounts, often across multiple services (password reuse).</li><li><strong>Unsalted hashing:</strong> Even with SHA-256, identical passwords produce identical hashes. Attackers can use <strong>rainbow tables</strong> — precomputed tables of hash → password mappings — to reverse millions of hashes instantly.</li><li><strong>Fast hashing (MD5, SHA-256):</strong> Modern GPUs can compute billions of SHA-256 hashes per second. An attacker can brute-force an entire database in hours or days.</li></ul><p><strong>Best Practices:</strong></p><ul><li><strong>Never store plaintext passwords.</strong> Always store the output of a hash function.</li><li><strong>Use a unique random salt per user</strong> — a random value prepended to each password before hashing. Even if two users have the same password, their stored hashes differ. Salts defeat rainbow table attacks.</li><li><strong>Use slow, memory-hard algorithms:</strong> bcrypt, scrypt, or Argon2. These are intentionally slow (configurable work factor) and require significant memory, making parallel GPU-based attacks costly.</li><li><strong>Use a sufficient work factor</strong> and increase it over time as hardware improves.</li><li><strong>Argon2</strong> (PHC winner) is the current best recommendation for new systems — it is memory-hard and time-hard, resisting both GPU and ASIC attacks.</li></ul><p><strong>Example:</strong> Instead of storing SHA256("password123") = same hash for all users, store bcrypt(salt="a7f3...", password="password123", rounds=12) — unique per user, computationally expensive to attack.</p>` },
+  { type:'Short Answer', q:'What is Perfect Forward Secrecy (PFS), and which mechanism enables it in TLS?', ans:`<p><strong>Perfect Forward Secrecy (PFS)</strong> is a property of a key exchange system that ensures compromise of long-term secret keys (e.g., a server's private RSA key) does NOT allow decryption of previously captured encrypted sessions.</p><p><strong>How it works:</strong></p><ul><li>Without PFS: If an attacker records encrypted traffic today and later steals the server's private key, they can retroactively decrypt all past sessions.</li><li>With PFS: Each session uses a <strong>fresh, ephemeral key pair</strong> for the key exchange. This ephemeral key is generated at the start of the session and discarded after it ends. Even with the server's long-term private key, past sessions cannot be decrypted because the ephemeral keys no longer exist.</li></ul><p><strong>Mechanism in TLS:</strong> Ephemeral Diffie-Hellman (DHE) or Elliptic Curve DHE (ECDHE). Each TLS connection generates a fresh DH key pair, uses it for the session, then discards it. TLS 1.3 mandates PFS — it only supports ECDHE key exchange, eliminating non-forward-secret cipher suites entirely.</p>` },
+  { type:'Short Answer', q:'Explain the three attacks that cryptography helps defend against (with real-world examples of each).', ans:`<p><strong>1. Interception (Eavesdropping):</strong></p><ul><li><strong>Threat:</strong> Attacker passively reads data in transit (e.g., packet sniffing on public Wi-Fi)</li><li><strong>Example:</strong> Attacker at a coffee shop captures your HTTP traffic and reads your login credentials</li><li><strong>Defense:</strong> Encryption (AES, TLS) — captured data appears as meaningless ciphertext</li></ul><p><strong>2. Modification (Tampering):</strong></p><ul><li><strong>Threat:</strong> Attacker alters message contents undetected (man-in-the-middle)</li><li><strong>Example:</strong> Attacker intercepts a bank transfer message and changes the destination account number</li><li><strong>Defense:</strong> Hash functions, MACs, HMAC — any modification changes the hash, making tampering detectable</li></ul><p><strong>3. Impersonation (Spoofing):</strong></p><ul><li><strong>Threat:</strong> Attacker pretends to be a trusted party to deceive victims</li><li><strong>Example:</strong> Attacker creates a fake website that looks like your bank's login page</li><li><strong>Defense:</strong> Digital certificates and signatures — certificates from trusted CAs prove the identity of the server you're connecting to</li></ul>` },
+  { type:'Long Answer', q:'Describe how HTTPS (TLS) uses cryptographic primitives to secure a web connection from start to finish.', ans:`<p>HTTPS uses TLS (Transport Layer Security), which combines multiple cryptographic primitives in a carefully designed protocol:</p><p><strong>Phase 1 — Authentication via Certificates:</strong></p><ul><li>The server presents a <strong>digital certificate</strong> issued by a trusted Certificate Authority (CA)</li><li>The certificate contains the server's public key and is digitally signed by the CA</li><li>Your browser verifies the CA's signature using the CA's public key (pre-installed in the browser) — this proves the server is who it claims to be</li><li>Cryptographic primitive: <strong>Asymmetric encryption + Digital Signatures (RSA or ECDSA)</strong></li></ul><p><strong>Phase 2 — Key Exchange:</strong></p><ul><li>The client and server perform an <strong>Elliptic Curve Diffie-Hellman Ephemeral (ECDHE)</strong> key exchange</li><li>Both sides compute a shared session key without transmitting it over the network</li><li>Being ephemeral, this enables <strong>Perfect Forward Secrecy</strong></li><li>Cryptographic primitive: <strong>Diffie-Hellman (asymmetric key exchange)</strong></li></ul><p><strong>Phase 3 — Session Encryption:</strong></p><ul><li>All subsequent HTTP data (requests, responses, headers) is encrypted using <strong>AES-256-GCM</strong> with the shared session key</li><li>GCM mode provides both <strong>confidentiality AND integrity/authentication</strong> (AEAD — Authenticated Encryption with Associated Data)</li><li>Cryptographic primitive: <strong>Symmetric encryption (AES) + Authenticated encryption (GCM)</strong></li></ul><p><strong>Phase 4 — Key Derivation:</strong></p><ul><li>The master secret from DH is passed through <strong>HKDF</strong> (HMAC-based Key Derivation Function) to derive separate keys for encryption and MAC operations</li><li>Cryptographic primitive: <strong>HMAC</strong></li></ul><p>The result: secure identity verification, protected key exchange, fast bulk encryption, and integrity checking — all in a fraction of a second when you visit https://example.com.</p>` }
+];
+
+let answered = 0, correct = 0;
+const answeredMap = {};
+
+function buildMCQ() {
+  const container = document.getElementById('mcq-container');
+  container.innerHTML = '';
+  questions.forEach((q, qi) => {
+    const div = document.createElement('div');
+    div.className = 'mcq-question';
+    div.dataset.diff = q.diff;
+    div.dataset.id = q.id;
+    const optsHtml = q.opts.map((opt, oi) => {
+      const letters = ['A','B','C','D'];
+      return `<button class="mcq-opt" onclick="selectOpt(${q.id}, ${oi}, ${q.ans})" data-qid="${q.id}" data-oi="${oi}">
+        <span class="opt-letter">${letters[oi]}</span>${opt}
+      </button>`;
+    }).join('');
+    div.innerHTML = `
+      <div class="mcq-meta">
+        <span class="diff-badge diff-${q.diff}">${q.diff}</span>
+        <span class="topic-tag">${q.topic}</span>
+        <span style="margin-left:auto;font-size:0.78rem;color:var(--text3);">Q${q.id}</span>
+      </div>
+      <div class="mcq-q-text">${q.q}</div>
+      <div class="mcq-options">${optsHtml}</div>
+      <div class="mcq-explanation" id="exp-${q.id}">
+        <div class="explanation-label">Explanation</div>
+        ${q.exp}
+      </div>`;
+    container.appendChild(div);
+    if (answeredMap[q.id] !== undefined) {
+      restoreAnswer(q.id, answeredMap[q.id], q.ans);
+    }
+  });
+}
+
+function restoreAnswer(qid, selectedOi, correctAns) {
+  const opts = document.querySelectorAll(`.mcq-opt[data-qid="${qid}"]`);
+  opts.forEach((opt, oi) => {
+    opt.disabled = true;
+    if (oi === correctAns) opt.classList.add('correct');
+    else if (oi === selectedOi) opt.classList.add('wrong');
+  });
+  const exp = document.getElementById('exp-' + qid);
+  if (exp) exp.classList.add('visible');
+}
+
+function selectOpt(qid, selectedOi, correctAns) {
+  if (answeredMap[qid] !== undefined) return;
+  answeredMap[qid] = selectedOi;
+  answered++;
+  if (selectedOi === correctAns) correct++;
+  updateScore();
+  const opts = document.querySelectorAll(`.mcq-opt[data-qid="${qid}"]`);
+  opts.forEach((opt, oi) => {
+    opt.disabled = true;
+    if (oi === correctAns) opt.classList.add('correct');
+    else if (oi === selectedOi) opt.classList.add('wrong');
+  });
+  const exp = document.getElementById('exp-' + qid);
+  if (exp) exp.classList.add('visible');
+}
+
+function updateScore() {
+  document.getElementById('score-answered').textContent = answered;
+  document.getElementById('score-correct').textContent = correct;
+  document.getElementById('score-wrong').textContent = answered - correct;
+  document.getElementById('score-pct').textContent = answered > 0 ? Math.round((correct/answered)*100) + '%' : '—';
+}
+
+function resetMCQ() {
+  Object.keys(answeredMap).forEach(k => delete answeredMap[k]);
+  answered = 0; correct = 0;
+  updateScore();
+  buildMCQ();
+}
+
+function filterMCQ(diff, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.mcq-question').forEach(q => {
+    q.style.display = (diff === 'all' || q.dataset.diff === diff) ? '' : 'none';
+  });
+}
+
+function buildWritten() {
+  const container = document.getElementById('written-container');
+  container.innerHTML = '';
+  writtenQuestions.forEach((wq, i) => {
+    const div = document.createElement('div');
+    div.className = 'wq-card';
+    div.innerHTML = `
+      <div class="wq-header" onclick="toggleWQ(this)">
+        <span class="wq-num">Q${i+1}</span>
+        <div style="flex:1">
+          <div class="wq-type">${wq.type}</div>
+          <div class="wq-q">${wq.q}</div>
+        </div>
+        <span class="wq-toggle">▾</span>
+      </div>
+      <div class="wq-answer">
+        <h4>Model Answer</h4>
+        ${wq.ans}
+      </div>`;
+    container.appendChild(div);
+  });
+}
+
+function toggleWQ(header) {
+  const card = header.parentElement;
+  card.classList.toggle('open');
+}
+
+function toggleChapter(head) {
+  head.parentElement.classList.toggle('open');
+}
+
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('section-' + name).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'"+name+"'")) {
+      b.classList.add('active');
+    }
+  });
+  window.scrollTo(0, 0);
+}
+
+function toggleTheme() {
+  const isDark = !document.documentElement.dataset.theme;
+  document.documentElement.dataset.theme = isDark ? 'light' : '';
+  document.querySelector('.theme-btn').textContent = isDark ? '🌙 Dark' : '☀️ Light';
+}
+
+buildMCQ();
+buildWritten();
+</script>
+</body>
+</html>
