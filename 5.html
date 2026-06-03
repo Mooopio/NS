@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SSL & VPN — Exam Preparation System</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#f4f1ea;
+  --surface:#fffdf8;
+  --surface2:#f0ede4;
+  --border:#d8d3c6;
+  --text:#1a1814;
+  --text2:#5a5650;
+  --text3:#8a8480;
+  --accent:#1d4ed8;
+  --accent-light:#dbeafe;
+  --accent-dark:#1e3a8a;
+  --green:#166534;
+  --green-bg:#dcfce7;
+  --red:#991b1b;
+  --red-bg:#fee2e2;
+  --amber:#92400e;
+  --amber-bg:#fef3c7;
+  --purple:#581c87;
+  --purple-bg:#f3e8ff;
+  --tag-bg:#e8e3d8;
+  --radius:10px;
+  --radius-lg:16px;
+  --shadow:0 1px 3px rgba(0,0,0,.08);
+}
+[data-theme="dark"]{
+  --bg:#0f0e0c;
+  --surface:#1a1916;
+  --surface2:#242220;
+  --border:#333028;
+  --text:#f0ece2;
+  --text2:#a09c94;
+  --text3:#5a564e;
+  --accent:#60a5fa;
+  --accent-light:#1e3a5f;
+  --accent-dark:#93c5fd;
+  --green:#4ade80;
+  --green-bg:#052e16;
+  --red:#f87171;
+  --red-bg:#450a0a;
+  --amber:#fbbf24;
+  --amber-bg:#451a03;
+  --purple:#c084fc;
+  --purple-bg:#2e1065;
+  --tag-bg:#2a2720;
+  --shadow:0 1px 4px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  font-size:16px;
+  line-height:1.7;
+  min-height:100vh;
+}
+/* NAV */
+.nav{
+  position:sticky;top:0;z-index:100;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:0;
+  padding:0 2rem;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+.nav::-webkit-scrollbar{display:none}
+.nav-brand{
+  font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;
+  color:var(--text);white-space:nowrap;margin-right:2rem;
+  display:flex;align-items:center;gap:.5rem;
+}
+.nav-brand .dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--accent);display:inline-block;
+}
+.nav-btn{
+  background:none;border:none;cursor:pointer;
+  color:var(--text2);font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:500;
+  padding:.9rem 1rem;white-space:nowrap;
+  border-bottom:2px solid transparent;
+  transition:color .2s,border-color .2s;
+}
+.nav-btn:hover{color:var(--text)}
+.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.theme-btn{
+  margin-left:auto;background:none;border:1px solid var(--border);
+  border-radius:var(--radius);padding:.4rem .8rem;cursor:pointer;
+  color:var(--text2);font-size:.8rem;font-family:'DM Sans',sans-serif;
+  flex-shrink:0;transition:background .2s;
+}
+.theme-btn:hover{background:var(--surface2)}
+
+/* SECTIONS */
+.section{display:none;max-width:900px;margin:0 auto;padding:3rem 1.5rem 5rem;}
+.section.active{display:block}
+
+/* HERO */
+.hero{
+  text-align:center;padding:4rem 1rem 3rem;
+  border-bottom:1px solid var(--border);margin-bottom:3rem;
+}
+.hero h1{
+  font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:800;
+  line-height:1.1;margin-bottom:1rem;
+}
+.hero h1 span{color:var(--accent)}
+.hero p{color:var(--text2);max-width:550px;margin:0 auto 1.5rem;font-size:1.05rem;}
+.badge-row{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center}
+.badge{
+  font-size:.75rem;font-weight:500;padding:.3rem .7rem;
+  border-radius:100px;border:1px solid var(--border);
+  color:var(--text2);background:var(--surface2);
+}
+
+/* CARDS */
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:1.5rem;
+  margin-bottom:1.25rem;box-shadow:var(--shadow);
+}
+.card-title{
+  font-family:'Syne',sans-serif;font-weight:700;font-size:1.05rem;
+  margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem;
+}
+.icon{
+  width:28px;height:28px;border-radius:8px;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:.8rem;flex-shrink:0;
+}
+.icon-blue{background:var(--accent-light);color:var(--accent)}
+.icon-green{background:var(--green-bg);color:var(--green)}
+.icon-amber{background:var(--amber-bg);color:var(--amber)}
+.icon-red{background:var(--red-bg);color:var(--red)}
+.icon-purple{background:var(--purple-bg);color:var(--purple)}
+
+/* SECTION HEADINGS */
+.sec-head{
+  font-family:'Syne',sans-serif;font-weight:800;font-size:1.6rem;
+  margin-bottom:.4rem;
+}
+.sec-sub{color:var(--text2);margin-bottom:2rem;font-size:.95rem;}
+.divider{height:1px;background:var(--border);margin:2rem 0;}
+
+/* KEY CONCEPT BLOCK */
+.key-concept{
+  border-left:3px solid var(--accent);
+  padding:1rem 1.25rem;background:var(--accent-light);
+  border-radius:0 var(--radius) var(--radius) 0;margin:1rem 0;
+}
+.key-concept p{font-size:.95rem;color:var(--text)}
+
+/* WARNING/NOTE BLOCKS */
+.note{
+  border-left:3px solid var(--amber);
+  padding:.8rem 1.1rem;background:var(--amber-bg);
+  border-radius:0 var(--radius) var(--radius) 0;margin:.75rem 0;
+  font-size:.9rem;color:var(--amber);
+}
+.success-note{
+  border-left:3px solid var(--green);
+  padding:.8rem 1.1rem;background:var(--green-bg);
+  border-radius:0 var(--radius) var(--radius) 0;margin:.75rem 0;
+  font-size:.9rem;color:var(--green);
+}
+.danger-note{
+  border-left:3px solid var(--red);
+  padding:.8rem 1.1rem;background:var(--red-bg);
+  border-radius:0 var(--radius) var(--radius) 0;margin:.75rem 0;
+  font-size:.9rem;color:var(--red);
+}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;margin:1rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.88rem;}
+th{
+  background:var(--surface2);color:var(--text);font-weight:600;
+  padding:.6rem .9rem;text-align:left;border:1px solid var(--border);
+  font-family:'Syne',sans-serif;font-size:.8rem;letter-spacing:.03em;
+}
+td{
+  padding:.6rem .9rem;border:1px solid var(--border);
+  color:var(--text2);vertical-align:top;
+}
+tr:hover td{background:var(--surface2)}
+
+/* COLLAPSIBLE */
+.collapsible-btn{
+  width:100%;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1rem 1.25rem;
+  display:flex;align-items:center;justify-content:space-between;
+  cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;
+  font-size:.95rem;font-weight:500;color:var(--text);
+  transition:background .15s;margin-bottom:.5rem;
+}
+.collapsible-btn:hover{background:var(--surface2)}
+.collapsible-btn .arrow{
+  color:var(--text3);transition:transform .2s;font-size:.8rem;
+}
+.collapsible-btn.open .arrow{transform:rotate(180deg)}
+.collapsible-content{
+  display:none;background:var(--surface);
+  border:1px solid var(--border);border-top:none;
+  border-radius:0 0 var(--radius) var(--radius);
+  padding:1.25rem;margin-top:-.5rem;margin-bottom:.5rem;
+  font-size:.92rem;color:var(--text2);
+}
+.collapsible-content.open{display:block}
+
+/* MCQ */
+.mcq-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1.25rem;
+}
+.mcq-num{
+  font-size:.75rem;font-weight:600;color:var(--text3);
+  letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem;
+}
+.mcq-q{font-weight:500;font-size:1rem;margin-bottom:1rem;line-height:1.5;}
+.mcq-diff{
+  display:inline-block;font-size:.7rem;font-weight:600;padding:.2rem .5rem;
+  border-radius:100px;margin-left:.5rem;vertical-align:middle;
+}
+.diff-easy{background:var(--green-bg);color:var(--green)}
+.diff-med{background:var(--amber-bg);color:var(--amber)}
+.diff-hard{background:var(--red-bg);color:var(--red)}
+.mcq-options{display:flex;flex-direction:column;gap:.5rem;}
+.mcq-opt{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:.7rem 1rem;cursor:pointer;
+  font-size:.92rem;transition:background .15s,border-color .15s;
+  display:flex;gap:.75rem;align-items:flex-start;
+}
+.mcq-opt:hover{background:var(--accent-light);border-color:var(--accent)}
+.mcq-opt .opt-label{
+  font-weight:600;color:var(--text3);flex-shrink:0;font-size:.85rem;
+}
+.mcq-opt.correct{background:var(--green-bg)!important;border-color:var(--green)!important;color:var(--green)}
+.mcq-opt.wrong{background:var(--red-bg)!important;border-color:var(--red)!important;color:var(--red)}
+.mcq-opt.neutral{opacity:.5}
+.mcq-explanation{
+  display:none;margin-top:1rem;padding:1rem;background:var(--surface2);
+  border-radius:var(--radius);border-left:3px solid var(--accent);
+  font-size:.88rem;color:var(--text2);
+}
+.mcq-explanation.show{display:block}
+.mcq-explanation strong{color:var(--accent);font-weight:600;}
+.mcq-score-bar{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:2rem;
+  display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;
+}
+.score-num{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--accent)}
+.score-label{font-size:.85rem;color:var(--text2)}
+.progress-track{
+  flex:1;min-width:150px;height:8px;background:var(--surface2);
+  border-radius:100px;overflow:hidden;
+}
+.progress-fill{
+  height:100%;background:var(--accent);border-radius:100px;
+  transition:width .4s ease;
+}
+.reset-btn{
+  background:var(--accent);color:#fff;border:none;
+  border-radius:var(--radius);padding:.6rem 1.2rem;
+  cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:500;
+  transition:opacity .2s;
+}
+.reset-btn:hover{opacity:.85}
+
+/* WRITTEN */
+.written-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1.25rem;
+}
+.written-type{
+  font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:.5rem;
+}
+.written-q{font-weight:500;font-size:1rem;margin-bottom:1rem;line-height:1.5;}
+.show-answer-btn{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:.5rem 1rem;cursor:pointer;
+  font-size:.85rem;color:var(--text2);font-family:'DM Sans',sans-serif;
+  transition:background .15s;
+}
+.show-answer-btn:hover{background:var(--accent-light);color:var(--accent);border-color:var(--accent)}
+.model-answer{
+  display:none;margin-top:1rem;padding:1.1rem;
+  background:var(--green-bg);border-left:3px solid var(--green);
+  border-radius:0 var(--radius) var(--radius) 0;
+  font-size:.9rem;color:var(--text);
+}
+.model-answer.show{display:block}
+.model-answer h4{color:var(--green);font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;margin-bottom:.5rem;letter-spacing:.04em}
+
+/* CHEAT SHEET */
+.cheat-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:1rem;margin-bottom:1.5rem;
+}
+.cheat-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:1.25rem;
+}
+.cheat-card h3{
+  font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;
+  margin-bottom:.75rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);
+  letter-spacing:.02em;
+}
+.cheat-item{
+  display:flex;gap:.5rem;align-items:flex-start;
+  font-size:.83rem;margin-bottom:.4rem;color:var(--text2);
+}
+.cheat-dot{
+  width:5px;height:5px;border-radius:50%;background:var(--accent);
+  flex-shrink:0;margin-top:.55rem;
+}
+.cheat-item b{color:var(--text);font-weight:600;}
+
+/* MNEMONIC */
+.mnemonic{
+  background:var(--purple-bg);border:1px solid var(--purple);
+  border-radius:var(--radius-lg);padding:1.25rem;margin:1rem 0;
+}
+.mnemonic-title{
+  font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;
+  color:var(--purple);letter-spacing:.04em;margin-bottom:.5rem;
+}
+.mnemonic p{font-size:.9rem;color:var(--text);}
+
+/* ANALOGY */
+.analogy{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:1.1rem 1.25rem;margin:.75rem 0;
+  border-left:3px solid var(--amber);
+}
+.analogy-label{
+  font-size:.7rem;font-weight:700;color:var(--amber);letter-spacing:.08em;
+  text-transform:uppercase;margin-bottom:.3rem;
+}
+.analogy p{font-size:.9rem;color:var(--text2);}
+
+/* PROCESS STEPS */
+.steps{display:flex;flex-direction:column;gap:.75rem;margin:1rem 0;}
+.step{
+  display:flex;gap:1rem;align-items:flex-start;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1rem 1.1rem;
+}
+.step-num{
+  font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;
+  color:var(--accent);flex-shrink:0;min-width:24px;
+}
+.step h4{font-weight:600;font-size:.9rem;margin-bottom:.2rem;}
+.step p{font-size:.85rem;color:var(--text2)}
+
+/* COMPARISON TABLE highlight */
+.yes{color:var(--green);font-weight:600}
+.no{color:var(--red);font-weight:600}
+.partial{color:var(--amber);font-weight:600}
+
+/* BULLET LIST */
+ul.styled{list-style:none;padding:0;}
+ul.styled li{
+  padding:.3rem 0 .3rem 1.25rem;position:relative;
+  font-size:.92rem;color:var(--text2);
+}
+ul.styled li::before{
+  content:'';width:5px;height:5px;border-radius:50%;
+  background:var(--accent);position:absolute;left:0;top:.85rem;
+}
+ul.styled li b{color:var(--text);font-weight:600;}
+
+/* FILTER BAR */
+.filter-bar{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem;}
+.filter-btn{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:100px;padding:.35rem .9rem;cursor:pointer;
+  font-size:.8rem;color:var(--text2);font-family:'DM Sans',sans-serif;
+  transition:background .15s;
+}
+.filter-btn:hover,.filter-btn.active{
+  background:var(--accent);border-color:var(--accent);color:#fff;
+}
+
+/* PRINT */
+@media print{
+  .nav,.theme-btn,.reset-btn,.filter-bar,.show-answer-btn,.mcq-opt{display:none!important}
+  .section{display:block!important}
+  .model-answer,.mcq-explanation{display:block!important}
+}
+
+/* Animations */
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.section.active{animation:fadeIn .25s ease}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .nav{padding:0 1rem}
+  .section{padding:2rem 1rem 4rem}
+  .hero h1{font-size:1.8rem}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand"><span class="dot"></span>SSL & VPN</div>
+  <button class="nav-btn active" onclick="showSection('explain')">📖 Explanation</button>
+  <button class="nav-btn" onclick="showSection('summary')">📋 Summary</button>
+  <button class="nav-btn" onclick="showSection('memory')">🧠 Memory</button>
+  <button class="nav-btn" onclick="showSection('mcq')">❓ MCQs</button>
+  <button class="nav-btn" onclick="showSection('written')">✍️ Written</button>
+  <button class="nav-btn" onclick="showSection('cheatsheet')">⚡ Revision</button>
+  <button class="theme-btn" onclick="toggleTheme()">🌙 Dark</button>
+</nav>
+
+<!-- ═══════════════════════════════ PHASE 1: EXPLANATION ═══════════════════════════════ -->
+<div class="section active" id="explain">
+  <div class="hero">
+    <h1>VPN & IPsec<br/><span>Secure Network Communication</span></h1>
+    <p>A complete exam preparation system — deep understanding, memory tricks, MCQs, and a rapid revision sheet.</p>
+    <div class="badge-row">
+      <span class="badge">Dr. Abdalla Sayed</span>
+      <span class="badge">SSL / TLS</span>
+      <span class="badge">IPsec VPN</span>
+      <span class="badge">Cryptography</span>
+      <span class="badge">PKI & Certificates</span>
+    </div>
+  </div>
+
+  <!-- TOPIC 1 -->
+  <div class="sec-head">1. What is SSL?</div>
+  <div class="sec-sub">Secure Sockets Layer — the ancestor of modern web security</div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon icon-blue">🔒</span> Core Definition</div>
+    <p><strong>SSL (Secure Sockets Layer)</strong> is a cryptographic protocol developed by <strong>Netscape in the 1990s</strong>. Its mission: create an encrypted, authenticated channel between a web server and a browser, so all transmitted data stays private and intact.</p>
+    <div class="key-concept">
+      <p>📌 <strong>Exam key:</strong> SSL operates at the <strong>Application Layer (Layer 7)</strong> of the OSI model. It is associated with <strong>HTTPS</strong> and the padlock icon in browsers.</p>
+    </div>
+    <p style="margin-top:.75rem;">SSL protects: login credentials, credit card numbers, personal data, and any sensitive communication in transit.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon icon-amber">⚠️</span> SSL → TLS: The Critical Evolution</div>
+    <p><strong>SSL versions 2.0 and 3.0 were found to have critical vulnerabilities</strong> — SSL 3.0 is vulnerable to the infamous <strong>POODLE attack</strong>. As a result, SSL was formally <strong>deprecated</strong> and replaced by:</p>
+    <div class="note">⚠️ <strong>Exam Trap!</strong> When people say "SSL" today, they almost always mean <strong>TLS</strong>. Modern systems exclusively use <strong>TLS 1.2</strong> or <strong>TLS 1.3</strong>. SSL 2.0, SSL 3.0, TLS 1.0, and TLS 1.1 are all deprecated and insecure.</div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Version</th><th>Status</th><th>Notes</th></tr>
+        <tr><td>SSL 2.0</td><td class="no">Deprecated</td><td>Critical vulnerabilities</td></tr>
+        <tr><td>SSL 3.0</td><td class="no">Deprecated</td><td>POODLE attack</td></tr>
+        <tr><td>TLS 1.0</td><td class="no">Deprecated</td><td>Known weaknesses</td></tr>
+        <tr><td>TLS 1.1</td><td class="no">Deprecated</td><td>Known weaknesses</td></tr>
+        <tr><td>TLS 1.2</td><td class="yes">✓ Acceptable</td><td>Strong cipher suites required</td></tr>
+        <tr><td>TLS 1.3</td><td class="yes">✓ Best Practice</td><td>Fastest & most secure</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon icon-green">🛡️</span> Four Security Guarantees of SSL/TLS</div>
+    <div class="cheat-grid">
+      <div style="background:var(--accent-light);border-radius:var(--radius);padding:1rem;border:1px solid var(--accent);">
+        <div style="font-weight:700;font-size:.9rem;color:var(--accent);margin-bottom:.3rem;">Confidentiality</div>
+        <p style="font-size:.85rem;color:var(--text2);">Encryption makes intercepted data unreadable to attackers.</p>
+      </div>
+      <div style="background:var(--green-bg);border-radius:var(--radius);padding:1rem;border:1px solid var(--green);">
+        <div style="font-weight:700;font-size:.9rem;color:var(--green);margin-bottom:.3rem;">Data Integrity</div>
+        <p style="font-size:.85rem;color:var(--text2);">Cryptographic hashing detects any tampering with data in transit.</p>
+      </div>
+      <div style="background:var(--amber-bg);border-radius:var(--radius);padding:1rem;border:1px solid var(--amber);">
+        <div style="font-weight:700;font-size:.9rem;color:var(--amber);margin-bottom:.3rem;">Authentication</div>
+        <p style="font-size:.85rem;color:var(--text2);">Certificates prove the server is who it claims to be (prevents impersonation).</p>
+      </div>
+      <div style="background:var(--purple-bg);border-radius:var(--radius);padding:1rem;border:1px solid var(--purple);">
+        <div style="font-weight:700;font-size:.9rem;color:var(--purple);margin-bottom:.3rem;">Safer Transactions</div>
+        <p style="font-size:.85rem;color:var(--text2);">Enables safe e-commerce, banking, and sensitive data exchange.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- TOPIC 2 -->
+  <div class="sec-head">2. How SSL/TLS Works</div>
+  <div class="sec-sub">Two-phase hybrid encryption model</div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon icon-blue">🔑</span> The Hybrid Encryption Model</div>
+    <p>SSL uses a clever two-phase system that combines the <strong>security</strong> of asymmetric encryption with the <strong>speed</strong> of symmetric encryption:</p>
+    <div class="analogy">
+      <div class="analogy-label">🎯 Real-World Analogy</div>
+      <p>Think of a locked mailbox. Asymmetric encryption is like the <strong>padlock</strong> — anyone can drop a letter in (encrypt with public key), but only the owner can open it (decrypt with private key). Once they've securely exchanged a secret code (session key), they switch to a simple <strong>cipher</strong> (symmetric) for fast communication.</p>
+    </div>
+
+    <div class="tbl-wrap" style="margin-top:1rem;">
+      <table>
+        <tr><th>Feature</th><th>Asymmetric (Handshake)</th><th>Symmetric (Session)</th></tr>
+        <tr><td>Used for</td><td>Key exchange, authentication</td><td>Bulk data transfer</td></tr>
+        <tr><td>Speed</td><td class="partial">Slow (computationally expensive)</td><td class="yes">Fast</td></tr>
+        <tr><td>Key type</td><td>Public/Private key pair</td><td>Shared secret session key</td></tr>
+        <tr><td>Algorithms</td><td>RSA, Diffie-Hellman, ECDH</td><td>AES-128, AES-256, ChaCha20</td></tr>
+        <tr><td>Phase in SSL</td><td>Phase 1: Handshake</td><td>Phase 2: Data transfer</td></tr>
+      </table>
+    </div>
+    <div class="key-concept">
+      <p>📌 <strong>Key Insight:</strong> Asymmetric encryption solves the <em>key distribution problem</em> — how do two parties agree on a secret key without ever meeting? Then symmetric takes over for performance.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon icon-blue">🤝</span> The SSL Handshake — Step by Step</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <h4>Client Hello</h4>
+          <p>Browser sends: supported TLS versions, cipher suites it can handle, and a random number.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <h4>Server Hello</h4>
+          <p>Server responds: chosen TLS version, chosen cipher suite, its digital certificate (containing public key), and another random number.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <h4>Certificate Validation</h4>
+          <p>Browser verifies the server's certificate is: (a) issued by a trusted CA, (b) not expired, (c) matches the domain. If any check fails → red warning.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div>
+          <h4>Key Exchange</h4>
+          <p>Browser uses server's public key (from certificate) to encrypt a "pre-master secret" and send it. Only the server can decrypt it with its private key.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div>
+          <h4>Session Key Derived</h4>
+          <p>Both sides independently derive the same symmetric session key from: random number 1 + random number 2 + pre-master secret. Communication switches to fast AES encryption. Handshake complete!</p>
+        </div>
+      </div>
+    </div>
+    <div class="note">⚠️ The entire handshake typically completes in <strong>milliseconds</strong> — transparent to the user.</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- TOPIC 3 -->
+  <div class="sec-head">3. SSL Certificates & PKI</div>
+  <div class="sec-sub">Digital trust infrastructure — who vouches for whom</div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon icon-amber">📜</span> What is an SSL Certificate?</div>
+    <p>An SSL certificate is a <strong>data file installed on a web server</strong> that:</p>
+    <ul class="styled">
+      <li><b>Verifies identity</b> — proves the server is who it claims to be</li>
+      <li><b>Distributes the public key</b> — shares the key needed to start the handshake</li>
+      <li><b>Establishes trust</b> — signed by a trusted Certificate Authority (CA)</li>
+      <li><b>Enables HTTPS</b> — activates the padlock and encrypted connection</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon icon-green">🏛️</span> Certificate Authorities (CAs)</div>
+    <p><strong>CAs are trusted third-party organizations</strong> that form the backbone of internet trust. Think of them as digital notaries.</p>
+    <div class="analogy">
+      <div class="analogy-label">🎯 Analogy</div>
+      <p>A CA is like a government passport agency. Anyone can get a passport (certificate), but it's only trusted because the government (CA) vouches for your identity by signing it.</p>
+    </div>
+    <p style="margin-top:.75rem;">CAs responsibilities:</p>
+    <ul class="styled">
+      <li><b>Verify identity</b> of certificate applicants</li>
+      <li><b>Digitally sign</b> certificates to guarantee authenticity</li>
+      <li><b>Maintain CRLs</b> (Certificate Revocation Lists) for compromised certs</li>
+      <li>Browsers ship with a <b>pre-installed list</b> of trusted root CAs</li>
+    </ul>
+    <div class="danger-note">🚨 <strong>Exam Alert:</strong> If a CA is compromised, attackers can issue fraudulent certificates for ANY domain — enabling large-scale MITM attacks. This is why CA trustworthiness is critical.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon icon-purple">🏷️</span> Five Types of SSL Certificates</div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Type</th><th>Validates</th><th>Trust Level</th><th>Best For</th></tr>
+        <tr><td><b>DV — Domain Validation</b></td><td>Domain ownership only</td><td class="partial">Low</td><td>Blogs, info sites</td></tr>
+        <tr><td><b>OV — Organization Validation</b></td><td>Domain + org details</td><td class="partial">Medium</td><td>Business websites</td></tr>
+        <tr><td><b>EV — Extended Validation</b></td><td>Domain + org + legal entity + address</td><td class="yes">Highest</td><td>Banking, e-commerce</td></tr>
+        <tr><td><b>Wildcard</b></td><td>Domain + ALL subdomains (*.example.com)</td><td class="partial">Medium</td><td>Orgs with many subdomains</td></tr>
+        <tr><td><b>Multi-Domain / SAN</b></td><td>Multiple distinct domains</td><td class="partial">Medium</td><td>Diverse web properties</td></tr>
+      </table>
+    </div>
+    <div class="key-concept">
+      <p>📌 <strong>EV Certificates</strong> undergo the most rigorous vetting — legal entity, physical address, operational status. Required for banking and e-commerce. They display the company name in the browser.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- TOPIC 4 -->
+  <div class="sec-head">4. SSL VPN vs. IPSec VPN</div>
+  <div class="sec-sub">Two approaches to secure tunneling — choose the right tool</div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon icon-blue">🌐</span> Side-by-Side Comparison</div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Criterion</th><th>SSL VPN</th><th>IPSec VPN</th></tr>
+        <tr><td><b>OSI Layer</b></td><td>Application Layer (Layer 7)</td><td>Network Layer (Layer 3)</td></tr>
+        <tr><td><b>Encryption</b></td><td>TLS/SSL encryption</td><td>AES, 3DES, robust IPSec suite</td></tr>
+        <tr><td><b>Client Required</b></td><td class="yes">No — browser-based</td><td class="no">Yes — dedicated VPN client</td></tr>
+        <tr><td><b>Network Access</b></td><td>Application-level access</td><td>Full network-level access</td></tr>
+        <tr><td><b>Best Use Case</b></td><td>Remote access to web apps</td><td>Site-to-site / full remote tunnel</td></tr>
+        <tr><td><b>Deployment</b></td><td class="yes">Simple — standard HTTPS port 443</td><td class="no">Complex — firewall + client config</td></tr>
+        <tr><td><b>Performance</b></td><td>Good for web traffic</td><td>High performance for bulk traffic</td></tr>
+        <tr><td><b>Firewall Friendly</b></td><td class="yes">Yes — runs on port 443</td><td class="no">No — may be blocked</td></tr>
+        <tr><td><b>BYOD Support</b></td><td class="yes">Excellent</td><td class="no">Poor — needs client install</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon icon-blue">🔵</span> SSL VPN — Deep Dive</div>
+    <p>SSL VPNs work at the <strong>application layer</strong>, creating secure tunnels over standard HTTPS (port 443). Because port 443 is almost never blocked, SSL VPNs pass through firewalls seamlessly.</p>
+    <ul class="styled">
+      <li><b>Browser-based:</b> No client software needed — just a browser</li>
+      <li><b>Granular access control:</b> Can restrict access to specific apps, not entire network</li>
+      <li><b>BYOD friendly:</b> Works on any device without installing anything</li>
+      <li><b>Lower overhead:</b> Easier to deploy and manage</li>
+      <li><b>Ideal for:</b> Remote workers accessing corporate portals, email, web tools</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon icon-red">🔴</span> IPSec VPN — Deep Dive</div>
+    <p>IPSec operates at the <strong>network layer</strong>, encrypting and authenticating every IP packet. The remote user gets full transparent network access — as if physically on the LAN.</p>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Protocol</th><th>Function</th><th>Provides</th></tr>
+        <tr><td><b>AH</b> (Authentication Header)</td><td>Integrity + authentication</td><td class="no">No encryption</td></tr>
+        <tr><td><b>ESP</b> (Encapsulating Security Payload)</td><td>Encryption + integrity + auth</td><td class="yes">Full security</td></tr>
+      </table>
+    </div>
+    <div class="tbl-wrap" style="margin-top:.75rem;">
+      <table>
+        <tr><th>Mode</th><th>What it encrypts</th><th>Common use</th></tr>
+        <tr><td><b>Transport Mode</b></td><td>Payload only</td><td>Host-to-host</td></tr>
+        <tr><td><b>Tunnel Mode</b></td><td>Entire IP packet (headers + payload)</td><td>Site-to-site VPN</td></tr>
+      </table>
+    </div>
+    <ul class="styled" style="margin-top:.75rem;">
+      <li><b>Site-to-site VPN:</b> Connecting two corporate offices permanently</li>
+      <li><b>Full remote access:</b> Employees needing access to ALL internal resources</li>
+      <li><b>Government/Military:</b> Highest-assurance encryption standards</li>
+      <li><b>Requires:</b> Dedicated client software or hardware on both ends</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- TOPIC 5 -->
+  <div class="sec-head">5. SSL Attacks & Threats</div>
+  <div class="sec-sub">Know the enemy — understand every attack type</div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon icon-red">⚔️</span> Common SSL/TLS Attacks</div>
+    <div style="display:flex;flex-direction:column;gap:.75rem;">
+      <div style="background:var(--red-bg);border-radius:var(--radius);padding:1rem;border:1px solid var(--red);">
+        <div style="font-weight:700;font-size:.9rem;color:var(--red);margin-bottom:.3rem;">Man-in-the-Middle (MITM)</div>
+        <p style="font-size:.85rem;color:var(--text2);">Attacker secretly positions between client and server, intercepting and potentially altering all communication. Enabled by weak certificate validation or untrusted networks. <strong>Defense:</strong> Certificate pinning, strict TLS validation.</p>
+      </div>
+      <div style="background:var(--amber-bg);border-radius:var(--radius);padding:1rem;border:1px solid var(--amber);">
+        <div style="font-weight:700;font-size:.9rem;color:var(--amber);margin-bottom:.3rem;">SSL Stripping</div>
+        <p style="font-size:.85rem;color:var(--text2);">Attacker downgrades HTTPS → HTTP by intercepting the initial connection before SSL negotiates. User believes they're secure, but all data is in plaintext. <strong>Defense:</strong> HTTP Strict Transport Security (HSTS).</p>
+      </div>
+      <div style="background:var(--amber-bg);border-radius:var(--radius);padding:1rem;border:1px solid var(--amber);">
+        <div style="font-weight:700;font-size:.9rem;color:var(--amber);margin-bottom:.3rem;">POODLE Attack</div>
+        <p style="font-size:.85rem;color:var(--text2);">Exploits SSL 3.0 vulnerability. <strong>Defense:</strong> Disable SSL 3.0 entirely — use TLS 1.2+.</p>
+      </div>
+      <div style="background:var(--red-bg);border-radius:var(--radius);padding:1rem;border:1px solid var(--red);">
+        <div style="font-weight:700;font-size:.9rem;color:var(--red);margin-bottom:.3rem;">Expired / Invalid Certificates</div>
+        <p style="font-size:.85rem;color:var(--text2);">Attackers exploit sites with expired, self-signed, or revoked certs for phishing/MITM. Users who ignore browser warnings are especially vulnerable. <strong>Defense:</strong> Automated renewal (Let's Encrypt / ACME protocol).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon icon-red">⚠️</span> VPN-Specific Risks</div>
+    <div class="cheat-grid">
+      <div class="cheat-card">
+        <h3 style="color:var(--red)">Performance Degradation</h3>
+        <p style="font-size:.85rem;color:var(--text2);">Encryption overhead reduces throughput and increases latency, especially on real-time apps.</p>
+      </div>
+      <div class="cheat-card">
+        <h3 style="color:var(--red)">IP & DNS Leaks</h3>
+        <p style="font-size:.85rem;color:var(--text2);">Misconfigured VPN clients expose real IP address or DNS queries, defeating the purpose.</p>
+      </div>
+      <div class="cheat-card">
+        <h3 style="color:var(--amber)">Logging & Privacy</h3>
+        <p style="font-size:.85rem;color:var(--text2);">Some VPN providers log user activity. Always check the privacy policy — prefer verified no-logs providers.</p>
+      </div>
+      <div class="cheat-card">
+        <h3 style="color:var(--amber)">VPN Blocking</h3>
+        <p style="font-size:.85rem;color:var(--text2);">Firewalls, ISPs, and national censorship systems can detect and block VPN traffic.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- TOPIC 6 -->
+  <div class="sec-head">6. Best Practices</div>
+  <div class="sec-sub">What good security looks like in practice</div>
+
+  <div class="card">
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div><h4>Use TLS 1.2 or TLS 1.3 Only</h4><p>Disable all older versions: SSL 2.0, SSL 3.0, TLS 1.0, TLS 1.1. Disable weak ciphers like RC4 and MD5.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div><h4>Keep Certificates Valid & Updated</h4><p>Use automated renewal (ACME / Let's Encrypt). Set expiry alerts 30 days in advance.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div><h4>Use Only Trusted Certificate Authorities</h4><p>Avoid self-signed certs in production. Ensure your CA is in browser root stores with rigorous validation.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div><h4>Audit VPN Privacy Policies</h4><p>Select providers with verified no-logs policies. Prefer those with independent third-party audits.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">05</div>
+        <div><h4>Test for IP and DNS Leaks</h4><p>Use tools like ipleak.net and dnsleaktest.com regularly to verify no identifying information is exposed.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">06</div>
+        <div><h4>Patch and Update Continuously</h4><p>Keep VPN clients, web servers, and TLS libraries updated. Apply security patches immediately after CVE publications.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PHASE 2: SUMMARY ═══════════════════════════════ -->
+<div class="section" id="summary">
+  <div class="sec-head">📋 Smart Summary</div>
+  <div class="sec-sub">High-yield, bullet-structured — everything that matters for the exam</div>
+
+  <button class="collapsible-btn open" onclick="toggleCollapsible(this)">
+    🔒 SSL/TLS Fundamentals <span class="arrow">▼</span>
+  </button>
+  <div class="collapsible-content open">
+    <ul class="styled">
+      <li><b>SSL</b> = Secure Sockets Layer, created by Netscape 1990s, now <b>deprecated</b></li>
+      <li><b>TLS</b> = Transport Layer Security, modern replacement — use <b>TLS 1.2+</b></li>
+      <li>Operates at <b>Application Layer (Layer 7)</b> OSI model</li>
+      <li>Associated with <b>HTTPS</b> and the padlock icon</li>
+      <li>4 Guarantees: <b>C</b>onfidentiality, <b>I</b>ntegrity, <b>A</b>uthentication, <b>S</b>afe transactions</li>
+      <li><b>Hybrid encryption</b>: Asymmetric (handshake) + Symmetric (data transfer)</li>
+      <li>Asymmetric algorithms: <b>RSA, Diffie-Hellman, ECDH</b></li>
+      <li>Symmetric algorithms: <b>AES-128, AES-256, ChaCha20</b></li>
+    </ul>
+  </div>
+
+  <button class="collapsible-btn" onclick="toggleCollapsible(this)">
+    🤝 SSL Handshake Process <span class="arrow">▼</span>
+  </button>
+  <div class="collapsible-content">
+    <ul class="styled">
+      <li><b>Step 1 — Client Hello:</b> Browser sends TLS versions + cipher suites + random number</li>
+      <li><b>Step 2 — Server Hello:</b> Server sends chosen version + cipher + certificate + random number</li>
+      <li><b>Step 3 — Certificate Validation:</b> Browser checks CA signature, expiry, domain match</li>
+      <li><b>Step 4 — Key Exchange:</b> Browser encrypts pre-master secret with server's public key</li>
+      <li><b>Step 5 — Session Key:</b> Both derive symmetric session key; encrypted tunnel established</li>
+      <li>Completes in <b>milliseconds</b>, transparent to user</li>
+    </ul>
+  </div>
+
+  <button class="collapsible-btn" onclick="toggleCollapsible(this)">
+    📜 SSL Certificates & CAs <span class="arrow">▼</span>
+  </button>
+  <div class="collapsible-content">
+    <ul class="styled">
+      <li><b>DV</b> — Domain Validation: fastest, lowest trust, domain ownership only</li>
+      <li><b>OV</b> — Organization Validation: medium trust, domain + org details</li>
+      <li><b>EV</b> — Extended Validation: highest trust, banking/e-commerce, shows company name</li>
+      <li><b>Wildcard</b> — covers primary domain + ALL subdomains (*.example.com)</li>
+      <li><b>Multi-Domain/SAN</b> — multiple distinct domains on one certificate</li>
+      <li><b>CA role:</b> verify identity, sign certs, maintain CRLs (Certificate Revocation Lists)</li>
+      <li>Compromised CA → fraudulent certs → <b>mass MITM attack</b> risk</li>
+      <li><b>PKI</b> = Public Key Infrastructure — the trust system CAs form</li>
+    </ul>
+  </div>
+
+  <button class="collapsible-btn" onclick="toggleCollapsible(this)">
+    🌐 SSL VPN vs. IPSec VPN <span class="arrow">▼</span>
+  </button>
+  <div class="collapsible-content">
+    <ul class="styled">
+      <li><b>SSL VPN:</b> Layer 7, browser-based, port 443, app-level access, easy deployment, BYOD</li>
+      <li><b>IPSec VPN:</b> Layer 3, needs client, full network access, site-to-site, high performance</li>
+      <li>IPSec protocols: <b>AH</b> (auth/integrity, no encryption) + <b>ESP</b> (auth + integrity + encryption)</li>
+      <li>IPSec modes: <b>Transport</b> (payload only) + <b>Tunnel</b> (full packet — used for site-to-site)</li>
+      <li>SSL VPN: ideal for <b>remote workers accessing web apps</b></li>
+      <li>IPSec VPN: ideal for <b>site-to-site, government, military, full network access</b></li>
+    </ul>
+  </div>
+
+  <button class="collapsible-btn" onclick="toggleCollapsible(this)">
+    ⚔️ Attacks & Defenses <span class="arrow">▼</span>
+  </button>
+  <div class="collapsible-content">
+    <ul class="styled">
+      <li><b>MITM:</b> Intercepts communication → defense: certificate pinning, strict TLS validation</li>
+      <li><b>SSL Stripping:</b> Downgrades HTTPS → HTTP → defense: <b>HSTS</b> (HTTP Strict Transport Security)</li>
+      <li><b>POODLE:</b> Exploits SSL 3.0 → defense: disable SSL 3.0</li>
+      <li><b>Expired certs:</b> Used for phishing → defense: automated renewal (Let's Encrypt)</li>
+      <li><b>CA compromise:</b> Fraudulent certs issued → defense: HPKP (cert pinning), CT logs</li>
+      <li><b>VPN DNS leak:</b> Real IP exposed → defense: DNS leak testing tools</li>
+    </ul>
+  </div>
+
+  <button class="collapsible-btn" onclick="toggleCollapsible(this)">
+    ✅ Best Practices — Quick List <span class="arrow">▼</span>
+  </button>
+  <div class="collapsible-content">
+    <ul class="styled">
+      <li>Use <b>TLS 1.2 or TLS 1.3</b> only — disable all older versions</li>
+      <li>Disable weak ciphers: <b>RC4, MD5, 3DES</b></li>
+      <li>Automate certificate renewal — <b>ACME protocol / Let's Encrypt</b></li>
+      <li>Only use certificates from <b>trusted CAs in browser root stores</b></li>
+      <li>Audit VPN providers — prefer <b>verified no-logs policies</b></li>
+      <li>Test for <b>IP and DNS leaks</b> regularly</li>
+      <li>Patch VPN clients and TLS libraries <b>immediately after CVE publication</b></li>
+      <li>Set certificate expiry alerts <b>30 days in advance</b></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PHASE 3: MEMORY ═══════════════════════════════ -->
+<div class="section" id="memory">
+  <div class="sec-head">🧠 Memory Optimization</div>
+  <div class="sec-sub">Mnemonics, analogies, common traps, and chunking strategies</div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon icon-purple">🧠</span> Mnemonics</div>
+
+    <div class="mnemonic">
+      <div class="mnemonic-title">🔠 SSL'S 4 Guarantees → "CIA + S"</div>
+      <p><strong>C</strong>onfidentiality — <strong>I</strong>ntegrity — <strong>A</strong>uthentication — <strong>S</strong>afer transactions<br/>
+      <em>"A <b>CIA S</b>py keeps secrets safe."</em></p>
+    </div>
+
+    <div class="mnemonic" style="margin-top:.75rem;">
+      <div class="mnemonic-title">🔠 SSL Handshake → "C-S-V-K-S"</div>
+      <p><strong>C</strong>lient Hello → <strong>S</strong>erver Hello → <strong>V</strong>alidate cert → <strong>K</strong>ey exchange → <strong>S</strong>ession key<br/>
+      <em>"<b>C</b>ars <b>S</b>ometimes <b>V</b>ery <b>K</b>indly <b>S</b>tart"</em></p>
+    </div>
+
+    <div class="mnemonic" style="margin-top:.75rem;">
+      <div class="mnemonic-title">🔠 IPSec Protocols → "AH No ESP Yes"</div>
+      <p><strong>AH</strong> = Authentication Header → <strong>No</strong> encryption (only auth + integrity)<br/>
+      <strong>ESP</strong> = Encapsulating Security Payload → <strong>Yes</strong> encryption (full security)<br/>
+      <em>"<b>AH</b>, I forgot the encryption! <b>ESP</b>ecially important!"</em></p>
+    </div>
+
+    <div class="mnemonic" style="margin-top:.75rem;">
+      <div class="mnemonic-title">🔠 Certificate Types → "DOE WM"</div>
+      <p><strong>D</strong>omain Validation → <strong>O</strong>rganization Validation → <strong>E</strong>xtended Validation → <strong>W</strong>ildcard → <strong>M</strong>ulti-Domain<br/>
+      <em>"<b>D</b>o <b>O</b>ffer <b>E</b>xcellent <b>W</b>eb <b>M</b>anagement"</em></p>
+    </div>
+
+    <div class="mnemonic" style="margin-top:.75rem;">
+      <div class="mnemonic-title">🔠 TLS Versions to DISABLE → "SSL 2, SSL 3, TLS 1.0, TLS 1.1"</div>
+      <p><em>"<b>2, 3, 1.0, 1.1</b> — all <b>gone</b>. <b>1.2 & 1.3</b> — <b>go on!"</b></em></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon icon-amber">⚠️</span> Common Exam Traps & Mistakes</div>
+    <div style="display:flex;flex-direction:column;gap:.75rem;">
+      <div class="danger-note">🚫 <strong>Trap 1:</strong> Saying "SSL" is still used. Modern systems use <strong>TLS</strong>. SSL is deprecated. If an exam says "modern SSL," the answer is TLS 1.2 or 1.3.</div>
+      <div class="danger-note">🚫 <strong>Trap 2:</strong> Confusing AH and ESP. AH = no encryption. ESP = encryption + integrity + auth. ESP is what you want for confidentiality.</div>
+      <div class="danger-note">🚫 <strong>Trap 3:</strong> Thinking SSL VPN needs a client. It does NOT — it works through a standard browser. IPSec VPN DOES need a dedicated client.</div>
+      <div class="danger-note">🚫 <strong>Trap 4:</strong> Confusing Transport Mode and Tunnel Mode. Transport = payload only. Tunnel = entire IP packet. Site-to-site VPNs use <strong>Tunnel Mode</strong>.</div>
+      <div class="danger-note">🚫 <strong>Trap 5:</strong> Thinking asymmetric encryption is used for all SSL data. It's only for the <strong>handshake</strong>. Symmetric (AES) is used for actual data transfer.</div>
+      <div class="danger-note">🚫 <strong>Trap 6:</strong> Confusing DV and EV. DV = only domain ownership. EV = full legal entity verification. Banking requires EV, not just DV.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon icon-green">🧩</span> Chunking — Information Groups</div>
+    <div class="cheat-grid">
+      <div class="cheat-card">
+        <h3>Encryption Chunk</h3>
+        <div class="cheat-item"><div class="cheat-dot"></div><span><b>Asymmetric:</b> RSA, DH, ECDH</span></div>
+        <div class="cheat-item"><div class="cheat-dot"></div><span><b>Symmetric:</b> AES-128, AES-256, ChaCha20</span></div>
+        <div class="cheat-item"><div class="cheat-dot"></div><span>Asymmetric → handshake only</span></div>
+        <div class="cheat-item"><div class="cheat-dot"></div><span>Symmetric → all data transfer</span></div>
+      </div>
+      <div class="cheat-card">
+        <h3>Certificate Chunk</h3>
+        <div class="cheat-item"><div class="cheat-dot"></div><span><b>DV:</b> lowest, domain only</span></div>
+        <div class="cheat-item"><div class="cheat-dot"></div><span><b>OV:</b> medium, org verified</span></div>
+        <div class="cheat-item"><div class="cheat-dot"></div><span><b>EV:</b> highest, banking</span></div>
+        <div class="cheat-item"><div class="cheat-dot"></div><span><b>Wildcard:</b> *.domain.com</span></div>
+        <div class="cheat-item"><div class="cheat-dot"></div><span><b>SAN:</b> multi-domain</span></div>
+      </div>
+      <div class="cheat-card">
+        <h3>IPSec Chunk</h3>
+        <div class="cheat-item"><div class="cheat-dot"></div><span><b>AH:</b> auth only, no encryption</span></div>
+        <div class="cheat-item"><div class="cheat-dot"></div><span><b>ESP:</b> full security</span></div>
+        <div class="cheat-item"><div class="cheat-dot"></div><span><b>Transport:</b> payload only</span></div>
+        <div class="cheat-item"><div class="cheat-dot"></div><span><b>Tunnel:</b> full packet (site-to-site)</span></div>
+      </div>
+      <div class="cheat-card">
+        <h3>Attacks Chunk</h3>
+        <div class="cheat-item"><div class="cheat-dot"></div><span><b>MITM:</b> intercept + modify</span></div>
+        <div class="cheat-item"><div class="cheat-dot"></div><span><b>SSL Strip:</b> HTTPS → HTTP</span></div>
+        <div class="cheat-item"><div class="cheat-dot"></div><span><b>POODLE:</b> SSL 3.0 exploit</span></div>
+        <div class="cheat-item"><div class="cheat-dot"></div><span><b>Expired cert:</b> phishing</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon icon-blue">🔁</span> Spaced Repetition Plan</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">D1</div>
+        <div><h4>Today — Read & Understand</h4><p>Read the explanation section fully. Focus on: SSL vs TLS, handshake steps, certificate types.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">D2</div>
+        <div><h4>Tomorrow — Test Yourself</h4><p>Do all MCQs without looking at answers. Review any wrong answers in the explanation section.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">D4</div>
+        <div><h4>Day 4 — Written Practice</h4><p>Answer all written questions from memory. Compare to model answers. Identify gaps.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">D7</div>
+        <div><h4>Day 7 — Rapid Revision</h4><p>Use only the cheat sheet. Can you recall everything on it without help? Repeat weak areas.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">Exam Eve</div>
+        <div><h4>Night Before — Cheat Sheet Only</h4><p>Read the revision sheet once slowly. Trust your preparation. Sleep well.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PHASE 4: MCQ ═══════════════════════════════ -->
+<div class="section" id="mcq">
+  <div class="sec-head">❓ MCQ Exam Training</div>
+  <div class="sec-sub">35 questions — Easy, Medium & Hard — click an option to see the answer</div>
+
+  <div class="mcq-score-bar">
+    <div>
+      <div class="score-num" id="scoreNum">0 / 35</div>
+      <div class="score-label">Questions answered</div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div>
+      <div style="font-size:.85rem;color:var(--green);font-weight:600;" id="correctNum">✓ 0 correct</div>
+      <div style="font-size:.85rem;color:var(--red);font-weight:600;" id="wrongNum">✗ 0 wrong</div>
+    </div>
+    <button class="reset-btn" onclick="resetMCQ()">Reset All</button>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterMCQ('all',this)">All (35)</button>
+    <button class="filter-btn" onclick="filterMCQ('easy',this)">Easy</button>
+    <button class="filter-btn" onclick="filterMCQ('medium',this)">Medium</button>
+    <button class="filter-btn" onclick="filterMCQ('hard',this)">Hard</button>
+  </div>
+
+  <div id="mcq-container"></div>
+</div>
+
+<!-- ═══════════════════════════════ PHASE 4B: WRITTEN ═══════════════════════════════ -->
+<div class="section" id="written">
+  <div class="sec-head">✍️ Written Questions</div>
+  <div class="sec-sub">Short answer + long-form questions with model answers</div>
+
+  <div id="written-container"></div>
+</div>
+
+<!-- ═══════════════════════════════ PHASE 5: CHEAT SHEET ═══════════════════════════════ -->
+<div class="section" id="cheatsheet">
+  <div class="sec-head">⚡ Rapid Revision Sheet</div>
+  <div class="sec-sub">Night-before-exam cheat sheet — everything in one place</div>
+
+  <div style="background:var(--accent);color:#fff;border-radius:var(--radius-lg);padding:1rem 1.5rem;margin-bottom:1.5rem;font-size:.85rem;">
+    🎯 <strong>Study strategy:</strong> Print this page or read it once through. These are the highest-yield facts for your exam.
+  </div>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h3>🔒 SSL/TLS Basics</h3>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>SSL = deprecated (Netscape 1990s)</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>TLS = modern replacement</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span><b>Use: TLS 1.2 or 1.3 ONLY</b></span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>OSI Layer: <b>Application (Layer 7)</b></span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>Associated with: <b>HTTPS</b></span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>Guarantees: CIA + S</span></div>
+    </div>
+
+    <div class="cheat-card">
+      <h3>🤝 SSL Handshake</h3>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>1. Client Hello (versions, ciphers)</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>2. Server Hello (cert, choice)</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>3. Validate certificate</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>4. Key exchange (asymmetric)</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>5. Session key → symmetric starts</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>Completes in <b>milliseconds</b></span></div>
+    </div>
+
+    <div class="cheat-card">
+      <h3>🔑 Encryption</h3>
+      <div class="cheat-item"><div class="cheat-dot"></div><span><b>Asymmetric:</b> RSA, DH, ECDH</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>→ Handshake phase only</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>→ Slow, secure key exchange</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span><b>Symmetric:</b> AES, ChaCha20</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>→ Data transfer phase</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>→ Fast, bulk data</span></div>
+    </div>
+
+    <div class="cheat-card">
+      <h3>📜 Certificates</h3>
+      <div class="cheat-item"><div class="cheat-dot"></div><span><b>DV:</b> domain only, low trust</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span><b>OV:</b> domain + org, medium</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span><b>EV:</b> legal entity, highest</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span><b>Wildcard:</b> *.example.com</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span><b>SAN/Multi:</b> many domains</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>CA signs = trusted</span></div>
+    </div>
+
+    <div class="cheat-card">
+      <h3>🌐 SSL VPN</h3>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>Layer: <b>Application (7)</b></span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>Port: <b>443 (HTTPS)</b></span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>No client software needed</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>App-level access only</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>Best for: <b>remote workers, BYOD</b></span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>Easy to deploy</span></div>
+    </div>
+
+    <div class="cheat-card">
+      <h3>🔴 IPSec VPN</h3>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>Layer: <b>Network (3)</b></span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>Needs dedicated client</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>Full network access</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span><b>AH:</b> auth, no encryption</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span><b>ESP:</b> full security</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span><b>Tunnel mode</b> = site-to-site</span></div>
+    </div>
+
+    <div class="cheat-card">
+      <h3>⚔️ Key Attacks</h3>
+      <div class="cheat-item"><div class="cheat-dot"></div><span><b>MITM:</b> intercepts traffic</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>→ Defense: cert pinning</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span><b>SSL Strip:</b> HTTPS→HTTP</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>→ Defense: <b>HSTS</b></span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span><b>POODLE:</b> SSL 3.0</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>→ Defense: disable SSL 3.0</span></div>
+    </div>
+
+    <div class="cheat-card">
+      <h3>✅ Best Practices</h3>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>TLS 1.2+ only</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>Disable RC4, MD5</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>Automate cert renewal</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>Alert 30 days before expiry</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>Audit VPN no-logs policy</span></div>
+      <div class="cheat-item"><div class="cheat-dot"></div><span>Test DNS/IP leaks</span></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1rem;">
+    <div class="card-title">📌 Ultra-Fast Formula Sheet</div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Concept</th><th>Key Fact</th></tr>
+        <tr><td>SSL Deprecated</td><td>SSL 2.0, SSL 3.0 — both gone</td></tr>
+        <tr><td>Modern Standard</td><td>TLS 1.2 minimum, TLS 1.3 preferred</td></tr>
+        <tr><td>POODLE vulnerability</td><td>SSL 3.0 specific</td></tr>
+        <tr><td>SSL VPN Layer</td><td>Application Layer 7</td></tr>
+        <tr><td>IPSec VPN Layer</td><td>Network Layer 3</td></tr>
+        <tr><td>IPSec — no encryption</td><td>AH (Authentication Header)</td></tr>
+        <tr><td>IPSec — full encryption</td><td>ESP (Encapsulating Security Payload)</td></tr>
+        <tr><td>Site-to-site VPN mode</td><td>Tunnel Mode</td></tr>
+        <tr><td>Host-to-host VPN mode</td><td>Transport Mode</td></tr>
+        <tr><td>Highest cert trust</td><td>EV (Extended Validation)</td></tr>
+        <tr><td>Subdomains cert</td><td>Wildcard (*.domain.com)</td></tr>
+        <tr><td>SSL strip defense</td><td>HSTS (HTTP Strict Transport Security)</td></tr>
+        <tr><td>Asymmetric algorithms</td><td>RSA, Diffie-Hellman, ECDH</td></tr>
+        <tr><td>Symmetric algorithms</td><td>AES-128, AES-256, ChaCha20</td></tr>
+        <tr><td>SSL VPN port</td><td>443 (HTTPS)</td></tr>
+        <tr><td>CRL stands for</td><td>Certificate Revocation List</td></tr>
+        <tr><td>PKI stands for</td><td>Public Key Infrastructure</td></tr>
+        <tr><td>Cert auto-renewal protocol</td><td>ACME (Let's Encrypt)</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════ DATA ═══════ */
+const mcqData=[
+{q:"What does SSL stand for?",diff:"easy",opts:["Secure Session Layer","Secure Sockets Layer","Standard Sockets Layer","Secure Server Link"],ans:1,exp:"SSL stands for <strong>Secure Sockets Layer</strong>. It was developed by Netscape in the 1990s to establish encrypted links between web servers and browsers."},
+{q:"Which company originally developed SSL?",diff:"easy",opts:["Microsoft","Google","Netscape","IBM"],ans:2,exp:"<strong>Netscape</strong> developed SSL in the 1990s. The protocol was eventually deprecated in favor of TLS (Transport Layer Security)."},
+{q:"At which OSI layer does SSL/TLS operate?",diff:"easy",opts:["Physical Layer","Network Layer","Transport Layer","Application Layer"],ans:3,exp:"SSL/TLS operates at the <strong>Application Layer (Layer 7)</strong> of the OSI model. This is in contrast to IPSec, which operates at the Network Layer (Layer 3)."},
+{q:"Which of the following TLS versions is currently recommended as secure?",diff:"easy",opts:["SSL 3.0","TLS 1.0","TLS 1.1","TLS 1.3"],ans:3,exp:"<strong>TLS 1.3</strong> is the most secure and recommended version. TLS 1.2 is also acceptable. SSL 3.0, TLS 1.0, and TLS 1.1 are all deprecated due to known vulnerabilities."},
+{q:"What is the primary purpose of an SSL certificate?",diff:"easy",opts:["Compressing web content","Verifying server identity and distributing the public key","Blocking DDoS attacks","Managing user sessions"],ans:1,exp:"An SSL certificate <strong>verifies server identity</strong> and distributes the server's <strong>public key</strong> to clients. It is signed by a trusted Certificate Authority (CA)."},
+{q:"Which encryption type is used during the SSL handshake to exchange keys?",diff:"easy",opts:["Symmetric encryption","Asymmetric encryption","Hash-based encryption","Steganography"],ans:1,exp:"<strong>Asymmetric encryption</strong> (using public/private key pairs) is used during the handshake to securely exchange credentials and the pre-master secret. After the handshake, symmetric encryption takes over."},
+{q:"Which encryption type is used for bulk data transfer in SSL?",diff:"easy",opts:["Asymmetric encryption","RSA encryption","Symmetric encryption","Elliptic curve only"],ans:2,exp:"<strong>Symmetric encryption</strong> (e.g., AES-256, ChaCha20) is used for bulk data transfer because it is much faster than asymmetric encryption. Both parties share the same session key."},
+{q:"What is the SSL/TLS handshake?",diff:"easy",opts:["A user login process","A negotiation to establish encrypted connection parameters","A method to compress data","A protocol to verify passwords"],ans:1,exp:"The SSL/TLS handshake is the <strong>negotiation phase</strong> that establishes a secure connection — authenticating the server and agreeing on cryptographic parameters — before any application data is exchanged."},
+{q:"Which SSL version is vulnerable to the POODLE attack?",diff:"medium",opts:["TLS 1.2","TLS 1.0","SSL 3.0","TLS 1.3"],ans:2,exp:"<strong>SSL 3.0</strong> is specifically vulnerable to the POODLE (Padding Oracle On Downgraded Legacy Encryption) attack. This is why SSL 3.0 was deprecated and disabled."},
+{q:"What does CA stand for in the context of SSL?",diff:"easy",opts:["Cryptographic Algorithm","Certificate Authority","Connection Agent","Cipher Application"],ans:1,exp:"CA stands for <strong>Certificate Authority</strong> — a trusted third-party organization that issues, validates, and revokes SSL certificates. They form the root of trust in the PKI system."},
+{q:"Which certificate type provides the highest level of trust?",diff:"medium",opts:["Domain Validation (DV)","Organization Validation (OV)","Extended Validation (EV)","Wildcard Certificate"],ans:2,exp:"<strong>Extended Validation (EV)</strong> certificates provide the highest trust level. They require rigorous vetting of legal entity, physical address, and operational status — required for banking and e-commerce."},
+{q:"A wildcard certificate (*.example.com) covers which of the following?",diff:"medium",opts:["Only example.com","example.com and all its subdomains","Multiple unrelated domains","example.com and exactly one subdomain"],ans:1,exp:"A wildcard certificate covers the <strong>primary domain and ALL its subdomains</strong> — e.g., mail.example.com, shop.example.com, etc. This is cost-effective for organizations with many subdomains."},
+{q:"What is a CRL?",diff:"medium",opts:["Certificate Rotation Log","Certificate Revocation List","Cipher Reference Library","Connection Request Limit"],ans:1,exp:"CRL stands for <strong>Certificate Revocation List</strong>. CAs maintain CRLs to list certificates that have been revoked before their expiration date (e.g., due to compromise)."},
+{q:"Which attack downgrades an HTTPS connection to HTTP?",diff:"medium",opts:["MITM attack","POODLE attack","SSL Stripping","Replay attack"],ans:2,exp:"<strong>SSL Stripping</strong> is an attack where the attacker intercepts the initial connection and downgrades it from HTTPS to HTTP. The user believes they're secure while all data is in plaintext. HSTS is the primary defense."},
+{q:"What technology defends against SSL Stripping attacks?",diff:"medium",opts:["Certificate pinning","HSTS (HTTP Strict Transport Security)","Two-factor authentication","IPSec tunneling"],ans:1,exp:"<strong>HSTS (HTTP Strict Transport Security)</strong> prevents SSL stripping by telling browsers to always use HTTPS for a domain, refusing any HTTP connections."},
+{q:"SSL VPN operates at which OSI layer?",diff:"medium",opts:["Network Layer (Layer 3)","Data Link Layer (Layer 2)","Application Layer (Layer 7)","Session Layer (Layer 5)"],ans:2,exp:"SSL VPN operates at the <strong>Application Layer (Layer 7)</strong>. It uses TLS over port 443 (HTTPS), which is why it passes through most firewalls without special configuration."},
+{q:"IPSec VPN operates at which OSI layer?",diff:"medium",opts:["Application Layer (Layer 7)","Session Layer (Layer 5)","Network Layer (Layer 3)","Transport Layer (Layer 4)"],ans:2,exp:"IPSec VPN operates at the <strong>Network Layer (Layer 3)</strong>, encrypting and authenticating every IP packet. This provides full transparent network access to remote users."},
+{q:"Which IPSec protocol provides encryption, integrity, and authentication?",diff:"medium",opts:["AH (Authentication Header)","ESP (Encapsulating Security Payload)","IKE (Internet Key Exchange)","GRE (Generic Routing Encapsulation)"],ans:1,exp:"<strong>ESP (Encapsulating Security Payload)</strong> provides encryption, integrity, and authentication. AH only provides integrity and authentication WITHOUT encryption."},
+{q:"Which IPSec protocol provides integrity and authentication but NO encryption?",diff:"medium",opts:["ESP (Encapsulating Security Payload)","IKE (Internet Key Exchange)","AH (Authentication Header)","SSL/TLS"],ans:2,exp:"<strong>AH (Authentication Header)</strong> provides data integrity and authentication but <strong>does NOT provide encryption</strong>. ESP is needed for confidentiality."},
+{q:"IPSec Tunnel Mode encrypts which part of the packet?",diff:"medium",opts:["Only the TCP headers","Only the data payload","The entire original IP packet","Only the IP headers"],ans:2,exp:"<strong>Tunnel Mode</strong> encrypts the <strong>entire original IP packet</strong> (headers + payload) and adds a new IP header. This is the standard mode for site-to-site VPNs."},
+{q:"Which is the BEST use case for SSL VPN?",diff:"medium",opts:["Connecting two corporate offices permanently","Remote employees accessing web applications without installed clients","Encrypting all traffic between two data centers","Military communications requiring highest security"],ans:1,exp:"SSL VPN is ideal for <strong>remote employees accessing web applications</strong> without needing to install dedicated client software. It's BYOD-friendly and works through standard browsers."},
+{q:"A user's VPN is leaking their DNS queries. What does this risk?",diff:"hard",opts:["Slower connection speeds","Exposure of browsing habits and real location despite VPN use","Loss of encryption keys","Certificate revocation"],ans:1,exp:"<strong>DNS leaks</strong> expose the user's actual DNS requests to their ISP or other parties, revealing their browsing habits and real location — defeating the privacy purpose of the VPN."},
+{q:"If a Certificate Authority is compromised, what is the WORST outcome?",diff:"hard",opts:["All HTTPS traffic becomes unencrypted","Attackers can issue fraudulent certificates enabling large-scale MITM attacks","Browsers stop supporting HTTPS","All CRLs are deleted"],ans:1,exp:"A compromised CA can issue <strong>fraudulent certificates for any domain</strong>. This enables attackers to perform MITM attacks at massive scale — trusted by all browsers that trust the compromised CA."},
+{q:"What is the primary advantage of asymmetric encryption in the SSL handshake?",diff:"hard",opts:["It is faster than symmetric encryption","It allows secure key exchange without a pre-shared secret","It requires less computing power","It works without digital certificates"],ans:1,exp:"The key advantage of asymmetric encryption is it <strong>solves the key distribution problem</strong> — two parties can securely agree on a shared secret (the session key) over an insecure channel without having previously shared any secret."},
+{q:"Which of the following is the correct order of the SSL handshake?",diff:"hard",opts:["Server Hello → Client Hello → Key Exchange → Cert Validation → Session Key","Client Hello → Server Hello → Cert Validation → Key Exchange → Session Key","Client Hello → Cert Validation → Server Hello → Session Key → Key Exchange","Key Exchange → Client Hello → Server Hello → Cert Validation → Session Key"],ans:1,exp:"The correct order is: <strong>Client Hello → Server Hello → Certificate Validation → Key Exchange → Session Key</strong>. The client initiates, the server responds with its certificate, the client validates it, then they exchange keys to derive the session key."},
+{q:"What does PKI stand for?",diff:"medium",opts:["Public Key Infrastructure","Private Key Integration","Protocol Key Interface","Public Knowledge Index"],ans:0,exp:"PKI stands for <strong>Public Key Infrastructure</strong> — the complete system of policies, roles, hardware, software, and procedures needed to create, manage, distribute, use, store, and revoke digital certificates."},
+{q:"Which symmetric encryption algorithms are used in modern TLS? (Select most complete answer)",diff:"hard",opts:["RSA and Diffie-Hellman","AES-256 and ChaCha20","RC4 and MD5","3DES and Blowfish"],ans:1,exp:"Modern TLS uses <strong>AES-256 and ChaCha20</strong> for symmetric encryption. RC4 and MD5 are deprecated/weak. RSA and Diffie-Hellman are asymmetric algorithms used in the handshake, not bulk encryption."},
+{q:"A company needs to secure permanent connectivity between its London and New York offices. Which VPN type is most appropriate?",diff:"hard",opts:["SSL VPN with browser access","IPSec VPN in Tunnel Mode","SSL VPN with port 443","IPSec VPN in Transport Mode"],ans:1,exp:"<strong>IPSec VPN in Tunnel Mode</strong> is the standard solution for site-to-site VPNs — it encrypts entire IP packets and provides full, permanent network-level connectivity between the two sites."},
+{q:"Which certificate type is most cost-effective for an organization with 50 subdomains?",diff:"hard",opts:["50 separate DV certificates","A Wildcard certificate (*.domain.com)","An EV certificate","50 separate OV certificates"],ans:1,exp:"A <strong>Wildcard certificate</strong> (*.domain.com) is most cost-effective as it covers the primary domain and ALL subdomains with a single certificate, instead of purchasing 50 separate certificates."},
+{q:"Which automated protocol is used by Let's Encrypt for certificate renewal?",diff:"hard",opts:["LDAP","ACME (Automatic Certificate Management Environment)","OCSP","PKI-Auto"],ans:1,exp:"<strong>ACME (Automatic Certificate Management Environment)</strong> is the protocol used by Let's Encrypt and other CAs for automated certificate issuance and renewal. It eliminates human error from the renewal process."},
+{q:"What is HSTS and what attack does it prevent?",diff:"hard",opts:["HTTP Session Token System — prevents session hijacking","HTTP Strict Transport Security — prevents SSL stripping attacks","High Speed Transfer Security — prevents DDoS","HTTP Signature Trust System — prevents MITM"],ans:1,exp:"<strong>HSTS (HTTP Strict Transport Security)</strong> instructs browsers to ONLY connect to a domain via HTTPS, even if the user types HTTP. This prevents <strong>SSL stripping attacks</strong> that would otherwise downgrade the connection."},
+{q:"A company wants employees to access the corporate intranet from personal phones without installing any software. Which solution is BEST?",diff:"hard",opts:["IPSec VPN in Tunnel Mode","IPSec VPN in Transport Mode","SSL VPN","Site-to-site IPSec VPN"],ans:2,exp:"<strong>SSL VPN</strong> is ideal because it requires no client software installation — it works through a standard web browser. This makes it perfect for BYOD (Bring Your Own Device) scenarios like personal phones."},
+{q:"Which of the following represents the BEST combination of security and performance in TLS?",diff:"hard",opts:["Asymmetric for all traffic, no session keys","Symmetric for handshake, asymmetric for data","Asymmetric for handshake, symmetric for data transfer","Only symmetric encryption throughout"],ans:2,exp:"<strong>Asymmetric for handshake + symmetric for data transfer</strong> is the optimal design. Asymmetric solves the key exchange problem securely; symmetric provides the speed required for bulk data. This is exactly how TLS works."},
+{q:"Which of the following is NOT a valid certificate validation type?",diff:"hard",opts:["Domain Validation (DV)","Server Validation (SV)","Organization Validation (OV)","Extended Validation (EV)"],ans:1,exp:"<strong>Server Validation (SV)</strong> is not a valid certificate type. The valid types are DV (Domain), OV (Organization), EV (Extended Validation), Wildcard, and Multi-Domain/SAN certificates."},
+{q:"What information does an SSL certificate NOT directly contain?",diff:"hard",opts:["The server's public key","The server's private key","The issuing CA's digital signature","The domain name it covers"],ans:1,exp:"An SSL certificate contains the server's <strong>public key</strong>, the CA's signature, and the domain name — but NEVER the private key. The private key is kept secret on the server and never transmitted."}
+];
+
+const writtenData=[
+{type:"Short Answer",q:"Define SSL and explain why it has been replaced by TLS.",marks:4,answer:`SSL (Secure Sockets Layer) is a cryptographic protocol developed by Netscape in the 1990s to establish encrypted, authenticated links between web servers and browsers. It was replaced by TLS (Transport Layer Security) because SSL versions 2.0 and 3.0 were found to have critical security vulnerabilities — most notably, SSL 3.0 is vulnerable to the POODLE attack. Modern systems exclusively use TLS 1.2 or TLS 1.3, which provide stronger encryption, improved security mechanisms, and performance enhancements. While the term "SSL" is still used colloquially, all modern secure connections rely on TLS.`},
+{type:"Short Answer",q:"List and briefly explain the four security guarantees provided by SSL/TLS.",marks:4,answer:`1. Confidentiality: Encryption ensures data in transit cannot be read by unauthorized parties, even if intercepted.\n2. Data Integrity: Cryptographic hashing detects any tampering or corruption of data during transmission.\n3. Authentication: SSL certificates verify that users are connecting to the legitimate server (not an impersonator).\n4. Safer Transactions: Enables safe e-commerce, online banking, and sensitive data exchange over the internet.`},
+{type:"Short Answer",q:"Describe the two phases of SSL encryption and explain why both are used.",marks:4,answer:`Phase 1 — Asymmetric Encryption (Handshake): Public/private key pairs are used to securely exchange credentials and establish trust. This solves the key distribution problem — two parties can agree on a shared secret over an insecure channel. However, asymmetric encryption is computationally expensive.\n\nPhase 2 — Symmetric Encryption (Data Transfer): After the handshake, both parties use a shared session key for fast, efficient communication using algorithms like AES-256 or ChaCha20.\n\nReason for both: Asymmetric encryption is secure but slow; symmetric is fast but requires a pre-shared secret. Together, they achieve both security and performance — asymmetric solves key exchange, symmetric handles bulk data.`},
+{type:"Short Answer",q:"Explain the role of Certificate Authorities (CAs) in the SSL/TLS system.",marks:3,answer:`Certificate Authorities (CAs) are trusted third-party organizations that form the backbone of internet trust (PKI). Their roles include: (1) Verifying the identity of certificate applicants, (2) Digitally signing certificates to guarantee their authenticity, (3) Maintaining Certificate Revocation Lists (CRLs) for compromised or invalid certificates. Browsers ship with pre-installed lists of trusted root CAs. If a CA is compromised, attackers can issue fraudulent certificates for any domain, enabling large-scale MITM attacks.`},
+{type:"Short Answer",q:"Differentiate between AH and ESP in IPSec.",marks:4,answer:`AH (Authentication Header): Provides data integrity and authentication but does NOT provide encryption. It verifies the packet hasn't been tampered with and confirms the source, but the content remains readable by anyone who intercepts it.\n\nESP (Encapsulating Security Payload): Provides encryption, integrity, AND authentication. This is the full security solution — it makes the packet contents unreadable (confidential) and verifies integrity and origin.\n\nKey exam point: For confidentiality (encryption), ESP must be used. AH alone is insufficient for secure VPN tunneling where data privacy is required.`},
+{type:"Long Answer",q:"Compare SSL VPN and IPSec VPN in terms of OSI layer, access type, deployment complexity, and ideal use cases. Which would you recommend for remote employees using personal devices?",marks:10,answer:`SSL VPN operates at the Application Layer (Layer 7), using TLS protocol over port 443. It provides browser-based access with no client software required, making it suitable for BYOD environments. Access is granular — restricted to specific applications rather than the full network. Deployment is simple and passes through most firewalls.\n\nIPSec VPN operates at the Network Layer (Layer 3), encrypting and authenticating every IP packet. It requires dedicated client software or hardware. It provides full, transparent network access identical to being on the LAN. Deployment is more complex, requiring firewall and client configuration on both ends. IPSec has two protocols (AH and ESP) and two modes (Transport Mode for host-to-host, Tunnel Mode for site-to-site).\n\nComparison Table:\n- Layer: SSL VPN = Layer 7 | IPSec = Layer 3\n- Client: SSL VPN = browser only | IPSec = dedicated client required\n- Access: SSL VPN = app-level | IPSec = full network\n- Deployment: SSL VPN = simple | IPSec = complex\n- Use case: SSL VPN = remote web access | IPSec = site-to-site / full remote\n\nRecommendation for remote employees on personal devices: SSL VPN. Because: (1) No client installation required, (2) Works on any device with a browser, (3) BYOD-compatible, (4) Simpler to deploy and manage, (5) Granular access control — employees only access what they need, not the entire network.`},
+{type:"Long Answer",q:"Describe the SSL handshake process step by step. For each step, explain what happens and why it is necessary.",marks:12,answer:`Step 1 — Client Hello: The browser initiates by sending its supported TLS versions, list of cipher suites it can handle, and a randomly generated number. This is necessary to inform the server of the client's capabilities so they can agree on compatible cryptographic parameters.\n\nStep 2 — Server Hello: The server responds by selecting the TLS version and cipher suite, sending its digital certificate (containing the public key), and its own random number. This provides the client with the server's identity proof and public key.\n\nStep 3 — Certificate Validation: The browser verifies the certificate is: (a) signed by a trusted CA in its root store, (b) not expired, (c) matches the domain being accessed, and (d) not revoked. This step ensures the client is talking to the legitimate server and not an impersonator — preventing MITM attacks.\n\nStep 4 — Key Exchange: The browser generates a "pre-master secret," encrypts it using the server's public key (from the certificate), and sends it. Only the server can decrypt this with its private key. This securely shares a secret value between client and server over an insecure channel.\n\nStep 5 — Session Key Derived: Both client and server independently compute the same symmetric session key using: the client's random number + server's random number + pre-master secret. Communication then switches to fast symmetric encryption (e.g., AES-256). The handshake completes in milliseconds, transparent to the user.\n\nImportance of hybrid design: Asymmetric encryption solves the key distribution problem; symmetric encryption provides the speed needed for real-world data transfer.`},
+{type:"Long Answer",q:"Explain the common attacks against SSL/TLS systems. For each attack, describe how it works and what the defense is.",marks:9,answer:`1. Man-in-the-Middle (MITM) Attack: An attacker secretly positions themselves between the client and server, intercepting and potentially altering all communication. This is enabled by weak certificate validation, use of untrusted networks, or accepting self-signed certificates. Defense: Certificate pinning (hard-coding expected certificates in applications) and strict TLS validation ensuring certificates match the expected domain and CA.\n\n2. SSL Stripping: The attacker intercepts the initial HTTP connection before SSL/TLS negotiates, presenting themselves to the server as HTTPS but presenting HTTP to the client. The user sees an unsecured connection but believes it may be acceptable. All data transmits in plaintext. Defense: HTTP Strict Transport Security (HSTS) — instructs browsers to always use HTTPS for a domain, refusing any HTTP connections regardless of user action.\n\n3. POODLE Attack (SSL 3.0 specific): Exploits a vulnerability in the SSL 3.0 padding mechanism, allowing attackers to decrypt selected parts of encrypted traffic. Defense: Completely disable SSL 3.0 on all servers and clients; use TLS 1.2+ only.\n\n4. Expired/Invalid Certificate Exploitation: Attackers launch phishing campaigns or MITM attacks against sites running expired, self-signed, or revoked certificates, exploiting users who ignore browser warnings. Defense: Automated certificate renewal using the ACME protocol (Let's Encrypt), with expiry alerts set 30 days in advance.\n\n5. CA Compromise: If a Certificate Authority is compromised, attackers can issue fraudulent certificates for any domain, enabling trusted MITM attacks at scale. Defense: Certificate Transparency logs, HPKP (HTTP Public Key Pinning), and monitoring for unauthorized certificate issuance.`},
+];
+
+/* ═══════ RENDER MCQ ═══════ */
+let answered=0,correct=0,wrong=0;
+function renderMCQ(filter='all'){
+  const c=document.getElementById('mcq-container');
+  c.innerHTML='';
+  mcqData.forEach((q,i)=>{
+    if(filter!=='all'&&q.diff!==filter)return;
+    const card=document.createElement('div');
+    card.className='mcq-card';
+    card.dataset.idx=i;
+    const diffClass='diff-'+q.diff;
+    card.innerHTML=`
+      <div class="mcq-num">Question ${i+1} <span class="mcq-diff ${diffClass}">${q.diff}</span></div>
+      <div class="mcq-q">${q.q}</div>
+      <div class="mcq-options">
+        ${q.opts.map((o,oi)=>`<button class="mcq-opt" onclick="answerMCQ(${i},${oi},this)"><span class="opt-label">${String.fromCharCode(65+oi)}.</span>${o}</button>`).join('')}
+      </div>
+      <div class="mcq-explanation" id="exp-${i}">✅ <strong>Correct Answer: ${String.fromCharCode(65+q.ans)}</strong><br/><br/>${q.exp}</div>
+    `;
+    c.appendChild(card);
+  });
+}
+
+function answerMCQ(qi,chosen,btn){
+  const card=document.querySelector(`.mcq-card[data-idx="${qi}"]`);
+  if(card.dataset.answered)return;
+  card.dataset.answered='1';
+  const opts=card.querySelectorAll('.mcq-opt');
+  const q=mcqData[qi];
+  opts.forEach((o,i)=>{
+    if(i===q.ans)o.classList.add('correct');
+    else if(i===chosen&&chosen!==q.ans)o.classList.add('wrong');
+    else o.classList.add('neutral');
+    o.disabled=true;
+  });
+  const exp=document.getElementById('exp-'+qi);
+  if(exp)exp.classList.add('show');
+  answered++;
+  if(chosen===q.ans)correct++;else wrong++;
+  updateScore();
+}
+
+function updateScore(){
+  document.getElementById('scoreNum').textContent=answered+' / '+mcqData.length;
+  document.getElementById('correctNum').textContent='✓ '+correct+' correct';
+  document.getElementById('wrongNum').textContent='✗ '+wrong+' wrong';
+  document.getElementById('progressFill').style.width=Math.round(answered/mcqData.length*100)+'%';
+}
+
+function resetMCQ(){
+  answered=0;correct=0;wrong=0;
+  updateScore();
+  renderMCQ();
+}
+
+function filterMCQ(f,btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMCQ(f);
+}
+
+/* ═══════ RENDER WRITTEN ═══════ */
+function renderWritten(){
+  const c=document.getElementById('written-container');
+  c.innerHTML='';
+  writtenData.forEach((q,i)=>{
+    const card=document.createElement('div');
+    card.className='written-card';
+    const typeColor=q.type==='Short Answer'?'var(--accent)':'var(--purple)';
+    card.innerHTML=`
+      <div class="written-type" style="color:${typeColor}">${q.type} ${q.marks?'— '+q.marks+' marks':''}</div>
+      <div class="written-q">Q${i+1}: ${q.q}</div>
+      <button class="show-answer-btn" onclick="toggleAnswer(${i})">Show Model Answer</button>
+      <div class="model-answer" id="written-ans-${i}">
+        <h4>✅ MODEL ANSWER</h4>
+        <p style="white-space:pre-wrap;">${q.answer}</p>
+      </div>
+    `;
+    c.appendChild(card);
+  });
+}
+
+function toggleAnswer(i){
+  const el=document.getElementById('written-ans-'+i);
+  const btn=el.previousElementSibling;
+  if(el.classList.contains('show')){
+    el.classList.remove('show');
+    btn.textContent='Show Model Answer';
+  } else {
+    el.classList.add('show');
+    btn.textContent='Hide Answer';
+  }
+}
+
+/* ═══════ NAV ═══════ */
+function showSection(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const btns=[...document.querySelectorAll('.nav-btn')];
+  const map={explain:0,summary:1,memory:2,mcq:3,written:4,cheatsheet:5};
+  if(map[id]!==undefined)btns[map[id]].classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ═══════ COLLAPSIBLE ═══════ */
+function toggleCollapsible(btn){
+  btn.classList.toggle('open');
+  const content=btn.nextElementSibling;
+  content.classList.toggle('open');
+}
+
+/* ═══════ THEME ═══════ */
+function toggleTheme(){
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme',isDark?'light':'dark');
+  document.querySelector('.theme-btn').textContent=isDark?'🌙 Dark':'☀️ Light';
+}
+
+/* ═══════ INIT ═══════ */
+renderMCQ();
+renderWritten();
+</script>
+</body>
+</html>
