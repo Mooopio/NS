@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 2: Malware — Exam Prep System</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root[data-theme="dark"] {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --card: #16161f;
+    --border: #2a2a3a;
+    --text: #e8e8f0;
+    --muted: #6b6b8a;
+    --accent: #ff4757;
+    --accent2: #ffa502;
+    --accent3: #2ed573;
+    --accent4: #1e90ff;
+    --highlight: rgba(255,71,87,0.12);
+    --glow: rgba(255,71,87,0.3);
+  }
+  :root[data-theme="light"] {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --card: #fafaf7;
+    --border: #ddddd0;
+    --text: #1a1a2e;
+    --muted: #7a7a8a;
+    --accent: #d63031;
+    --accent2: #e17055;
+    --accent3: #00b894;
+    --accent4: #0984e3;
+    --highlight: rgba(214,48,49,0.08);
+    --glow: rgba(214,48,49,0.2);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* HEADER */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+    backdrop-filter: blur(10px);
+  }
+  .logo {
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em;
+    color: var(--accent); text-transform: uppercase;
+    font-family: 'Space Mono', monospace;
+  }
+  .logo span { color: var(--text); }
+
+  .header-right { display: flex; align-items: center; gap: 1rem; }
+
+  .theme-btn {
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); padding: 0.4rem 0.8rem; border-radius: 6px;
+    cursor: pointer; font-size: 0.8rem; font-family: 'Space Mono', monospace;
+    transition: all 0.2s;
+  }
+  .theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* NAV */
+  nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; gap: 0; overflow-x: auto;
+  }
+  nav::-webkit-scrollbar { height: 2px; }
+  nav::-webkit-scrollbar-thumb { background: var(--accent); }
+
+  .nav-btn {
+    background: none; border: none; color: var(--muted);
+    padding: 0.9rem 1.2rem; cursor: pointer;
+    font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 600;
+    letter-spacing: 0.05em; white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover { color: var(--text); }
+  .nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* MAIN */
+  main { max-width: 960px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+
+  .section { display: none; animation: fadeIn 0.35s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* TYPOGRAPHY */
+  h1 { font-size: 2.2rem; font-weight: 800; line-height: 1.1; margin-bottom: 0.5rem; }
+  h2 { font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 1rem; color: var(--accent); }
+  h3 { font-size: 1.1rem; font-weight: 700; margin: 1.5rem 0 0.6rem; }
+  p { line-height: 1.75; color: var(--text); margin-bottom: 0.9rem; font-size: 0.95rem; }
+
+  .page-title {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .page-title .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 0.2em;
+    color: var(--accent); text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+  .page-title p { margin-top: 0.5rem; color: var(--muted); font-size: 0.9rem; }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 1.2rem;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--accent); }
+  .card-accent { border-left: 3px solid var(--accent); }
+  .card-green { border-left: 3px solid var(--accent3); }
+  .card-blue { border-left: 3px solid var(--accent4); }
+  .card-yellow { border-left: 3px solid var(--accent2); }
+
+  /* HIGHLIGHT BOX */
+  .callout {
+    background: var(--highlight);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    margin: 1.2rem 0;
+    font-size: 0.9rem;
+  }
+  .callout .label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 0.15em;
+    color: var(--accent); font-weight: 700;
+    margin-bottom: 0.4rem; text-transform: uppercase;
+  }
+
+  /* BADGES */
+  .badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem; border-radius: 4px;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em;
+    font-family: 'Space Mono', monospace; text-transform: uppercase;
+  }
+  .badge-red { background: rgba(255,71,87,0.2); color: var(--accent); border: 1px solid var(--accent); }
+  .badge-green { background: rgba(46,213,115,0.15); color: var(--accent3); border: 1px solid var(--accent3); }
+  .badge-blue { background: rgba(30,144,255,0.15); color: var(--accent4); border: 1px solid var(--accent4); }
+  .badge-yellow { background: rgba(255,165,2,0.15); color: var(--accent2); border: 1px solid var(--accent2); }
+
+  /* LISTS */
+  ul.styled, ol.styled { padding-left: 1.4rem; margin-bottom: 0.9rem; }
+  ul.styled li, ol.styled li {
+    line-height: 1.7; font-size: 0.93rem;
+    margin-bottom: 0.35rem; color: var(--text);
+  }
+  ul.styled li::marker { color: var(--accent); }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; margin: 1.2rem 0; border-radius: 8px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  th {
+    background: var(--card); padding: 0.75rem 1rem;
+    text-align: left; font-weight: 700; font-size: 0.8rem;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); border-bottom: 1px solid var(--border);
+  }
+  td { padding: 0.7rem 1rem; border-bottom: 1px solid var(--border); color: var(--text); line-height: 1.5; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--highlight); }
+
+  /* COLLAPSIBLE */
+  .collapsible-btn {
+    width: 100%; background: var(--card); border: 1px solid var(--border);
+    color: var(--text); padding: 1rem 1.2rem; border-radius: 8px;
+    cursor: pointer; font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 600;
+    text-align: left; display: flex; justify-content: space-between; align-items: center;
+    transition: all 0.2s; margin-bottom: 4px;
+  }
+  .collapsible-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .collapsible-btn .arrow { transition: transform 0.3s; font-size: 0.8rem; }
+  .collapsible-btn.open .arrow { transform: rotate(180deg); }
+  .collapsible-content {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.4s ease;
+    background: var(--card); border: 1px solid var(--border);
+    border-top: none; border-radius: 0 0 8px 8px;
+    margin-bottom: 0.6rem;
+  }
+  .collapsible-content.open { max-height: 2000px; }
+  .collapsible-content-inner { padding: 1.2rem 1.4rem; }
+
+  /* MCQ */
+  .mcq-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.4rem 1.6rem; margin-bottom: 1.2rem;
+  }
+  .mcq-card .q-num {
+    font-family: 'Space Mono', monospace; font-size: 0.7rem;
+    color: var(--accent); letter-spacing: 0.15em; margin-bottom: 0.5rem;
+  }
+  .mcq-card .q-text { font-weight: 600; margin-bottom: 1rem; font-size: 0.95rem; line-height: 1.6; }
+  .mcq-options { display: flex; flex-direction: column; gap: 0.5rem; }
+  .mcq-opt {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 0.65rem 1rem;
+    cursor: pointer; font-size: 0.88rem; line-height: 1.5;
+    transition: all 0.2s; display: flex; gap: 0.8rem; align-items: flex-start;
+  }
+  .mcq-opt:hover { border-color: var(--accent4); background: rgba(30,144,255,0.07); }
+  .mcq-opt.correct { border-color: var(--accent3); background: rgba(46,213,115,0.1); color: var(--accent3); }
+  .mcq-opt.wrong { border-color: var(--accent); background: rgba(255,71,87,0.1); color: var(--accent); }
+  .mcq-opt .opt-label {
+    font-family: 'Space Mono', monospace; font-size: 0.75rem; font-weight: 700;
+    min-width: 18px;
+  }
+  .mcq-explanation {
+    margin-top: 0.9rem; padding: 0.8rem 1rem;
+    background: rgba(46,213,115,0.08); border: 1px solid var(--accent3);
+    border-radius: 6px; font-size: 0.85rem; line-height: 1.6;
+    display: none; color: var(--accent3);
+  }
+  .mcq-explanation.show { display: block; animation: fadeIn 0.2s ease; }
+  .diff-badge { float: right; margin-left: auto; }
+
+  /* WRITTEN Q */
+  .wq-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.4rem 1.6rem; margin-bottom: 1.2rem;
+  }
+  .wq-card .q-type { font-family: 'Space Mono', monospace; font-size: 0.68rem; color: var(--accent2); letter-spacing: 0.15em; margin-bottom: 0.4rem; text-transform: uppercase; }
+  .wq-card .q-text { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.8rem; line-height: 1.6; }
+  .model-answer {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1rem 1.2rem;
+    font-size: 0.87rem; line-height: 1.75;
+    display: none;
+  }
+  .model-answer.show { display: block; animation: fadeIn 0.25s ease; }
+  .show-ans-btn {
+    background: none; border: 1px solid var(--border);
+    color: var(--muted); padding: 0.4rem 0.9rem; border-radius: 5px;
+    cursor: pointer; font-size: 0.8rem; font-family: 'Space Mono', monospace;
+    transition: all 0.2s;
+  }
+  .show-ans-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+
+  /* REVISION SHEET */
+  .revision-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem; margin-bottom: 1.5rem;
+  }
+  .rev-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.1rem 1.3rem;
+  }
+  .rev-card h4 {
+    font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; margin-bottom: 0.7rem;
+    font-family: 'Space Mono', monospace;
+  }
+  .rev-card h4.red { color: var(--accent); }
+  .rev-card h4.green { color: var(--accent3); }
+  .rev-card h4.blue { color: var(--accent4); }
+  .rev-card h4.yellow { color: var(--accent2); }
+  .rev-item {
+    font-size: 0.83rem; line-height: 1.6; padding: 0.3rem 0;
+    border-bottom: 1px solid var(--border); display: flex; gap: 0.5rem;
+  }
+  .rev-item:last-child { border-bottom: none; }
+  .rev-item::before { content: "→"; color: var(--accent); font-family: 'Space Mono', monospace; flex-shrink: 0; }
+
+  /* MNEMONIC BOX */
+  .mnemonic {
+    background: linear-gradient(135deg, rgba(255,71,87,0.1), rgba(30,144,255,0.1));
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 1.2rem 1.4rem; margin: 1rem 0;
+    font-family: 'Space Mono', monospace; font-size: 0.85rem; line-height: 1.8;
+  }
+  .mnemonic .m-title { font-size: 0.7rem; letter-spacing: 0.2em; color: var(--accent2); text-transform: uppercase; margin-bottom: 0.5rem; }
+
+  /* PROGRESS */
+  .mcq-progress {
+    font-family: 'Space Mono', monospace; font-size: 0.8rem;
+    color: var(--muted); margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .score-bar { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .score-fill { height: 100%; background: var(--accent3); border-radius: 2px; transition: width 0.4s; width: 0%; }
+
+  /* SUMMARY BULLETS */
+  .sum-section { margin-bottom: 1.5rem; }
+  .sum-section h3 { font-size: 0.9rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); font-family: 'Space Mono', monospace; margin-bottom: 0.6rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+  .sum-item { display: flex; gap: 0.7rem; padding: 0.35rem 0; font-size: 0.9rem; line-height: 1.65; }
+  .sum-item .dot { color: var(--accent); font-weight: 700; flex-shrink: 0; margin-top: 0.05rem; }
+  .sum-item strong { color: var(--accent2); }
+
+  /* FLOW DIAGRAM */
+  .flow { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 1.2rem 0; }
+  .flow-step {
+    background: var(--card); border: 1px solid var(--accent);
+    border-radius: 6px; padding: 0.5rem 1rem;
+    font-size: 0.85rem; font-weight: 600; color: var(--accent);
+    font-family: 'Space Mono', monospace;
+  }
+  .flow-arrow { color: var(--muted); font-size: 1.2rem; }
+
+  kbd {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.1rem 0.4rem;
+    font-family: 'Space Mono', monospace; font-size: 0.8rem;
+    color: var(--accent2);
+  }
+
+  b, strong { color: var(--accent2); }
+
+  @media (max-width: 600px) {
+    header { padding: 0 1rem; }
+    main { padding: 1.5rem 1rem 4rem; }
+    h1 { font-size: 1.6rem; }
+    nav { padding: 0 0.5rem; }
+    .nav-btn { padding: 0.8rem 0.8rem; font-size: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">CH.02 <span>// MALWARE</span></div>
+  <div class="header-right">
+    <div id="mcq-score" style="font-family:'Space Mono',monospace;font-size:0.75rem;color:var(--muted);display:none;">
+      Score: <span id="score-display">0/0</span>
+    </div>
+    <button class="theme-btn" onclick="toggleTheme()">◐ THEME</button>
+  </div>
+</header>
+
+<nav>
+  <button class="nav-btn active" onclick="showSection('explain')">📖 Explanation</button>
+  <button class="nav-btn" onclick="showSection('summary')">📋 Summary</button>
+  <button class="nav-btn" onclick="showSection('memory')">🧠 Memory</button>
+  <button class="nav-btn" onclick="showSection('mcq')">❓ MCQs</button>
+  <button class="nav-btn" onclick="showSection('written')">✍️ Written</button>
+  <button class="nav-btn" onclick="showSection('revision')">⚡ Revision</button>
+</nav>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION 1: EXPLANATION
+═══════════════════════════════════════════════════════════════════ -->
+<div id="explain" class="section active">
+  <div class="page-title">
+    <div class="tag">Phase 1 · Deep Understanding</div>
+    <h1>Malicious Software</h1>
+    <p>Complete conceptual breakdown — every detail, every nuance, exam-ready.</p>
+  </div>
+
+  <h2>1. What Is Malware?</h2>
+  <div class="card card-accent">
+    <h3>Definition</h3>
+    <p><strong>Malware</strong> (malicious software) is any program <em>intentionally designed</em> to damage systems, steal data, or gain unauthorized access to computing resources. The key word is <strong>intentional</strong> — bugs or errors in software are not malware.</p>
+    <p>Think of malware like a burglar who can wear many disguises: sometimes it's a thief stealing your passwords, sometimes it's a vandal destroying your files, sometimes it's a spy silently watching, and sometimes it's a kidnapper locking your files until you pay a ransom.</p>
+  </div>
+
+  <div class="callout">
+    <div class="label">⚡ Key Insight — Always Exam-Tested</div>
+    <p>Most malware relies on <strong>human interaction</strong> at some point — making user awareness the first line of defense. Technology alone cannot stop malware if humans are tricked.</p>
+  </div>
+
+  <h2>2. The 4 Objectives of Malware (CIA + Control)</h2>
+  <p>Malware attacks the three classic pillars of information security — and adds a dangerous fourth dimension:</p>
+
+  <div class="table-wrap">
+    <table>
+      <tr><th>Objective</th><th>What It Targets</th><th>How</th><th>Example</th></tr>
+      <tr><td><span class="badge badge-red">Confidentiality</span></td><td>Your secrets</td><td>Steal credentials, PII, financial records, IP</td><td>Keyloggers, spyware</td></tr>
+      <tr><td><span class="badge badge-yellow">Availability</span></td><td>Access to systems</td><td>Crash systems, encrypt files, flood networks</td><td>Ransomware, DDoS botnets</td></tr>
+      <tr><td><span class="badge badge-blue">Integrity</span></td><td>Trust in data</td><td>Alter records, modify configs, tamper logs</td><td>Rootkits, banking trojans</td></tr>
+      <tr><td><span class="badge badge-green">Control</span></td><td>Long-term access</td><td>Install backdoors, C2 channels</td><td>RATs, botnets</td></tr>
+    </table>
+  </div>
+
+  <h2>3. The Malware Lifecycle (4 Phases)</h2>
+  <p>Every malware incident follows four predictable phases. Understanding each lets defenders break the attack chain at the right point.</p>
+
+  <div class="flow">
+    <div class="flow-step">1. CIRCULATION</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">2. INFECTION</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">3. CONCEALMENT</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">4. PROTECTION</div>
+  </div>
+
+  <button class="collapsible-btn" onclick="toggleCollapsible(this)">
+    Phase 1: Circulation — How Malware Spreads <span class="arrow">▼</span>
+  </button>
+  <div class="collapsible-content">
+    <div class="collapsible-content-inner">
+      <p>Malware must reach its victim before it can do anything. The five main spread channels are:</p>
+      <ul class="styled">
+        <li><strong>Email</strong> — Malicious attachments, embedded links, macro-enabled documents. Remains the <strong>#1 initial access vector</strong>.</li>
+        <li><strong>Web</strong> — Drive-by downloads (visiting a compromised site silently downloads malware), malvertising (malicious ads), watering-hole attacks (compromise sites the target visits).</li>
+        <li><strong>Downloads</strong> — Fake installers, trojanized software, cracked applications ("free" software that hides malware).</li>
+        <li><strong>Network</strong> — Worms that scan for exposed services and exploit unpatched vulnerabilities to spread automatically.</li>
+        <li><strong>Removable Media</strong> — USB drives with autorun payloads. Especially dangerous in <strong>air-gapped environments</strong> (systems isolated from the internet).</li>
+      </ul>
+      <div class="callout">
+        <div class="label">Common Infection Vectors</div>
+        <ul class="styled">
+          <li><strong>Macro-Enabled Documents</strong> — Office files; user clicks "Enable Content" → VBA macro executes</li>
+          <li><strong>Browser/Plugin Exploits</strong> — Vulnerabilities in browsers, Java, Flash, PDF readers</li>
+          <li><strong>Stolen Credentials</strong> — Attacker logs in manually using harvested passwords</li>
+          <li><strong>Compressed Archives</strong> — ZIP/RAR hiding executables (e.g., <kbd>invoice.pdf.exe</kbd>)</li>
+          <li><strong>Supply-Chain Attacks</strong> — Compromised software updates through trusted vendors</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <button class="collapsible-btn" onclick="toggleCollapsible(this)">
+    Phase 2: Infection — Entry and Execution <span class="arrow">▼</span>
+  </button>
+  <div class="collapsible-content">
+    <div class="collapsible-content-inner">
+      <p>Once on the system, malware needs to <strong>execute</strong> and <strong>persist</strong> (survive reboots).</p>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Execution Type</th><th>How</th></tr>
+          <tr><td>User-Triggered</td><td>Victim opens a file, runs installer, enables macros</td></tr>
+          <tr><td>Automatic</td><td>Exploit chains or worm behavior — no user action needed</td></tr>
+        </table>
+      </div>
+      <p><strong>Persistence mechanisms</strong> ensure malware survives a reboot:</p>
+      <ul class="styled">
+        <li>Registry keys (Windows auto-runs)</li>
+        <li>Startup folders</li>
+        <li>Scheduled tasks</li>
+        <li>System services</li>
+      </ul>
+      <p>The <strong>payload</strong> is the final malicious action: steal data, encrypt files, spy on users, control the system, or move laterally.</p>
+    </div>
+  </div>
+
+  <button class="collapsible-btn" onclick="toggleCollapsible(this)">
+    Phase 3: Concealment — How Malware Hides <span class="arrow">▼</span>
+  </button>
+  <div class="collapsible-content">
+    <div class="collapsible-content-inner">
+      <p>The longer malware hides, the more damage it inflicts. Modern malware invests heavily in evasion:</p>
+      <ul class="styled">
+        <li><strong>Obfuscation & Packing</strong> — Code is scrambled or compressed so signature-based tools can't match known patterns</li>
+        <li><strong>Anti-VM / Anti-Sandbox</strong> — Detects analysis environments and refuses to run, frustrating reverse engineers</li>
+        <li><strong>Delays & Staged Downloads</strong> — Sleeps before executing, or downloads payload in stages to bypass initial scans</li>
+        <li><strong>Rootkits</strong> — Kernel-level tools that hide processes, files, and network connections from the OS itself</li>
+        <li><strong>Encrypted C2 Traffic</strong> — Command-and-control communications disguised as normal HTTPS traffic</li>
+      </ul>
+    </div>
+  </div>
+
+  <button class="collapsible-btn" onclick="toggleCollapsible(this)">
+    Phase 4: Protection — Defense Side <span class="arrow">▼</span>
+  </button>
+  <div class="collapsible-content">
+    <div class="collapsible-content-inner">
+      <p>How defenders prevent, detect, respond to, and recover from compromise. This covers: layered controls, patching, backups, incident response — detailed in the Defense Playbook.</p>
+    </div>
+  </div>
+
+  <h2>4. Malware Families — Detailed Breakdown</h2>
+
+  <button class="collapsible-btn" onclick="toggleCollapsible(this)">
+    🦠 Computer Viruses <span class="arrow">▼</span>
+  </button>
+  <div class="collapsible-content">
+    <div class="collapsible-content-inner">
+      <p><strong>Definition:</strong> A virus attaches to a legitimate host file (document, script, executable) and spreads when that file is <em>opened or executed</em>. <strong>Unlike worms, viruses require user action to propagate.</strong></p>
+      <p><strong>Program Viruses</strong> specifically target executables (<kbd>.exe</kbd>, <kbd>.dll</kbd>, <kbd>.com</kbd>), injecting code into the binary. Every run → virus activates → seeks more executables.</p>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Virus</th><th>Year</th><th>Method</th><th>Impact</th></tr>
+          <tr><td>Melissa</td><td>1999</td><td>Macro virus in Word doc</td><td>Mass-mailed itself via Outlook, overwhelmed email servers worldwide</td></tr>
+          <tr><td>ILOVEYOU</td><td>2000</td><td>VBScript worm/virus hybrid</td><td>Spread via email, ~$10 billion in damages</td></tr>
+          <tr><td>CIH (Chernobyl)</td><td>1998</td><td>Program virus</td><td>Overwrote flash BIOS — physically bricked machines</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <button class="collapsible-btn" onclick="toggleCollapsible(this)">
+    🐛 Worms <span class="arrow">▼</span>
+  </button>
+  <div class="collapsible-content">
+    <div class="collapsible-content-inner">
+      <p><strong>Definition:</strong> Self-replicating malware that spreads across networks <strong>without needing a host file</strong> and <strong>without user action</strong>. Exploits network protocols and vulnerabilities.</p>
+      <p><strong>Key Difference from Virus:</strong> No host file needed, no user action required.</p>
+      <ul class="styled">
+        <li>Consume massive bandwidth → network outages</li>
+        <li>Often drop additional malware (ransomware, backdoors, cryptominers)</li>
+      </ul>
+      <div class="callout">
+        <div class="label">Historical Examples</div>
+        <ul class="styled">
+          <li><strong>Morris Worm (1988)</strong> — First major Internet worm; infected ~6,000 machines (≈10% of the Internet)</li>
+          <li><strong>NotPetya</strong> — Used worm-like spread to cripple global enterprises in hours</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <button class="collapsible-btn" onclick="toggleCollapsible(this)">
+    🐴 Trojan Horses <span class="arrow">▼</span>
+  </button>
+  <div class="collapsible-content">
+    <div class="collapsible-content-inner">
+      <p><strong>Definition:</strong> Disguises itself as legitimate software but carries hidden malicious functionality. <strong>Does NOT self-replicate</strong> — relies entirely on <strong>social engineering</strong>.</p>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Type</th><th>What It Does</th></tr>
+          <tr><td>Banking Trojans</td><td>Intercept transactions, steal banking credentials, inject fake forms</td></tr>
+          <tr><td>RATs (Remote Access Trojans)</td><td>Full attacker control: keylogging, screen capture, file access, webcam</td></tr>
+          <tr><td>Modular Loaders</td><td>Deliver additional payloads (like Emotet) — ransomware, info-stealers, lateral movement</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <button class="collapsible-btn" onclick="toggleCollapsible(this)">
+    💰 Ransomware <span class="arrow">▼</span>
+  </button>
+  <div class="collapsible-content">
+    <div class="collapsible-content-inner">
+      <p><strong>Definition:</strong> Encrypts victim files or locks systems, demanding cryptocurrency payment for the decryption key. Most financially impactful malware category.</p>
+      <div class="flow">
+        <div class="flow-step">1. Initial Access</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">2. Privilege Escalation</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">3. Mass Encryption</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">4. Ransom Note</div>
+      </div>
+      <div class="callout">
+        <div class="label">⚠️ Double Extortion</div>
+        <p>Modern ransomware gangs <strong>exfiltrate data before encrypting</strong> it, threatening public release to increase payment pressure. This means even restoring from backup doesn't eliminate the threat.</p>
+      </div>
+      <p><strong>Notable examples:</strong> CryptoLocker (2013), WannaCry (2017)</p>
+    </div>
+  </div>
+
+  <button class="collapsible-btn" onclick="toggleCollapsible(this)">
+    👁️ Spyware & Keyloggers <span class="arrow">▼</span>
+  </button>
+  <div class="collapsible-content">
+    <div class="collapsible-content-inner">
+      <div class="table-wrap">
+        <table>
+          <tr><th>Type</th><th>What It Does</th><th>Examples</th></tr>
+          <tr><td>Spyware</td><td>Silently monitors user activity; exfiltrates to attacker</td><td>Screen capture, clipboard monitoring, mic/camera activation</td></tr>
+          <tr><td>Keyloggers</td><td>Records every keystroke</td><td>Credential harvesting, session token capture, form-field interception</td></tr>
+        </table>
+      </div>
+      <p><strong>Defense:</strong> MFA (stolen passwords alone aren't enough), least-privilege, EDR, behavioral monitoring</p>
+    </div>
+  </div>
+
+  <button class="collapsible-btn" onclick="toggleCollapsible(this)">
+    📢 Adware & Browser Hijackers <span class="arrow">▼</span>
+  </button>
+  <div class="collapsible-content">
+    <div class="collapsible-content-inner">
+      <p><strong>Adware:</strong> Injects unwanted ads, tracks browsing behavior for profit.</p>
+      <p><strong>Browser Hijackers:</strong> Change homepage, search engine, and security settings without consent.</p>
+      <p>While dismissed as nuisances, real risks include:</p>
+      <ul class="styled">
+        <li>Privacy loss through behavioral tracking</li>
+        <li>Exposure to additional malware through malicious ad networks</li>
+        <li>Weakened browser security settings</li>
+        <li>Degraded system performance</li>
+      </ul>
+      <p>Most bundled with <strong>"free" software installers</strong> — always use custom installation and review what's included.</p>
+    </div>
+  </div>
+
+  <button class="collapsible-btn" onclick="toggleCollapsible(this)">
+    🤖 Botnets <span class="arrow">▼</span>
+  </button>
+  <div class="collapsible-content">
+    <div class="collapsible-content-inner">
+      <p><strong>Definition:</strong> A network of compromised devices (computers, servers, IoT) silently controlled by an attacker through a <strong>C2 (Command-and-Control)</strong> infrastructure. Individual infected devices = <strong>"bots"</strong> or <strong>"zombies."</strong></p>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Use Case</th><th>Description</th></tr>
+          <tr><td>DDoS Attacks</td><td>Overwhelm targets with traffic, disrupting services</td></tr>
+          <tr><td>Cryptomining</td><td>Steal compute resources to mine cryptocurrency silently</td></tr>
+          <tr><td>Spam & Phishing</td><td>Distribute millions of emails from hard-to-block IPs</td></tr>
+          <tr><td>Fraud</td><td>Credential stuffing, click fraud, financial theft at scale</td></tr>
+        </table>
+      </div>
+      <div class="callout">
+        <div class="label">Case Study: Mirai Botnet (2016)</div>
+        <p>Exploited <strong>default passwords on IoT devices</strong> to build a massive army that launched record DDoS attacks, taking down DNS provider Dyn and disrupting Twitter, Netflix, Reddit.</p>
+      </div>
+    </div>
+  </div>
+
+  <button class="collapsible-btn" onclick="toggleCollapsible(this)">
+    🎣 Social Engineering & Phishing <span class="arrow">▼</span>
+  </button>
+  <div class="collapsible-content">
+    <div class="collapsible-content-inner">
+      <p><strong>Social engineering</strong> manipulates human psychology to bypass technical controls.</p>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Type</th><th>Channel</th><th>Description</th></tr>
+          <tr><td>Phishing</td><td>Email</td><td>Mass emails impersonating trusted brands with generic lures</td></tr>
+          <tr><td>Spear Phishing</td><td>Email</td><td>Highly targeted messages crafted with personal details</td></tr>
+          <tr><td>Smishing</td><td>SMS</td><td>SMS-based phishing exploiting mobile trust</td></tr>
+          <tr><td>Vishing</td><td>Voice</td><td>Calls impersonating IT support, banks, or government</td></tr>
+        </table>
+      </div>
+      <p><strong>Red flags:</strong> Urgency language, unusual sender addresses, spoofed domains, unexpected attachments, requests that bypass normal approval.</p>
+      <p><strong>Defense:</strong> Training + simulations, out-of-band verification, MFA, email gateways, DMARC/DKIM/SPF enforcement.</p>
+    </div>
+  </div>
+
+  <h2>5. WannaCry — The Key Case Study</h2>
+  <div class="card card-accent">
+    <p><strong>WannaCry (2017)</strong> is the most important ransomware case study. It combined ransomware with a worm-like propagation mechanism.</p>
+    <ul class="styled">
+      <li>Exploited the <strong>EternalBlue</strong> vulnerability in Windows SMB protocol</li>
+      <li>Spread automatically across networks without user interaction (worm behavior)</li>
+      <li>Encrypted files and demanded Bitcoin ransom</li>
+      <li>Affected 200,000+ systems in 150 countries</li>
+      <li>Hit hospitals (NHS in UK), telecoms (Spain), banks — causing ~$4–8 billion in damages</li>
+      <li><strong>Lesson:</strong> Patch management is critical — a patch for EternalBlue had existed for weeks</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION 2: SUMMARY
+═══════════════════════════════════════════════════════════════════ -->
+<div id="summary" class="section">
+  <div class="page-title">
+    <div class="tag">Phase 2 · Smart Summary</div>
+    <h1>High-Yield Summary</h1>
+    <p>Hierarchical bullet-point breakdown of everything that matters.</p>
+  </div>
+
+  <div class="sum-section">
+    <h3>🔑 Core Definition</h3>
+    <div class="sum-item"><span class="dot">•</span><span><strong>Malware</strong> = any <strong>intentionally</strong> designed software to damage, steal, or gain unauthorized access</span></div>
+    <div class="sum-item"><span class="dot">•</span><span>Targets: <strong>CIA (Confidentiality, Integrity, Availability) + Control</strong></span></div>
+    <div class="sum-item"><span class="dot">•</span><span>Entry is mostly through <strong>human interaction</strong> — user awareness = first defense</span></div>
+  </div>
+
+  <div class="sum-section">
+    <h3>🔄 Lifecycle (CICP)</h3>
+    <div class="sum-item"><span class="dot">1</span><span><strong>Circulation</strong> — Email (#1 vector), Web, Downloads, Network, USB</span></div>
+    <div class="sum-item"><span class="dot">2</span><span><strong>Infection</strong> — User-triggered or automatic; persistence via registry/startup/tasks/services</span></div>
+    <div class="sum-item"><span class="dot">3</span><span><strong>Concealment</strong> — Obfuscation, Anti-VM, Delays, Rootkits, Encrypted C2</span></div>
+    <div class="sum-item"><span class="dot">4</span><span><strong>Protection</strong> — Layered controls, patching, backups, IR</span></div>
+  </div>
+
+  <div class="sum-section">
+    <h3>🦠 Malware Families — Quick Reference</h3>
+    <div class="sum-item"><span class="dot">•</span><span><strong>Virus</strong> — needs host file + user action; attaches to executables; examples: Melissa, ILOVEYOU, CIH</span></div>
+    <div class="sum-item"><span class="dot">•</span><span><strong>Worm</strong> — no host file, no user action; self-replicating; examples: Morris (1988), NotPetya</span></div>
+    <div class="sum-item"><span class="dot">•</span><span><strong>Trojan</strong> — disguised as legit software; no self-replication; relies on social engineering; types: Banking, RAT, Loader</span></div>
+    <div class="sum-item"><span class="dot">•</span><span><strong>Ransomware</strong> — encrypts files, demands crypto payment; double extortion; examples: CryptoLocker, WannaCry</span></div>
+    <div class="sum-item"><span class="dot">•</span><span><strong>Spyware</strong> — silent monitoring; screen/clipboard/mic; exfiltrates data</span></div>
+    <div class="sum-item"><span class="dot">•</span><span><strong>Keylogger</strong> — records keystrokes; credential/token theft; can be hardware or software</span></div>
+    <div class="sum-item"><span class="dot">•</span><span><strong>Adware</strong> — unwanted ads + tracking; often bundled with free software</span></div>
+    <div class="sum-item"><span class="dot">•</span><span><strong>Botnet</strong> — network of "zombies" via C2; used for DDoS, spam, cryptomining, fraud; Mirai (2016)</span></div>
+  </div>
+
+  <div class="sum-section">
+    <h3>🎣 Phishing Types</h3>
+    <div class="sum-item"><span class="dot">•</span><span><strong>Phishing</strong> — mass email; generic lure</span></div>
+    <div class="sum-item"><span class="dot">•</span><span><strong>Spear Phishing</strong> — targeted, personalized</span></div>
+    <div class="sum-item"><span class="dot">•</span><span><strong>Smishing</strong> — SMS-based</span></div>
+    <div class="sum-item"><span class="dot">•</span><span><strong>Vishing</strong> — voice/phone calls</span></div>
+  </div>
+
+  <div class="sum-section">
+    <h3>🛡️ Key Defenses</h3>
+    <div class="sum-item"><span class="dot">•</span><span><strong>MFA</strong> — stolen passwords alone insufficient</span></div>
+    <div class="sum-item"><span class="dot">•</span><span><strong>Patching</strong> — WannaCry exploited an already-patched vulnerability</span></div>
+    <div class="sum-item"><span class="dot">•</span><span><strong>Backups</strong> — critical for ransomware recovery</span></div>
+    <div class="sum-item"><span class="dot">•</span><span><strong>EDR</strong> — Endpoint Detection & Response</span></div>
+    <div class="sum-item"><span class="dot">•</span><span><strong>Email filtering</strong> — gateways + DMARC/DKIM/SPF</span></div>
+    <div class="sum-item"><span class="dot">•</span><span><strong>User training</strong> — phishing simulations, awareness programs</span></div>
+    <div class="sum-item"><span class="dot">•</span><span><strong>Least-privilege</strong> — limit what malware can do if it gets in</span></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION 3: MEMORY
+═══════════════════════════════════════════════════════════════════ -->
+<div id="memory" class="section">
+  <div class="page-title">
+    <div class="tag">Phase 3 · Memory Optimization</div>
+    <h1>Memory Techniques</h1>
+    <p>Mnemonics, comparisons, traps — engineered for long-term retention.</p>
+  </div>
+
+  <h2>Mnemonics</h2>
+
+  <div class="mnemonic">
+    <div class="m-title">🧠 Mnemonic #1 — Malware Objectives</div>
+    <strong>C I A C</strong><br>
+    <strong>C</strong>onfidentiality → steal secrets<br>
+    <strong>I</strong>ntegrity → alter data<br>
+    <strong>A</strong>vailability → deny access<br>
+    <strong>C</strong>ontrol → backdoors &amp; persistence<br><br>
+    Memory trigger: <em>"CIA agents want Control"</em>
+  </div>
+
+  <div class="mnemonic">
+    <div class="m-title">🧠 Mnemonic #2 — Lifecycle Phases</div>
+    <strong>C I C P</strong><br>
+    <strong>C</strong>irculation → spreads to target<br>
+    <strong>I</strong>nfection → executes &amp; persists<br>
+    <strong>C</strong>oncealment → hides from detection<br>
+    <strong>P</strong>rotection → defender's response<br><br>
+    Memory trigger: <em>"Can I Conceal my Plan?"</em>
+  </div>
+
+  <div class="mnemonic">
+    <div class="m-title">🧠 Mnemonic #3 — Phishing Types</div>
+    <strong>P S S V</strong><br>
+    <strong>P</strong>hishing → mass email<br>
+    <strong>S</strong>pear Phishing → targeted email<br>
+    <strong>S</strong>mishing → SMS<br>
+    <strong>V</strong>ishing → Voice<br><br>
+    Memory trigger: <em>"Please Stop Scamming Via [these channels]"</em>
+  </div>
+
+  <div class="mnemonic">
+    <div class="m-title">🧠 Mnemonic #4 — Concealment Methods</div>
+    <strong>O A D R E</strong><br>
+    <strong>O</strong>bfuscation/Packing<br>
+    <strong>A</strong>nti-VM/Anti-Sandbox<br>
+    <strong>D</strong>elays &amp; Staged downloads<br>
+    <strong>R</strong>ootkits<br>
+    <strong>E</strong>ncrypted C2 traffic<br><br>
+    Memory trigger: <em>"Only Advanced Defenders Recognize Everything"</em>
+  </div>
+
+  <h2>Comparison Tables — Virus vs Worm vs Trojan</h2>
+
+  <div class="table-wrap">
+    <table>
+      <tr>
+        <th>Feature</th>
+        <th>Virus</th>
+        <th>Worm</th>
+        <th>Trojan</th>
+      </tr>
+      <tr><td>Needs host file?</td><td>✅ Yes</td><td>❌ No</td><td>✅ Yes (disguised as legit)</td></tr>
+      <tr><td>Needs user action?</td><td>✅ Yes</td><td>❌ No</td><td>✅ Yes (social engineering)</td></tr>
+      <tr><td>Self-replicates?</td><td>✅ Yes</td><td>✅ Yes</td><td>❌ No</td></tr>
+      <tr><td>Spreads across networks?</td><td>Indirectly</td><td>✅ Yes, automatically</td><td>❌ No</td></tr>
+      <tr><td>Payload?</td><td>Optional</td><td>Often drops additional malware</td><td>Core purpose</td></tr>
+    </table>
+  </div>
+
+  <h2>Common Exam Traps ⚠️</h2>
+
+  <div class="card card-accent">
+    <h3>Trap #1 — "Worms need a host file"</h3>
+    <p>❌ WRONG. Worms do <em>not</em> need a host file. They are standalone self-replicating programs. Viruses need host files.</p>
+  </div>
+
+  <div class="card card-accent">
+    <h3>Trap #2 — "Trojans self-replicate"</h3>
+    <p>❌ WRONG. Trojans do NOT self-replicate. That's their key distinguishing feature. They rely entirely on social engineering.</p>
+  </div>
+
+  <div class="card card-accent">
+    <h3>Trap #3 — "Backups fully solve ransomware"</h3>
+    <p>❌ WRONG with modern ransomware. Double extortion means attackers exfiltrate data first. Even with backups, they can still leak your data publicly.</p>
+  </div>
+
+  <div class="card card-accent">
+    <h3>Trap #4 — "Adware is harmless"</h3>
+    <p>❌ WRONG. Adware exposes you to malicious ad networks, weakens browser security, and tracks your behavior extensively. Real security risk.</p>
+  </div>
+
+  <div class="card card-accent">
+    <h3>Trap #5 — "Email is just one of many equal vectors"</h3>
+    <p>❌ Incomplete. Email is specifically the <strong>#1 initial access vector</strong> for most campaigns. Know this distinction.</p>
+  </div>
+
+  <h2>Chunked Key Dates & Numbers</h2>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Event</th><th>Year</th><th>Key Fact</th></tr>
+      <tr><td>Morris Worm</td><td>1988</td><td>First major Internet worm; ~6,000 machines ≈ 10% of Internet</td></tr>
+      <tr><td>CIH (Chernobyl)</td><td>1998</td><td>Overwrote BIOS; physically bricked machines</td></tr>
+      <tr><td>Melissa</td><td>1999</td><td>Macro virus; overwhelmed email servers via Outlook</td></tr>
+      <tr><td>ILOVEYOU</td><td>2000</td><td>~$10 billion in damages</td></tr>
+      <tr><td>CryptoLocker</td><td>2013</td><td>First major modern ransomware</td></tr>
+      <tr><td>Mirai Botnet</td><td>2016</td><td>IoT default passwords; took down Dyn (Twitter/Netflix/Reddit)</td></tr>
+      <tr><td>WannaCry</td><td>2017</td><td>200,000+ systems, 150 countries; EternalBlue exploit</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION 4: MCQ
+═══════════════════════════════════════════════════════════════════ -->
+<div id="mcq" class="section">
+  <div class="page-title">
+    <div class="tag">Phase 4 · Exam Training</div>
+    <h1>Multiple Choice Questions</h1>
+    <p>30 questions — easy to hard. Click an option to reveal the answer.</p>
+  </div>
+
+  <div class="mcq-progress">
+    <span>Progress: <span id="answered">0</span>/30 answered</span>
+    <div class="score-bar"><div class="score-fill" id="score-fill"></div></div>
+    <span>✅ <span id="correct-count">0</span> correct</span>
+  </div>
+
+  <div id="mcq-container"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION 5: WRITTEN QUESTIONS
+═══════════════════════════════════════════════════════════════════ -->
+<div id="written" class="section">
+  <div class="page-title">
+    <div class="tag">Phase 4 · Written Training</div>
+    <h1>Written Questions</h1>
+    <p>Short & long answer questions with model answers. Attempt first, then reveal.</p>
+  </div>
+
+  <div id="written-container"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION 6: REVISION SHEET
+═══════════════════════════════════════════════════════════════════ -->
+<div id="revision" class="section">
+  <div class="page-title">
+    <div class="tag">Phase 5 · Night Before Exam</div>
+    <h1>Rapid Revision Sheet</h1>
+    <p>Everything critical, ultra-compressed. Read this the night before.</p>
+  </div>
+
+  <div class="callout">
+    <div class="label">🎯 The Big Picture</div>
+    <p>Malware = intentional malicious software targeting CIA + Control. Spreads via email (#1), web, downloads, network, USB. Lifecycle: Circulate → Infect → Conceal → [Defend]. Defense = layers: patch, MFA, backups, EDR, training.</p>
+  </div>
+
+  <div class="revision-grid">
+    <div class="rev-card">
+      <h4 class="red">Malware Families</h4>
+      <div class="rev-item">Virus — host file + user action needed</div>
+      <div class="rev-item">Worm — NO host file, NO user action</div>
+      <div class="rev-item">Trojan — NO self-replication; social eng.</div>
+      <div class="rev-item">Ransomware — encrypt + demand crypto</div>
+      <div class="rev-item">Spyware — silent monitor + exfiltrate</div>
+      <div class="rev-item">Keylogger — records every keystroke</div>
+      <div class="rev-item">Adware — ads + tracking; not "harmless"</div>
+      <div class="rev-item">Botnet — zombie network via C2</div>
+    </div>
+    <div class="rev-card">
+      <h4 class="blue">Key Dates</h4>
+      <div class="rev-item">1988 Morris Worm — 10% of Internet</div>
+      <div class="rev-item">1998 CIH — bricked BIOS physically</div>
+      <div class="rev-item">1999 Melissa — Outlook macro virus</div>
+      <div class="rev-item">2000 ILOVEYOU — $10 billion damages</div>
+      <div class="rev-item">2013 CryptoLocker — ransomware pioneer</div>
+      <div class="rev-item">2016 Mirai — IoT DDoS; Dyn outage</div>
+      <div class="rev-item">2017 WannaCry — EternalBlue; 150 countries</div>
+    </div>
+    <div class="rev-card">
+      <h4 class="green">Defenses</h4>
+      <div class="rev-item">MFA — stops credential theft</div>
+      <div class="rev-item">Patching — #1 priority (WannaCry lesson)</div>
+      <div class="rev-item">Backups — ransomware recovery</div>
+      <div class="rev-item">EDR — behavioral endpoint detection</div>
+      <div class="rev-item">Email gateways + DMARC/DKIM/SPF</div>
+      <div class="rev-item">User training + phishing simulations</div>
+      <div class="rev-item">Least-privilege access</div>
+    </div>
+    <div class="rev-card">
+      <h4 class="yellow">Critical Distinctions</h4>
+      <div class="rev-item">Email = #1 initial access vector</div>
+      <div class="rev-item">Double extortion = exfil THEN encrypt</div>
+      <div class="rev-item">Rootkits = kernel-level hiding</div>
+      <div class="rev-item">C2 = Command & Control infrastructure</div>
+      <div class="rev-item">Spear phishing = targeted (vs mass phishing)</div>
+      <div class="rev-item">Smishing = SMS; Vishing = Voice</div>
+      <div class="rev-item">Air-gapped = isolated from internet</div>
+    </div>
+    <div class="rev-card">
+      <h4 class="red">Phishing Types</h4>
+      <div class="rev-item">Phishing — mass email, generic</div>
+      <div class="rev-item">Spear Phishing — targeted, personal details</div>
+      <div class="rev-item">Smishing — SMS channel</div>
+      <div class="rev-item">Vishing — voice/phone channel</div>
+    </div>
+    <div class="rev-card">
+      <h4 class="blue">Concealment Methods</h4>
+      <div class="rev-item">Obfuscation/Packing — bypass signatures</div>
+      <div class="rev-item">Anti-VM — detect sandbox; refuse to run</div>
+      <div class="rev-item">Delays — sleep then execute</div>
+      <div class="rev-item">Rootkits — hide from OS itself</div>
+      <div class="rev-item">Encrypted C2 — looks like HTTPS traffic</div>
+    </div>
+  </div>
+
+  <div class="mnemonic" style="margin-top:1.5rem;">
+    <div class="m-title">💡 Last-Minute Memory Hooks</div>
+    <strong>CIA + C</strong> — Malware objectives (Confidentiality, Integrity, Availability + Control)<br>
+    <strong>CICP</strong> — Lifecycle: Can I Conceal my Plan?<br>
+    <strong>PSSV</strong> — Phishing types: Please Stop Scamming Via [channels]<br>
+    <strong>OADRE</strong> — Concealment: Only Advanced Defenders Recognize Everything<br>
+    <strong>Virus ≠ Worm</strong>: Virus needs host + user; Worm needs neither<br>
+    <strong>Trojan ≠ replicates</strong>: Trojans are solo social-engineering attacks
+  </div>
+</div>
+
+</main>
+
+<script>
+// ── THEME TOGGLE ──────────────────────────────────────────────────────
+function toggleTheme() {
+  const html = document.documentElement;
+  html.dataset.theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const idx = ['explain','summary','memory','mcq','written','revision'].indexOf(id);
+  document.querySelectorAll('.nav-btn')[idx].classList.add('active');
+  if (id === 'mcq') document.getElementById('mcq-score').style.display = 'flex';
+  else document.getElementById('mcq-score').style.display = 'none';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ── COLLAPSIBLE ───────────────────────────────────────────────────────
+function toggleCollapsible(btn) {
+  btn.classList.toggle('open');
+  const content = btn.nextElementSibling;
+  content.classList.toggle('open');
+}
+
+// ── MCQ DATA ──────────────────────────────────────────────────────────
+const mcqs = [
+  {
+    q: "What is the primary definition of malware?",
+    opts: ["Software that crashes due to bugs", "Any program intentionally designed to damage systems, steal data, or gain unauthorized access", "Software that consumes excessive memory", "Any program that slows down system performance"],
+    ans: 1, diff: "easy",
+    exp: "Malware is specifically defined by intentionality — it is deliberately designed to cause harm. Bugs or crashes caused by errors are NOT malware."
+  },
+  {
+    q: "Which of the following represents the #1 initial access vector for most malware campaigns?",
+    opts: ["USB drives", "Network scanning", "Email (attachments, links, macros)", "Drive-by web downloads"],
+    ans: 2, diff: "easy",
+    exp: "Email remains the #1 initial access vector. Malicious attachments, embedded links, and macro-enabled documents are the most common entry point."
+  },
+  {
+    q: "What is the key difference between a virus and a worm?",
+    opts: ["Viruses target only Windows systems", "Worms require a host file to spread; viruses do not", "Viruses require user action to spread; worms do not", "Worms can only spread via USB drives"],
+    ans: 2, diff: "easy",
+    exp: "Viruses need a host file and user action (opening/executing the file). Worms are standalone and spread automatically across networks without any user interaction."
+  },
+  {
+    q: "Which malware type does NOT self-replicate?",
+    opts: ["Virus", "Worm", "Trojan Horse", "Worm-Virus hybrid"],
+    ans: 2, diff: "easy",
+    exp: "Trojans do not self-replicate. They rely entirely on social engineering to trick users into installing them. This is their defining characteristic."
+  },
+  {
+    q: "What is 'double extortion' in the context of ransomware?",
+    opts: ["Demanding two separate ransom payments", "Encrypting files twice for stronger encryption", "Exfiltrating data before encrypting it, then threatening to publish it", "Attacking two organizations simultaneously"],
+    ans: 2, diff: "medium",
+    exp: "Double extortion means attackers first steal data (exfiltration), then encrypt it. Even if victims restore from backups, attackers can threaten to publicly release the stolen data."
+  },
+  {
+    q: "Which malware exploited default passwords on IoT devices to launch record-breaking DDoS attacks in 2016?",
+    opts: ["WannaCry", "Mirai", "Morris Worm", "Emotet"],
+    ans: 1, diff: "medium",
+    exp: "The Mirai botnet (2016) exploited default/unchanged passwords on IoT devices to build a massive army of zombies, taking down DNS provider Dyn and disrupting Twitter, Netflix, and Reddit."
+  },
+  {
+    q: "A rootkit is best described as:",
+    opts: ["A type of ransomware that targets Linux systems", "A kernel-level tool that hides processes, files, and connections from the OS", "A worm that targets root user accounts", "An email-based phishing toolkit"],
+    ans: 1, diff: "medium",
+    exp: "Rootkits operate at the kernel level — the core of the OS — which means they can hide processes, files, and network connections from the operating system itself, making them extremely difficult to detect."
+  },
+  {
+    q: "WannaCry (2017) primarily exploited which vulnerability?",
+    opts: ["A Java browser plugin flaw", "The EternalBlue vulnerability in Windows SMB protocol", "A macOS kernel vulnerability", "An Adobe Flash zero-day"],
+    ans: 1, diff: "medium",
+    exp: "WannaCry used the EternalBlue exploit targeting a vulnerability in the Windows SMB (Server Message Block) protocol. A patch had been available for weeks before the attack — emphasizing the importance of patch management."
+  },
+  {
+    q: "Which of the following is NOT a concealment technique used by malware?",
+    opts: ["Obfuscation and code packing", "Anti-VM detection", "Supply-chain compromise", "Encrypted C2 traffic"],
+    ans: 2, diff: "medium",
+    exp: "Supply-chain compromise is a circulation/spread technique (how malware reaches victims), not a concealment technique. Concealment techniques include obfuscation, anti-VM, delays, rootkits, and encrypted C2."
+  },
+  {
+    q: "The Morris Worm (1988) was historically significant because:",
+    opts: ["It was the first ransomware attack", "It was the first major Internet worm, infecting ~10% of the Internet", "It physically destroyed hardware components", "It introduced the concept of C2 infrastructure"],
+    ans: 1, diff: "medium",
+    exp: "The Morris Worm (1988) was the first major Internet worm, infecting approximately 6,000 machines — roughly 10% of the Internet at the time. It demonstrated how automated propagation could cause widespread disruption."
+  },
+  {
+    q: "A 'banking trojan' most specifically targets:",
+    opts: ["ATM machines directly", "Bank server infrastructure", "Financial credentials and transactions on victim devices", "Cryptocurrency mining operations"],
+    ans: 2, diff: "medium",
+    exp: "Banking Trojans intercept financial transactions on the victim's own device, steal banking credentials, and inject fake forms into legitimate banking websites — tricking users while appearing on legitimate sites."
+  },
+  {
+    q: "In the ransomware lifecycle, what happens BEFORE encryption?",
+    opts: ["Ransom note delivery", "Data exfiltration in double extortion scenarios", "Privilege escalation and network mapping", "Both B and C"],
+    ans: 3, diff: "hard",
+    exp: "In modern ransomware attacks, attackers first gain initial access, then escalate privileges and map the network, then (in double extortion) exfiltrate data, and finally mass-encrypt files. The ransom note comes last."
+  },
+  {
+    q: "Which technique would MOST effectively bypass signature-based antivirus detection?",
+    opts: ["Using well-known malware families", "Code obfuscation and packing", "Sending malware over email", "Using standard HTTP for C2 traffic"],
+    ans: 1, diff: "hard",
+    exp: "Obfuscation and packing scramble or compress the malware's code so it no longer matches known patterns in signature databases. This is specifically designed to defeat signature-based detection."
+  },
+  {
+    q: "A watering-hole attack is best described as:",
+    opts: ["Flooding a network with traffic", "Compromising websites that the target frequently visits to deliver malware", "Poisoning a company's water supply to distract security teams", "A social engineering call impersonating water utility services"],
+    ans: 1, diff: "hard",
+    exp: "A watering-hole attack compromises websites that specific targets are known to visit. When the target visits the site, malware is silently delivered. It's a web-based, targeted infection vector."
+  },
+  {
+    q: "The CIH ('Chernobyl') virus was particularly destructive because:",
+    opts: ["It encrypted all files and demanded ransom", "It spread across 150 countries", "It overwrote the flash BIOS, physically bricking machines", "It exfiltrated terabytes of government data"],
+    ans: 2, diff: "medium",
+    exp: "CIH (1998) was one of the most destructive viruses ever because it overwrote the flash BIOS on certain motherboards — causing physical hardware damage that couldn't be fixed by simply reinstalling the OS."
+  },
+  {
+    q: "DMARC, DKIM, and SPF are defenses specifically against:",
+    opts: ["Drive-by download attacks", "Email spoofing and phishing", "Network-based worm propagation", "Botnet C2 communications"],
+    ans: 1, diff: "medium",
+    exp: "DMARC, DKIM, and SPF are email authentication protocols that help prevent email spoofing — a core technique in phishing attacks. They verify that emails actually come from legitimate senders."
+  },
+  {
+    q: "Which of the following best describes a 'supply-chain attack'?",
+    opts: ["Attacking physical supply warehouses", "Compromising software updates distributed through trusted vendor channels", "Stealing credentials from supply chain employees", "A DDoS attack targeting logistics companies"],
+    ans: 1, diff: "medium",
+    exp: "Supply-chain attacks compromise legitimate software update mechanisms — so victims install malware thinking it's a trusted update. The SolarWinds attack is a famous modern example."
+  },
+  {
+    q: "Which malware type would be MOST useful for an attacker wanting long-term, persistent access to a target organization?",
+    opts: ["Ransomware", "Adware", "Remote Access Trojan (RAT)", "Morris Worm"],
+    ans: 2, diff: "medium",
+    exp: "RATs (Remote Access Trojans) grant attackers full, ongoing control of the victim's system — keylogging, screen capture, file access, webcam activation. They're designed specifically for persistent long-term access."
+  },
+  {
+    q: "An attacker sends a highly personalized email to a CFO referencing their recent vacation and specific financial project. This is BEST classified as:",
+    opts: ["Phishing", "Smishing", "Spear Phishing", "Vishing"],
+    ans: 2, diff: "easy",
+    exp: "Spear phishing is specifically targeted at individuals and uses personal details to increase credibility. Mass phishing uses generic lures with no personalization."
+  },
+  {
+    q: "What makes 'drive-by downloads' particularly dangerous?",
+    opts: ["They require the user to enter their password", "They require users to intentionally download files", "They can deliver malware silently just by visiting a compromised web page", "They only affect mobile devices"],
+    ans: 2, diff: "easy",
+    exp: "Drive-by downloads exploit browser or plugin vulnerabilities to silently deliver malware when a user merely visits a compromised page — no click, no download prompt, no user action required beyond visiting the site."
+  },
+  {
+    q: "Malware using 'staged downloads' as a concealment technique means:",
+    opts: ["The malware downloads in multiple versions for different OS", "The payload is delivered in pieces over time to bypass initial scans", "The malware is staged on a USB drive before network deployment", "The attacker downloads data from the victim in stages"],
+    ans: 1, diff: "hard",
+    exp: "Staged downloads mean the initial dropper is small and seemingly benign; it then downloads additional components/payload in stages, often after delays — bypassing sandboxes that only scan for a limited time."
+  },
+  {
+    q: "ILOVEYOU (2000) caused approximately how much damage?",
+    opts: ["$10 million", "$100 million", "$1 billion", "$10 billion"],
+    ans: 3, diff: "easy",
+    exp: "The ILOVEYOU VBScript worm/virus hybrid spread via email and caused an estimated $10 billion in damages — one of the most financially destructive malware events at the time."
+  },
+  {
+    q: "Which of the following is a persistence mechanism that malware uses to survive system reboots?",
+    opts: ["Encrypted C2 traffic", "Code obfuscation", "Registry keys and scheduled tasks", "Anti-VM detection"],
+    ans: 2, diff: "medium",
+    exp: "Persistence mechanisms ensure malware survives reboots. Common methods include: modifying registry keys (Windows auto-run entries), placing files in startup folders, creating scheduled tasks, or installing as a system service."
+  },
+  {
+    q: "What distinguishes spyware from a keylogger?",
+    opts: ["Spyware only runs on mobile devices; keyloggers only on desktops", "Spyware monitors broad user activity (screen, clipboard, mic); keyloggers specifically record keystrokes", "Spyware always requires physical hardware; keyloggers are always software-based", "There is no meaningful distinction — they are the same malware type"],
+    ans: 1, diff: "medium",
+    exp: "Spyware has a broader monitoring scope (screen captures, clipboard, microphone, camera, browsing habits). Keyloggers specifically record keystrokes. Keyloggers can also be hardware devices physically attached to keyboards — spyware cannot."
+  },
+  {
+    q: "An attacker calls an employee pretending to be IT support and tricks them into revealing their password. This is an example of:",
+    opts: ["Smishing", "Spear Phishing", "Vishing", "Watering Hole"],
+    ans: 2, diff: "easy",
+    exp: "Vishing (voice phishing) uses phone calls to impersonate IT support, banks, or government agencies to extract sensitive information. It manipulates human trust through live voice interaction."
+  },
+  {
+    q: "Why is adware considered a genuine security risk rather than just a nuisance?",
+    opts: ["It always encrypts user files", "It exclusively targets enterprise networks", "It can expose users to additional malware through malicious ad networks and weaken browser security settings", "It performs CPU-intensive operations that damage hardware"],
+    ans: 2, diff: "medium",
+    exp: "Adware's real risks: (1) exposure to malicious ad networks that can deliver further malware, (2) it weakens browser security settings, (3) extensive behavioral tracking is a privacy violation, and (4) degraded system performance."
+  },
+  {
+    q: "In the context of the malware lifecycle, 'lateral movement' refers to:",
+    opts: ["Moving malware files across different directory structures", "Spreading to other systems and assets within the same network after initial infection", "The horizontal spread of a worm across the Internet", "Transferring malware between different operating systems"],
+    ans: 1, diff: "hard",
+    exp: "Lateral movement means after the initial infection, the attacker moves to other systems within the same organization's network — expanding their footprint. This is a key goal of the payload phase and is what makes enterprise-wide ransomware attacks possible."
+  },
+  {
+    q: "What property makes air-gapped environments particularly vulnerable to USB-based malware?",
+    opts: ["Air-gapped systems don't have antivirus software installed", "They are isolated from the internet, making USB drives the primary way to transfer data", "They always use outdated operating systems", "Air-gapped systems have no password protection"],
+    ans: 1, diff: "hard",
+    exp: "Air-gapped systems are physically isolated from networks and the internet for security. This isolation means USB drives (removable media) become the main channel for data transfer — and thus the primary malware entry vector."
+  },
+  {
+    q: "Which of the following BEST describes the purpose of a C2 (Command and Control) infrastructure in malware operations?",
+    opts: ["To encrypt the malware payload before delivery", "To store stolen data temporarily on the victim's machine", "To allow attackers to remotely issue commands to and receive data from compromised systems", "To create backup copies of the malware on multiple servers"],
+    ans: 2, diff: "medium",
+    exp: "C2 infrastructure is how attackers communicate with and control their malware on victim systems — issuing commands (exfiltrate data, download new payloads, execute actions) and receiving results. Modern C2 traffic is encrypted to look like normal HTTPS."
+  },
+  {
+    q: "The Melissa virus (1999) was most notable for:",
+    opts: ["Being the first ransomware to demand cryptocurrency", "Being a macro virus that mass-mailed itself via Outlook, overwhelming email servers globally", "Physically damaging hardware components", "Exploiting a Windows SMB vulnerability"],
+    ans: 1, diff: "medium",
+    exp: "Melissa was a macro virus embedded in Word documents. When opened, it would email itself to the first 50 contacts in Microsoft Outlook, quickly overwhelming corporate email servers worldwide."
+  }
+];
+
+// ── WRITTEN QUESTIONS DATA ────────────────────────────────────────────
+const writtenQs = [
+  {
+    type: "Short Answer",
+    q: "Define malware and explain the four objectives it targets. (4 marks)",
+    ans: `Malware (malicious software) is any program intentionally designed to damage systems, steal data, or gain unauthorized access to computing resources.\n\nThe four objectives are:\n1. Confidentiality — Exfiltrate sensitive data such as credentials, financial records, intellectual property, and PII\n2. Integrity — Alter data or transactions, inject false records, modify configurations, or tamper with logs\n3. Availability — Crash systems, encrypt files, or flood networks, denying legitimate users access\n4. Control — Install backdoors and C2 channels for persistent, long-term unauthorized access`
+  },
+  {
+    type: "Short Answer",
+    q: "Distinguish between a virus, a worm, and a trojan horse. Use at least two differentiating criteria. (6 marks)",
+    ans: `Virus: Requires a host file (attaches to legitimate executables, documents, or scripts) and requires user action (opening/executing the file) to propagate. It self-replicates by modifying host files.\n\nWorm: Does NOT require a host file — it is standalone. Does NOT require user action — it spreads automatically across networks by exploiting vulnerabilities. This makes worms faster and more dangerous at scale.\n\nTrojan Horse: Disguises itself as legitimate software but carries hidden malicious functionality. Does NOT self-replicate at all — it relies entirely on social engineering to trick users into installing it voluntarily. Unlike viruses and worms, trojans are passive in their spread.`
+  },
+  {
+    type: "Short Answer",
+    q: "Explain the concept of 'double extortion' in ransomware attacks and why it makes backup-only recovery strategies insufficient. (4 marks)",
+    ans: `Double extortion is a technique where ransomware attackers exfiltrate (steal) the victim's data BEFORE encrypting it. They then issue two threats: (1) pay to get the decryption key for your encrypted files, and (2) pay to prevent us from publicly publishing your stolen data.\n\nThis makes backup-only recovery insufficient because: even if an organization fully restores its systems from clean backups, the attackers still possess copies of sensitive data. They can threaten to sell it, publish it online, or send it to regulators/competitors — causing reputational, legal, and competitive damage regardless of the backup.`
+  },
+  {
+    type: "Short Answer",
+    q: "List and briefly describe five malware concealment techniques. (5 marks)",
+    ans: `1. Obfuscation & Packing — Scrambling or compressing malware code so it doesn't match known signatures in antivirus databases.\n\n2. Anti-VM / Anti-Sandbox Detection — Malware detects if it's running in a virtual analysis environment and refuses to execute, preventing security researchers from studying it.\n\n3. Delays & Staged Downloads — Sleeping for a period before executing, or downloading the payload in pieces over time, to evade sandboxes that only analyze behavior for a limited window.\n\n4. Rootkits — Kernel-level tools that hide the malware's processes, files, registry entries, and network connections from the operating system itself.\n\n5. Encrypted C2 Traffic — Command-and-control communications are disguised as normal HTTPS traffic, blending in with legitimate web traffic and evading network monitoring.`
+  },
+  {
+    type: "Long Answer",
+    q: "Using the WannaCry attack as a case study, explain: (a) how it spread, (b) what type of malware it combined, (c) the impact, and (d) the key lessons for organizations. (12 marks)",
+    ans: `(a) How WannaCry Spread:\nWannaCry exploited the EternalBlue vulnerability in the Windows SMB (Server Message Block) protocol — a flaw in how Windows systems share files and communicate on a network. Unlike traditional ransomware that requires a user to open a phishing email, WannaCry spread automatically across networks by scanning for unpatched systems, infecting them without any user interaction. This gave it worm-like self-propagation capability.\n\n(b) Type of Malware:\nWannaCry was a hybrid — it combined ransomware (encrypting victim files and demanding Bitcoin payment) with a network worm (automatic self-propagation exploiting a vulnerability). The encryption aspect demanded a ransom with a deadline. The worm aspect allowed it to spread at devastating speed.\n\n(c) Impact:\nWannaCry infected over 200,000 systems across 150 countries within days. High-profile victims included the UK's National Health Service (NHS) — disrupting hospitals and patient care, Telefónica in Spain, and numerous banks and government agencies globally. Estimated damage was $4–8 billion.\n\n(d) Key Lessons:\n1. Patch Management is Critical — A patch for EternalBlue (MS17-010) had been available for weeks before WannaCry launched. Organizations that had applied it were unaffected.\n2. Network Segmentation — Limiting how freely systems can communicate would have contained the worm's lateral spread.\n3. Backups are Essential — Organizations with clean, offline backups could restore systems without paying the ransom.\n4. Legacy Systems are a Major Risk — Many affected organizations ran unsupported Windows XP.\n5. Speed Matters — The rapid spread demonstrated that slow patching cycles create catastrophic windows of exposure.`
+  },
+  {
+    type: "Long Answer",
+    q: "Describe the complete malware lifecycle (four phases), explaining what happens at each phase and what defensive action can break the chain at each stage. (12 marks)",
+    ans: `Phase 1: Circulation (Spreading to the Target)\nMalware reaches potential victims through: email (attachments, macros, links — the #1 vector), web (drive-by downloads, malvertising, watering holes), downloads (fake installers, cracked software), network scanning (worms exploiting unpatched services), and removable media (USB autorun payloads).\nDefense: Email gateways, URL filtering, DMARC/DKIM/SPF, user awareness training, disabling USB autorun, network firewall rules.\n\nPhase 2: Infection (Execution and Persistence)\nOnce on the system, malware executes either through user action (opening a file, enabling macros) or automatically (exploit chains, worm behavior). It then establishes persistence via registry keys, startup folders, scheduled tasks, or system services to survive reboots. The payload activates: data theft, encryption, espionage, or lateral movement.\nDefense: Endpoint protection (AV/EDR), application whitelisting, least-privilege access, disabling macros by default, vulnerability patching.\n\nPhase 3: Concealment (Evading Detection)\nMalware uses obfuscation, anti-VM detection, delays before execution, rootkits, and encrypted C2 traffic to remain undetected as long as possible.\nDefense: Behavioral analysis tools (EDR), integrity monitoring, network traffic anomaly detection, threat hunting, sandbox analysis.\n\nPhase 4: Protection (Defender Response)\nThis phase represents the organization's ability to prevent, detect, respond to, and recover from compromise. Key activities include incident response procedures, isolation of infected systems, forensic investigation, restoration from backups, and patching the exploited vulnerability.\nDefense: Incident response plan, offline backups, disaster recovery procedures, post-incident patching and hardening.`
+  },
+  {
+    type: "Short Answer",
+    q: "Explain four different types of phishing attacks, identifying the channel used for each. (4 marks)",
+    ans: `1. Phishing — Delivered via email. Mass-distributed messages impersonating trusted brands with generic lures (e.g., "Your account has been suspended"). Targets large numbers indiscriminately.\n\n2. Spear Phishing — Delivered via email. Highly targeted messages crafted using personal details about the specific victim (their name, role, recent activities, colleagues). Much higher success rate than generic phishing.\n\n3. Smishing — Delivered via SMS (text messages). Exploits the trust people place in text messages and the limited real estate on mobile screens, which makes spoofed links harder to inspect.\n\n4. Vishing — Delivered via voice calls. Attackers impersonate IT support, bank representatives, or government agencies. The real-time voice interaction creates urgency and makes it harder for victims to pause and verify.`
+  },
+  {
+    type: "Short Answer",
+    q: "Why is adware considered a real security risk rather than merely a nuisance? Provide at least three specific reasons. (3 marks)",
+    ans: `Three reasons adware represents real security risk:\n\n1. Exposure to Additional Malware — Adware often connects to malicious ad networks. These networks can serve malvertising that silently delivers more dangerous malware (e.g., ransomware, spyware) through ad-based drive-by downloads.\n\n2. Weakened Browser Security — Browser hijackers specifically alter security settings, change default search engines, and disable security features — increasing the system's overall attack surface and vulnerability to further exploitation.\n\n3. Privacy Violation at Scale — Extensive behavioral tracking records browsing habits, shopping patterns, and online activities. This data is valuable to attackers for targeted attacks, credential stuffing, and social engineering.`
+  }
+];
+
+// ── RENDER MCQs ───────────────────────────────────────────────────────
+let answered = 0, correct = 0;
+
+function renderMCQs() {
+  const container = document.getElementById('mcq-container');
+  mcqs.forEach((q, idx) => {
+    const diffColor = { easy: 'badge-green', medium: 'badge-yellow', hard: 'badge-red' }[q.diff];
+    const html = `
+      <div class="mcq-card" id="mcq-${idx}">
+        <div class="q-num">Q${String(idx+1).padStart(2,'0')} <span class="badge ${diffColor} diff-badge">${q.diff}</span></div>
+        <div class="q-text">${q.q}</div>
+        <div class="mcq-options">
+          ${q.opts.map((opt, i) => `
+            <div class="mcq-opt" onclick="selectOpt(${idx}, ${i})" id="opt-${idx}-${i}">
+              <span class="opt-label">${String.fromCharCode(65+i)}</span>
+              <span>${opt}</span>
+            </div>
+          `).join('')}
+        </div>
+        <div class="mcq-explanation" id="exp-${idx}">
+          ✅ <strong>Correct Answer: ${String.fromCharCode(65+q.ans)}.</strong> ${q.exp}
+        </div>
+      </div>
+    `;
+    container.insertAdjacentHTML('beforeend', html);
+  });
+}
+
+function selectOpt(qIdx, optIdx) {
+  const q = mcqs[qIdx];
+  const card = document.getElementById(`mcq-${qIdx}`);
+  if (card.dataset.answered) return;
+  card.dataset.answered = '1';
+  answered++;
+
+  for (let i = 0; i < q.opts.length; i++) {
+    const opt = document.getElementById(`opt-${qIdx}-${i}`);
+    opt.style.cursor = 'default';
+    if (i === q.ans) opt.classList.add('correct');
+    else if (i === optIdx && optIdx !== q.ans) opt.classList.add('wrong');
+  }
+
+  document.getElementById(`exp-${qIdx}`).classList.add('show');
+
+  if (optIdx === q.ans) correct++;
+
+  document.getElementById('answered').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  document.getElementById('score-display').textContent = `${correct}/${answered}`;
+  document.getElementById('mcq-score').style.display = 'flex';
+
+  const pct = answered > 0 ? (correct / answered) * 100 : 0;
+  document.getElementById('score-fill').style.width = pct + '%';
+}
+
+// ── RENDER WRITTEN ────────────────────────────────────────────────────
+function renderWritten() {
+  const container = document.getElementById('written-container');
+  writtenQs.forEach((q, idx) => {
+    const html = `
+      <div class="wq-card">
+        <div class="q-type">${q.type}</div>
+        <div class="q-text">${q.q}</div>
+        <button class="show-ans-btn" onclick="toggleAnswer(${idx})">Show Model Answer</button>
+        <div class="model-answer" id="wans-${idx}">${q.ans.replace(/\n/g,'<br>')}</div>
+      </div>
+    `;
+    container.insertAdjacentHTML('beforeend', html);
+  });
+}
+
+function toggleAnswer(idx) {
+  const el = document.getElementById(`wans-${idx}`);
+  const btn = el.previousElementSibling;
+  el.classList.toggle('show');
+  btn.textContent = el.classList.contains('show') ? 'Hide Model Answer' : 'Show Model Answer';
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────
+renderMCQs();
+renderWritten();
+</script>
+</body>
+</html>
