@@ -1,0 +1,1848 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blockchain — Exam Preparation System</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root[data-theme="dark"] {
+    --bg: #0a0c10;
+    --bg2: #111318;
+    --bg3: #181c24;
+    --border: #252a35;
+    --text: #e8eaf0;
+    --text2: #9aa0b4;
+    --accent: #5de8c5;
+    --accent2: #f5a623;
+    --accent3: #e05c7a;
+    --accent4: #7c6ff7;
+    --card: #13161e;
+    --card-hover: #1a1e28;
+    --correct: #2ecc71;
+    --wrong: #e05c7a;
+    --glow: 0 0 30px rgba(93,232,197,0.12);
+  }
+  :root[data-theme="light"] {
+    --bg: #f4f5f8;
+    --bg2: #ffffff;
+    --bg3: #eef0f5;
+    --border: #dde0ea;
+    --text: #1a1e2e;
+    --text2: #5a6080;
+    --accent: #0a9e7f;
+    --accent2: #d4820a;
+    --accent3: #c0283e;
+    --accent4: #4c44c5;
+    --card: #ffffff;
+    --card-hover: #f8f9fc;
+    --correct: #1a9e52;
+    --wrong: #c0283e;
+    --glow: 0 2px 20px rgba(0,0,0,0.08);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Lora', Georgia, serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.7;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ── HEADER ── */
+  .site-header {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem;
+    height: 60px;
+    backdrop-filter: blur(12px);
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: 0.03em;
+    color: var(--accent);
+  }
+  .logo span { color: var(--text2); font-weight: 400; }
+
+  .header-right { display: flex; align-items: center; gap: 1rem; }
+
+  .theme-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.35rem 0.9rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+  }
+  .theme-btn:hover { background: var(--border); }
+
+  .progress-bar-wrap {
+    width: 120px; height: 6px;
+    background: var(--border);
+    border-radius: 3px; overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent4));
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+
+  /* ── NAV TABS ── */
+  .nav-tabs {
+    display: flex; gap: 0;
+    background: var(--bg2);
+    border-bottom: 2px solid var(--border);
+    overflow-x: auto;
+    padding: 0 1.5rem;
+    scrollbar-width: none;
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tab {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.9rem 1.4rem;
+    border: none;
+    background: transparent;
+    color: var(--text2);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .nav-tab:hover { color: var(--text); }
+  .nav-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* ── SECTIONS ── */
+  .section { display: none; max-width: 960px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+  .section.active { display: block; animation: fadeIn 0.35s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── SECTION HEADER ── */
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+    line-height: 1.2;
+  }
+  .section-title .hi { color: var(--accent); }
+  .section-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text2);
+    margin-bottom: 2.5rem;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.6rem 1.8rem;
+    margin-bottom: 1.4rem;
+    box-shadow: var(--glow);
+    transition: background 0.2s;
+  }
+  .card:hover { background: var(--card-hover); }
+
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--accent);
+    margin-bottom: 0.8rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .card-title .num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px;
+    background: var(--accent);
+    color: var(--bg);
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  p { margin-bottom: 0.9rem; color: var(--text); }
+  p:last-child { margin-bottom: 0; }
+
+  strong { color: var(--accent2); font-weight: 600; }
+  em { color: var(--accent4); font-style: italic; }
+
+  /* ── DEFINITION BOX ── */
+  .def-box {
+    background: linear-gradient(135deg, rgba(93,232,197,0.07), rgba(124,111,247,0.07));
+    border-left: 3px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    font-style: italic;
+  }
+  .def-box .def-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.4rem;
+    font-style: normal;
+  }
+
+  /* ── ANALOGY BOX ── */
+  .analogy-box {
+    background: rgba(245,166,35,0.08);
+    border-left: 3px solid var(--accent2);
+    border-radius: 0 10px 10px 0;
+    padding: 1rem 1.4rem;
+    margin: 1.2rem 0;
+  }
+  .analogy-box .analogy-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.4rem;
+  }
+
+  /* ── WARN BOX ── */
+  .warn-box {
+    background: rgba(224,92,122,0.08);
+    border-left: 3px solid var(--accent3);
+    border-radius: 0 10px 10px 0;
+    padding: 1rem 1.4rem;
+    margin: 1.2rem 0;
+  }
+  .warn-box .warn-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--accent3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.4rem;
+  }
+
+  /* ── LIST ── */
+  ul.styled { list-style: none; padding: 0; margin: 0.6rem 0; }
+  ul.styled li {
+    padding: 0.3rem 0 0.3rem 1.4rem;
+    position: relative;
+    color: var(--text);
+  }
+  ul.styled li::before {
+    content: '▸';
+    position: absolute; left: 0;
+    color: var(--accent);
+    font-size: 0.8rem;
+  }
+
+  ol.styled { padding-left: 1.4rem; margin: 0.6rem 0; }
+  ol.styled li { padding: 0.25rem 0; color: var(--text); }
+  ol.styled li::marker { color: var(--accent); font-weight: 700; font-family: 'Syne', sans-serif; }
+
+  /* ── TABLE ── */
+  .tbl-wrap { overflow-x: auto; margin: 1.2rem 0; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  th {
+    background: var(--bg3);
+    padding: 0.7rem 1rem;
+    text-align: left;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+  }
+  td {
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg3); }
+
+  /* ── BADGE ── */
+  .badge {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 500;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+  }
+  .badge-green { background: rgba(46,204,113,0.15); color: var(--correct); }
+  .badge-orange { background: rgba(245,166,35,0.15); color: var(--accent2); }
+  .badge-red { background: rgba(224,92,122,0.15); color: var(--accent3); }
+  .badge-purple { background: rgba(124,111,247,0.15); color: var(--accent4); }
+
+  /* ── TAG CHIPS ── */
+  .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+  .tag {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 0.2rem 0.7rem;
+    border-radius: 20px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text2);
+  }
+
+  /* ── COLLAPSIBLE ── */
+  .collapse-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 0.5rem;
+    width: 100%;
+    text-align: left;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text);
+    padding: 0.9rem 0;
+  }
+  .collapse-btn .arrow {
+    font-size: 0.7rem;
+    color: var(--accent);
+    transition: transform 0.25s;
+    flex-shrink: 0;
+  }
+  .collapse-btn.open .arrow { transform: rotate(90deg); }
+  .collapse-body { display: none; padding-bottom: 0.5rem; }
+  .collapse-body.open { display: block; animation: fadeIn 0.25s ease; }
+  .collapse-wrap { border-bottom: 1px solid var(--border); }
+  .collapse-wrap:last-child { border-bottom: none; }
+
+  /* ── MNEMONIC BOX ── */
+  .mnemonic {
+    background: linear-gradient(135deg, rgba(124,111,247,0.1), rgba(93,232,197,0.06));
+    border: 1px dashed var(--accent4);
+    border-radius: 10px;
+    padding: 1.1rem 1.4rem;
+    margin: 1rem 0;
+  }
+  .mnemonic-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--accent4);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+  }
+  .mnemonic-word {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--accent4);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── MCQ ── */
+  .mcq-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 1.2rem;
+    transition: border-color 0.2s;
+  }
+  .mcq-card.answered { border-color: var(--border); }
+  .mcq-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text2);
+    margin-bottom: 0.6rem;
+  }
+  .mcq-q {
+    font-weight: 500;
+    margin-bottom: 1rem;
+    font-size: 0.97rem;
+    line-height: 1.55;
+  }
+  .mcq-options { display: flex; flex-direction: column; gap: 0.5rem; }
+  .mcq-opt {
+    background: var(--bg3);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-family: 'Lora', serif;
+    color: var(--text);
+    transition: all 0.18s;
+    text-align: left;
+    display: flex; align-items: flex-start; gap: 0.6rem;
+  }
+  .mcq-opt:hover:not([disabled]) { border-color: var(--accent); background: var(--card-hover); }
+  .mcq-opt .opt-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
+    font-size: 0.75rem;
+    color: var(--text2);
+    min-width: 18px;
+    padding-top: 2px;
+    flex-shrink: 0;
+  }
+  .mcq-opt.correct { border-color: var(--correct); background: rgba(46,204,113,0.08); }
+  .mcq-opt.correct .opt-label { color: var(--correct); }
+  .mcq-opt.wrong { border-color: var(--wrong); background: rgba(224,92,122,0.08); }
+  .mcq-opt.wrong .opt-label { color: var(--wrong); }
+  .mcq-explanation {
+    display: none;
+    margin-top: 1rem;
+    padding: 0.9rem 1.1rem;
+    background: var(--bg3);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    font-size: 0.88rem;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+  .mcq-explanation.visible { display: block; animation: fadeIn 0.2s ease; }
+  .mcq-difficulty { float: right; margin-top: -2px; }
+
+  .mcq-score-banner {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.2rem 1.6rem;
+    margin-bottom: 2rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .score-label { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--text2); font-size: 0.85rem; }
+  .score-val { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.8rem; color: var(--accent); }
+  .reset-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.45rem 1.1rem;
+    cursor: pointer;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text2);
+    transition: all 0.2s;
+  }
+  .reset-btn:hover { border-color: var(--accent3); color: var(--accent3); }
+
+  /* ── WRITTEN QS ── */
+  .wq-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 1.2rem;
+  }
+  .wq-type {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+  }
+  .wq-q { font-weight: 500; font-size: 0.97rem; margin-bottom: 0.9rem; }
+  .wq-toggle {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.4rem 0.9rem;
+    cursor: pointer;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text2);
+    transition: all 0.2s;
+  }
+  .wq-toggle:hover { border-color: var(--accent); color: var(--accent); }
+  .wq-answer {
+    display: none;
+    margin-top: 1rem;
+    padding: 1rem 1.2rem;
+    background: var(--bg3);
+    border-radius: 8px;
+    border-left: 3px solid var(--accent);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+  .wq-answer.visible { display: block; animation: fadeIn 0.2s ease; }
+  .wq-points {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent4);
+    margin-top: 0.6rem;
+  }
+
+  /* ── REVISION SHEET ── */
+  .rev-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .rev-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.1rem 1.3rem;
+  }
+  .rev-card-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--accent);
+    margin-bottom: 0.7rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .rev-item {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    padding: 0.2rem 0;
+    color: var(--text);
+    border-bottom: 1px dotted var(--border);
+    line-height: 1.5;
+  }
+  .rev-item:last-child { border-bottom: none; }
+  .rev-item strong { color: var(--accent2); }
+  .rev-item em { color: var(--accent4); font-style: normal; }
+
+  .cheat-header {
+    background: linear-gradient(135deg, rgba(93,232,197,0.1), rgba(124,111,247,0.1));
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  .cheat-header h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+  .cheat-header p { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: var(--text2); margin: 0; }
+
+  /* ── FLOW DIAGRAM ── */
+  .flow {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 0;
+    margin: 1rem 0;
+  }
+  .flow-step {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.5rem 0.9rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--accent);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .flow-arrow {
+    font-size: 0.8rem;
+    color: var(--text2);
+    padding: 0 0.4rem;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .section { padding: 1.5rem 1rem 3rem; }
+    .section-title { font-size: 1.5rem; }
+    .site-header { padding: 0 1rem; }
+    .progress-bar-wrap { display: none; }
+    .flow { gap: 0.3rem; }
+  }
+
+  /* ── SUMMARY SECTION SPECIFIC ── */
+  .summary-chapter {
+    border-left: 3px solid var(--accent4);
+    padding-left: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .summary-chapter-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--accent4);
+    margin-bottom: 0.6rem;
+  }
+  .bullet-hi { color: var(--accent); font-weight: 600; }
+  .bullet-hi2 { color: var(--accent2); font-weight: 600; }
+
+  /* ── COUNTER ── */
+  .stat-row {
+    display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem;
+  }
+  .stat-box {
+    flex: 1; min-width: 100px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+  }
+  .stat-box .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--accent);
+  }
+  .stat-box .stat-lbl {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Highlight row */
+  .hi-row {
+    display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.5rem 0;
+  }
+  .hi-chip {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.2rem 0.6rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text2);
+  }
+  .hi-chip.a { border-color: var(--accent); color: var(--accent); }
+  .hi-chip.b { border-color: var(--accent2); color: var(--accent2); }
+  .hi-chip.c { border-color: var(--accent3); color: var(--accent3); }
+  .hi-chip.d { border-color: var(--accent4); color: var(--accent4); }
+
+  hr.divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 1.5rem 0;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">BLOCKCHAIN <span>/ Exam Prep</span></div>
+  <div class="header-right">
+    <div class="progress-bar-wrap" title="MCQ Progress">
+      <div class="progress-bar-fill" id="progressFill"></div>
+    </div>
+    <button class="theme-btn" onclick="toggleTheme()">☀ / ☾</button>
+  </div>
+</header>
+
+<nav class="nav-tabs">
+  <button class="nav-tab active" onclick="switchTab('explain', this)">📖 Explanation</button>
+  <button class="nav-tab" onclick="switchTab('summary', this)">📋 Summary</button>
+  <button class="nav-tab" onclick="switchTab('memory', this)">🧠 Memory</button>
+  <button class="nav-tab" onclick="switchTab('mcq', this)">❓ MCQ</button>
+  <button class="nav-tab" onclick="switchTab('written', this)">✍ Written</button>
+  <button class="nav-tab" onclick="switchTab('revision', this)">⚡ Revision</button>
+</nav>
+
+<!-- ═══════════════ SECTION 1: EXPLANATION ═══════════════ -->
+<section id="explain" class="section active">
+  <h1 class="section-title">Deep <span class="hi">Understanding</span></h1>
+  <p class="section-sub">// Complete concept breakdown — every idea explained from first principles</p>
+
+  <div class="stat-row">
+    <div class="stat-box"><div class="stat-num">6</div><div class="stat-lbl">Major Topics</div></div>
+    <div class="stat-box"><div class="stat-num">4</div><div class="stat-lbl">Key Features</div></div>
+    <div class="stat-box"><div class="stat-num">3</div><div class="stat-lbl">Block. Types</div></div>
+    <div class="stat-box"><div class="stat-num">8</div><div class="stat-lbl">Use Cases</div></div>
+  </div>
+
+  <!-- Topic 1 -->
+  <div class="card">
+    <div class="card-title"><span class="num">1</span> Why Blockchain? The Problem It Solves</div>
+    <p>Before blockchain, digital systems relied on <strong>centralized databases</strong> — a single company or server that everyone had to trust. This creates serious problems:</p>
+    <ul class="styled">
+      <li><strong>Single Point of Failure:</strong> If the central server is hacked or crashes, the entire system goes down.</li>
+      <li><strong>Tampering Risk:</strong> The central authority (or a hacker) can modify records without anyone knowing.</li>
+      <li><strong>Dependence on Trust:</strong> You must trust the middleman (bank, government, corporation) to behave honestly.</li>
+    </ul>
+    <div class="analogy-box">
+      <div class="analogy-label">💡 Analogy</div>
+      Imagine if your city had only ONE copy of the land registry, kept in one room by one clerk. Anyone who bribes that clerk can change ownership records. Blockchain is like giving every citizen a copy of that registry simultaneously — to forge a record, you'd have to change everyone's copy at once.
+    </div>
+    <p>Blockchain solves this with three pillars: <strong>Trust</strong> (embedded in the protocol, not a person), <strong>Data Integrity</strong> (cryptographic verification), and <strong>Security</strong> (decentralized, no central target).</p>
+  </div>
+
+  <!-- Topic 2 -->
+  <div class="card">
+    <div class="card-title"><span class="num">2</span> What Is Blockchain? (Full Definition)</div>
+    <div class="def-box">
+      <div class="def-label">Technical Definition</div>
+      A blockchain is a <strong>digital, decentralized, distributed public ledger</strong> in which records (called <em>blocks</em>) are <strong>cryptographically linked</strong> together and secured against alteration.
+    </div>
+    <p>Let's unpack each word:</p>
+    <ul class="styled">
+      <li><strong>Digital:</strong> Exists in electronic form only — no paper, no physical storage needed.</li>
+      <li><strong>Decentralized:</strong> No single authority controls it. Decisions are made by the network collectively.</li>
+      <li><strong>Distributed:</strong> Identical copies are held on many computers (nodes) simultaneously. No "master" copy.</li>
+      <li><strong>Cryptographically Linked:</strong> Each block contains the mathematical fingerprint (hash) of the previous block, creating an unbreakable chain.</li>
+      <li><strong>Digitally Signed:</strong> Every transaction carries a cryptographic signature proving who created it.</li>
+    </ul>
+    <div class="analogy-box">
+      <div class="analogy-label">💡 Simple Analogy</div>
+      Blockchain is like a shared notebook held by thousands of people simultaneously. Every page is sealed with a unique wax stamp. To erase or rewrite one page, you'd need to break everyone's stamp — and everyone would notice immediately.
+    </div>
+  </div>
+
+  <!-- Topic 3 -->
+  <div class="card">
+    <div class="card-title"><span class="num">3</span> Anatomy of a Block (What's Inside Each Block?)</div>
+    <p>Every block is a <strong>structured data container</strong> with 5 critical components:</p>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Component</th><th>What It Is</th><th>Why It Matters</th></tr>
+        <tr><td><strong>Transaction Data</strong></td><td>The actual payload — currency transfer, contract execution, identity update, etc.</td><td>The "content" of the block</td></tr>
+        <tr><td><strong>Timestamp</strong></td><td>Exact date and time block was created</td><td>Establishes verifiable chronological order</td></tr>
+        <tr><td><strong>Current Hash</strong></td><td>Unique cryptographic fingerprint of <em>this</em> block's contents</td><td>Any change in the block changes this hash</td></tr>
+        <tr><td><strong>Previous Hash</strong></td><td>The hash of the block that came before this one</td><td>Creates the "chain" — enforces sequential integrity</td></tr>
+        <tr><td><strong>Digital Signature</strong></td><td>Cryptographic proof of who created the transaction</td><td>Verifies authenticity and prevents impersonation</td></tr>
+      </table>
+    </div>
+    <div class="warn-box">
+      <div class="warn-label">⚠ Exam Trap</div>
+      Students often confuse <strong>Current Hash</strong> (fingerprint of THIS block) with <strong>Previous Hash</strong> (fingerprint of the PRIOR block). The Previous Hash is what creates the chain — it's what makes tampering cascade through every block that follows.
+    </div>
+    <p><strong>How Blocks Chain Together:</strong></p>
+    <div class="flow">
+      <div class="flow-step">Block 1 (Genesis)</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Block 2 stores Hash of Block 1</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Block 3 stores Hash of Block 2</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Block N ...</div>
+    </div>
+    <p style="margin-top:0.8rem">If someone alters Block 2, its hash changes. Now Block 3's "previous hash" field no longer matches — it's immediately invalid. This cascade makes tampering computationally infeasible.</p>
+  </div>
+
+  <!-- Topic 4 -->
+  <div class="card">
+    <div class="card-title"><span class="num">4</span> How Blockchain Works: The 6-Step Lifecycle</div>
+    <p>Every transaction goes through a rigorous process before it becomes permanent:</p>
+    <ol class="styled">
+      <li style="margin-bottom:0.7rem"><strong>Create:</strong> A user initiates a transaction (e.g., "Send 1 Bitcoin to Alice").</li>
+      <li style="margin-bottom:0.7rem"><strong>Sign:</strong> The transaction is signed with the <em>sender's private key</em>. This creates a digital signature that proves the sender is really who they claim to be.</li>
+      <li style="margin-bottom:0.7rem"><strong>Verify:</strong> Network nodes check: Is the signature valid? Does the sender have enough funds? Has this asset already been spent?</li>
+      <li style="margin-bottom:0.7rem"><strong>Group:</strong> Valid transactions are bundled together into a new block.</li>
+      <li style="margin-bottom:0.7rem"><strong>Consensus:</strong> The network runs a consensus algorithm (e.g., Proof of Work) to agree that this block is valid.</li>
+      <li><strong>Add:</strong> The block is permanently appended to the chain and broadcast to every node.</li>
+    </ol>
+    <div class="analogy-box">
+      <div class="analogy-label">💡 Real World Analogy</div>
+      Think of it like sending a notarized letter (Step 2), reviewed by a committee of independent auditors (Step 3), bundled into an official archive folder (Step 4), voted on by all committee members (Step 5), and then permanently filed in every member's library simultaneously (Step 6).
+    </div>
+    <p><strong>What Can a Transaction Represent?</strong> Blockchain is not only about money. A transaction can be:</p>
+    <div class="hi-row">
+      <span class="hi-chip a">Crypto Transfer</span>
+      <span class="hi-chip b">Medical Records</span>
+      <span class="hi-chip c">Digital Identity</span>
+      <span class="hi-chip d">IoT Authentication</span>
+      <span class="hi-chip a">Supply Chain Event</span>
+      <span class="hi-chip b">Smart Contract</span>
+    </div>
+  </div>
+
+  <!-- Topic 5 -->
+  <div class="card">
+    <div class="card-title"><span class="num">5</span> Cryptography Foundations</div>
+
+    <button class="collapse-btn open" onclick="toggleCollapse(this)"><span class="arrow">▶</span> What Is Cryptography?</button>
+    <div class="collapse-body open">
+      <p>Cryptography is the science of <strong>protecting information</strong> by transforming it into an unreadable form for unauthorized parties. It provides four guarantees to blockchain:</p>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Property</th><th>Meaning</th></tr>
+          <tr><td><strong>Confidentiality</strong></td><td>Only authorized parties can read data (via encryption)</td></tr>
+          <tr><td><strong>Integrity</strong></td><td>Hash functions detect any unauthorized modifications</td></tr>
+          <tr><td><strong>Authentication</strong></td><td>Digital signatures prove the sender's identity</td></tr>
+          <tr><td><strong>Non-Repudiation</strong></td><td>Signers cannot later deny having signed a transaction</td></tr>
+        </table>
+      </div>
+    </div>
+    <hr class="divider">
+
+    <button class="collapse-btn open" onclick="toggleCollapse(this)"><span class="arrow">▶</span> Private Keys & Public Keys</button>
+    <div class="collapse-body open">
+      <p>Blockchain identity uses <strong>asymmetric cryptography</strong> — two mathematically linked keys that serve different purposes:</p>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>🔑 Private Key</th><th>🔓 Public Key</th></tr>
+          <tr><td>Known ONLY to the owner — never shared</td><td>Freely shared with the network</td></tr>
+          <tr><td>Used to <strong>sign</strong> transactions</td><td>Used to <strong>verify</strong> signatures</td></tr>
+          <tr><td>Proves ownership and intent</td><td>Functions as your blockchain "address"</td></tr>
+          <tr><td>Loss = permanent loss of access</td><td>Cannot be reverse-engineered to find private key</td></tr>
+        </table>
+      </div>
+      <div class="def-box">
+        <div class="def-label">Key Relationship</div>
+        You can compute the <strong>public key FROM the private key</strong> (one-way). You CANNOT compute the private key from the public key. This one-way mathematical relationship is the entire foundation of blockchain security.
+      </div>
+    </div>
+    <hr class="divider">
+
+    <button class="collapse-btn open" onclick="toggleCollapse(this)"><span class="arrow">▶</span> Digital Signatures (Step-by-Step)</button>
+    <div class="collapse-body open">
+      <ol class="styled">
+        <li>Sender <strong>hashes</strong> the transaction data (creates a unique fingerprint).</li>
+        <li>Sender <strong>encrypts</strong> that hash with their <em>private key</em> → this encrypted hash IS the digital signature.</li>
+        <li>Any network node <strong>decrypts</strong> the signature using the sender's <em>public key</em>.</li>
+        <li>If the decrypted hash <strong>matches</strong> the transaction's hash → authenticity confirmed.</li>
+      </ol>
+      <div class="analogy-box">
+        <div class="analogy-label">💡 Analogy</div>
+        Like a wax seal on an envelope — only the king (private key holder) can create the seal, but anyone can verify it's the king's seal by checking the pattern (public key). If the envelope is opened and resealed, the pattern won't match.
+      </div>
+    </div>
+  </div>
+
+  <!-- Topic 6 -->
+  <div class="card">
+    <div class="card-title"><span class="num">6</span> Transaction Verification by Nodes</div>
+    <p>Before any transaction enters a block, it must pass through <strong>4 verification checks</strong>:</p>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Check</th><th>What Nodes Verify</th><th>Purpose</th></tr>
+        <tr><td><span class="badge badge-green">1</span> Signature Check</td><td>Is the digital signature valid using the sender's public key?</td><td>Ensures the sender is genuine</td></tr>
+        <tr><td><span class="badge badge-orange">2</span> Balance Check</td><td>Does the sender have enough funds or permission?</td><td>Prevents overspending</td></tr>
+        <tr><td><span class="badge badge-red">3</span> Double-Spend Check</td><td>Has this asset already been spent elsewhere on the chain?</td><td>Prevents spending same coin twice</td></tr>
+        <tr><td><span class="badge badge-purple">4</span> Rejection</td><td>Any transaction failing the above checks is rejected</td><td>Keeps the chain clean and valid</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Topic 7 -->
+  <div class="card">
+    <div class="card-title"><span class="num">7</span> Network Architecture: Peer-to-Peer (P2P)</div>
+    <p>A <strong>peer-to-peer (P2P) network</strong> is a distributed architecture where every computer (node) communicates directly with other nodes — no central server needed. Each node is simultaneously a <em>client AND a server</em>.</p>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Traditional Client-Server</th><th>Peer-to-Peer (Blockchain)</th></tr>
+        <tr><td>All traffic routes through ONE central server</td><td>Direct node-to-node communication</td></tr>
+        <tr><td>One server failure = total system failure</td><td>Network continues if many nodes go offline</td></tr>
+        <tr><td>Central authority has full control</td><td>No single party controls the network</td></tr>
+        <tr><td>Censorship is trivial</td><td>Censorship resistance — no single gatekeepers</td></tr>
+      </table>
+    </div>
+    <p><strong>Why P2P matters for Blockchain — 4 Key Benefits:</strong></p>
+    <ul class="styled">
+      <li><strong>No Single Point of Failure:</strong> No single target for attackers to disable.</li>
+      <li><strong>True Decentralization:</strong> No government, company, or individual controls the network.</li>
+      <li><strong>Greater Resilience:</strong> Network continues even if large numbers of nodes go offline.</li>
+      <li><strong>Censorship Resistance:</strong> No central authority can block valid transactions.</li>
+    </ul>
+    <p>The <strong>Shared Ledger</strong> means every node holds an identical copy of the full transaction history. Updates propagate to all nodes in real time. No "master" copy exists.</p>
+  </div>
+
+  <!-- Topic 8 -->
+  <div class="card">
+    <div class="card-title"><span class="num">8</span> Types of Blockchain</div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Feature</th><th>🌐 Public</th><th>🏢 Private</th><th>🔀 Hybrid</th></tr>
+        <tr><td><strong>Access</strong></td><td>Open to anyone</td><td>Permissioned / invited only</td><td>Mixed — some public, some private</td></tr>
+        <tr><td><strong>Control</strong></td><td>No central authority</td><td>One or more organizations</td><td>Flexible governance</td></tr>
+        <tr><td><strong>Transparency</strong></td><td>Fully transparent</td><td>Confidential to outsiders</td><td>Selective transparency</td></tr>
+        <tr><td><strong>Speed</strong></td><td>Slower (thousands of nodes)</td><td>Faster (fewer nodes)</td><td>Moderate</td></tr>
+        <tr><td><strong>Privacy</strong></td><td>Low (all records visible)</td><td>High</td><td>High where needed</td></tr>
+        <tr><td><strong>Examples</strong></td><td>Bitcoin, Ethereum</td><td>Hyperledger Fabric, Corda</td><td>Healthcare w/ audit hashes</td></tr>
+        <tr><td><strong>Best For</strong></td><td>Cryptocurrency, DApps</td><td>Corporate, healthcare, finance</td><td>Regulated industries needing compliance</td></tr>
+        <tr><td><strong>Trade-off</strong></td><td>Sacrifices speed & privacy for openness</td><td>Sacrifices decentralization for speed/privacy</td><td>Complexity of management</td></tr>
+      </table>
+    </div>
+    <div class="warn-box">
+      <div class="warn-label">⚠ Exam Trap</div>
+      Don't say private blockchains are "not real blockchains" — they still use cryptographic linking, consensus, and immutability. They just restrict WHO can participate. The key trade-off phrase for exam: <strong>"Public sacrifices speed and privacy; Private sacrifices decentralization."</strong>
+    </div>
+  </div>
+
+  <!-- Topic 9 -->
+  <div class="card">
+    <div class="card-title"><span class="num">9</span> The Four Pillars of Blockchain</div>
+
+    <button class="collapse-btn open" onclick="toggleCollapse(this)"><span class="arrow">▶</span> 1. Decentralization</button>
+    <div class="collapse-body open">
+      <p><strong>No single entity owns or controls the blockchain.</strong> Authority is distributed across all participating nodes. The system continues functioning even if large numbers of nodes fail or are attacked. Decisions are made by the network through protocol rules, not any single administrator.</p>
+    </div>
+    <hr class="divider">
+
+    <button class="collapse-btn open" onclick="toggleCollapse(this)"><span class="arrow">▶</span> 2. Transparency</button>
+    <div class="collapse-body open">
+      <p>In a <em>public</em> blockchain, the entire transaction history is accessible to every participant. What transparency enables:</p>
+      <ul class="styled">
+        <li><strong>Trust:</strong> Participants can independently verify any claim.</li>
+        <li><strong>Auditing:</strong> Regulators can examine records without manual report requests.</li>
+        <li><strong>Accountability:</strong> All actions traceable to the originator's public key.</li>
+        <li><strong>Reduced Fraud:</strong> Fraudulent records are immediately detectable.</li>
+      </ul>
+      <div class="def-box"><div class="def-label">Important Nuance</div>Transparency doesn't mean exposing identities. <strong>Pseudonymous addresses</strong> provide privacy while keeping records verifiable.</div>
+    </div>
+    <hr class="divider">
+
+    <button class="collapse-btn open" onclick="toggleCollapse(this)"><span class="arrow">▶</span> 3. Immutability</button>
+    <div class="collapse-body open">
+      <p>Once data is written, it is practically <strong>impossible to change or delete</strong> without network detection. Three mechanisms enforce this:</p>
+      <ul class="styled">
+        <li><strong>Hash Dependency Chain:</strong> Changing any block changes its hash, invalidating all following blocks in a cascade.</li>
+        <li><strong>Network-Wide Rejection:</strong> The rest of the network holds the correct version and rejects the tampered chain.</li>
+        <li><strong>51% Attack Threshold:</strong> An attacker would need to control more than 50% of the entire network's computing power simultaneously — economically infeasible on large networks.</li>
+      </ul>
+    </div>
+    <hr class="divider">
+
+    <button class="collapse-btn open" onclick="toggleCollapse(this)"><span class="arrow">▶</span> 4. Security & Cybersecurity Use Cases</button>
+    <div class="collapse-body open">
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Use Case</th><th>How Blockchain Helps</th></tr>
+          <tr><td>🌐 Secure DNS</td><td>Decentralized domain name system resistant to hijacking and cache poisoning</td></tr>
+          <tr><td>📡 IoT Authentication</td><td>Each device gets a cryptographic identity for trusted machine-to-machine auth</td></tr>
+          <tr><td>🛡 DDoS Resistance</td><td>Decentralized infrastructure has no single target to overwhelm</td></tr>
+          <tr><td>💬 Secure Messaging</td><td>End-to-end encrypted messaging with blockchain-verified sender identities</td></tr>
+          <tr><td>🪪 Identity & Access</td><td>Self-sovereign identity — users control credentials, no central password database</td></tr>
+          <tr><td>📦 Supply Chain</td><td>End-to-end product tracking, counterfeit goods detection</td></tr>
+          <tr><td>📝 Log Integrity</td><td>Security logs on-chain cannot be secretly altered by attackers, preserving forensic evidence</td></tr>
+          <tr><td>📜 Smart Contracts</td><td>Automated, code-enforced access control without human intermediaries</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ SECTION 2: SUMMARY ═══════════════ -->
+<section id="summary" class="section">
+  <h1 class="section-title">Smart <span class="hi">Summary</span></h1>
+  <p class="section-sub">// High-yield information — hierarchical structure — exam keywords highlighted</p>
+
+  <div class="summary-chapter">
+    <div class="summary-chapter-title">Chapter 1 — The Problem & Solution</div>
+    <ul class="styled">
+      <li>Traditional systems → <span class="bullet-hi">centralized databases</span> → vulnerable to tampering, fraud, single point of failure</li>
+      <li>Blockchain solution: <span class="bullet-hi">tamper-resistant</span> + <span class="bullet-hi">transparent</span> + <span class="bullet-hi">distributed</span> record-keeping without central authority</li>
+      <li>3 core reasons blockchain matters: <strong>Trust</strong> (protocol-embedded), <strong>Data Integrity</strong> (cryptographic), <strong>Security</strong> (decentralized architecture)</li>
+    </ul>
+  </div>
+
+  <div class="summary-chapter">
+    <div class="summary-chapter-title">Chapter 2 — Definition & Structure</div>
+    <ul class="styled">
+      <li><strong>Blockchain</strong> = <span class="bullet-hi">digital</span> + <span class="bullet-hi">decentralized</span> + <span class="bullet-hi">distributed</span> public ledger with <span class="bullet-hi">cryptographically linked</span> blocks</li>
+      <li><strong>Block = 5 parts:</strong> Transaction Data · Timestamp · Current Hash · Previous Hash · Digital Signature</li>
+      <li><strong>Chain mechanism:</strong> Each block stores the hash of the previous block → altering one block cascades invalidity through all following blocks</li>
+      <li><span class="bullet-hi2">Genesis Block</span> = the very first block (Block 1), has no Previous Hash</li>
+    </ul>
+  </div>
+
+  <div class="summary-chapter">
+    <div class="summary-chapter-title">Chapter 3 — Transaction Lifecycle (6 Steps)</div>
+    <ul class="styled">
+      <li><span class="bullet-hi">1. Create</span> → user initiates transaction</li>
+      <li><span class="bullet-hi">2. Sign</span> → encrypted with sender's <strong>private key</strong></li>
+      <li><span class="bullet-hi">3. Verify</span> → nodes check: signature + balance + double-spend</li>
+      <li><span class="bullet-hi">4. Group</span> → valid transactions bundled into a new block</li>
+      <li><span class="bullet-hi">5. Consensus</span> → network agrees on block validity</li>
+      <li><span class="bullet-hi">6. Add</span> → block permanently appended & broadcast to all nodes</li>
+    </ul>
+  </div>
+
+  <div class="summary-chapter">
+    <div class="summary-chapter-title">Chapter 4 — Cryptography</div>
+    <ul class="styled">
+      <li><strong>4 Cryptographic Properties:</strong> Confidentiality · Integrity · Authentication · Non-Repudiation</li>
+      <li><strong>Private Key:</strong> Sign transactions · Secret · Loss = loss of access · Compromise = loss of control</li>
+      <li><strong>Public Key:</strong> Verify signatures · Freely shared · Derived FROM private key (one-way, irreversible)</li>
+      <li><strong>Digital Signature Process:</strong> Hash data → Encrypt with private key → Others decrypt with public key → Compare hashes</li>
+      <li><strong>Self-Sovereign Identity:</strong> Key pair = digital identity, no username/password needed</li>
+    </ul>
+  </div>
+
+  <div class="summary-chapter">
+    <div class="summary-chapter-title">Chapter 5 — Network Architecture</div>
+    <ul class="styled">
+      <li><strong>P2P Network:</strong> Every node = client + server · No central routing · Direct communication</li>
+      <li><strong>4 Benefits:</strong> No single point of failure · True decentralization · Greater resilience · Censorship resistance</li>
+      <li><strong>Shared Ledger:</strong> Identical copies on every node · Real-time propagation · No master copy · Anyone can verify</li>
+    </ul>
+  </div>
+
+  <div class="summary-chapter">
+    <div class="summary-chapter-title">Chapter 6 — Blockchain Types</div>
+    <ul class="styled">
+      <li><span class="bullet-hi">Public</span>: Open, permissionless, fully transparent, decentralized → sacrifices <strong>speed</strong> & <strong>privacy</strong> → Bitcoin, Ethereum</li>
+      <li><span class="bullet-hi">Private</span>: Permissioned, confidential, controlled → sacrifices <strong>decentralization</strong> → Hyperledger, Corda</li>
+      <li><span class="bullet-hi">Hybrid</span>: Flexible — private data layer + public audit hashes → e.g., healthcare compliance</li>
+    </ul>
+  </div>
+
+  <div class="summary-chapter">
+    <div class="summary-chapter-title">Chapter 7 — The 4 Pillars</div>
+    <ul class="styled">
+      <li><span class="bullet-hi">Decentralization</span>: No single controlling entity · Distributed nodes · Improved resilience</li>
+      <li><span class="bullet-hi">Transparency</span>: Publicly verifiable · Pseudonymous (not anonymous) · Enables auditing & accountability</li>
+      <li><span class="bullet-hi">Immutability</span>: Cannot change data without detection · Hash cascade + network rejection + 51% threshold</li>
+      <li><span class="bullet-hi">Security</span>: DDoS resistance · IoT auth · Secure DNS · Log integrity · Smart contract firewalls</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════ SECTION 3: MEMORY ═══════════════ -->
+<section id="memory" class="section">
+  <h1 class="section-title">Memory <span class="hi">Optimization</span></h1>
+  <p class="section-sub">// Mnemonics, chunking, comparisons, common traps</p>
+
+  <div class="card">
+    <div class="card-title">🔤 Mnemonic: The 6-Step Transaction Process</div>
+    <div class="mnemonic">
+      <div class="mnemonic-label">Remember with the phrase:</div>
+      <div class="mnemonic-word">"Can Sam Verify Good Consensus Agreements?"</div>
+    </div>
+    <ul class="styled">
+      <li><strong>C</strong>an → <strong>C</strong>reate (initiate transaction)</li>
+      <li><strong>S</strong>am → <strong>S</strong>ign (with private key)</li>
+      <li><strong>V</strong>erify → <strong>V</strong>erify (nodes validate)</li>
+      <li><strong>G</strong>ood → <strong>G</strong>roup (bundle into block)</li>
+      <li><strong>C</strong>onsensus → <strong>C</strong>onsensus (network agrees)</li>
+      <li><strong>A</strong>greements → <strong>A</strong>dd (append to chain)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔤 Mnemonic: The 4 Pillars of Blockchain</div>
+    <div class="mnemonic">
+      <div class="mnemonic-label">Remember with:</div>
+      <div class="mnemonic-word">"DITS"</div>
+    </div>
+    <ul class="styled">
+      <li><strong>D</strong> → Decentralization</li>
+      <li><strong>I</strong> → Immutability</li>
+      <li><strong>T</strong> → Transparency</li>
+      <li><strong>S</strong> → Security</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔤 Mnemonic: Block Components</div>
+    <div class="mnemonic">
+      <div class="mnemonic-label">Remember with:</div>
+      <div class="mnemonic-word">"The Traveling Cat Proves Dignity"</div>
+    </div>
+    <ul class="styled">
+      <li><strong>T</strong>raveling → <strong>T</strong>ransaction Data</li>
+      <li><strong>T</strong>raveling → <strong>T</strong>imestamp</li>
+      <li><strong>C</strong>at → <strong>C</strong>urrent Hash</li>
+      <li><strong>P</strong>roves → <strong>P</strong>revious Hash</li>
+      <li><strong>D</strong>ignity → <strong>D</strong>igital Signature</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔤 Mnemonic: Cryptography's 4 Properties</div>
+    <div class="mnemonic">
+      <div class="mnemonic-label">Remember with:</div>
+      <div class="mnemonic-word">"CIAN"</div>
+    </div>
+    <ul class="styled">
+      <li><strong>C</strong> → Confidentiality</li>
+      <li><strong>I</strong> → Integrity</li>
+      <li><strong>A</strong> → Authentication</li>
+      <li><strong>N</strong> → Non-Repudiation</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚡ Chunking: Key Pairs Made Simple</div>
+    <p>Think of it as a <strong>Lock & Key metaphor in reverse</strong>:</p>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Concept</th><th>Private Key</th><th>Public Key</th></tr>
+        <tr><td>Visibility</td><td>Secret (you only)</td><td>Public (everyone)</td></tr>
+        <tr><td>Action</td><td>SIGNS (creates)</td><td>VERIFIES (checks)</td></tr>
+        <tr><td>Direction</td><td>Input to signature</td><td>Used to validate signature</td></tr>
+        <tr><td>Loss consequence</td><td>Lose access forever</td><td>No risk — public anyway</td></tr>
+        <tr><td>Reverse-engineerable?</td><td>Source of public key</td><td>CANNOT derive private key from it</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🚨 Common Exam Mistakes & Traps</div>
+    <div class="collapse-wrap">
+      <button class="collapse-btn" onclick="toggleCollapse(this)"><span class="arrow">▶</span> Trap 1: Public key = address?</button>
+      <div class="collapse-body">
+        <div class="warn-box"><div class="warn-label">Common Mistake</div>Students write "public key = wallet address." <strong>Correct answer:</strong> The public key FUNCTIONS as your blockchain address, but technically wallet addresses are derived from the public key (not identical to it in most systems). In exam context, saying "public key functions as your address" is safe.</div>
+      </div>
+    </div>
+    <div class="collapse-wrap">
+      <button class="collapse-btn" onclick="toggleCollapse(this)"><span class="arrow">▶</span> Trap 2: Immutable = cannot be changed at all?</button>
+      <div class="collapse-body">
+        <div class="warn-box"><div class="warn-label">Common Mistake</div>Immutability means it's <strong>practically infeasible to change</strong>, not absolutely impossible. A 51% attack (controlling majority of network compute) could theoretically rewrite history. On large networks this is economically infeasible.</div>
+      </div>
+    </div>
+    <div class="collapse-wrap">
+      <button class="collapse-btn" onclick="toggleCollapse(this)"><span class="arrow">▶</span> Trap 3: Transparency = everyone knows who you are?</button>
+      <div class="collapse-body">
+        <div class="warn-box"><div class="warn-label">Common Mistake</div>Public blockchains are <strong>pseudonymous</strong>, not anonymous. Transactions are visible, but they're tied to public keys (addresses), not real names. Your real identity is hidden unless you've linked your address to your name elsewhere.</div>
+      </div>
+    </div>
+    <div class="collapse-wrap">
+      <button class="collapse-btn" onclick="toggleCollapse(this)"><span class="arrow">▶</span> Trap 4: Private blockchain = not a real blockchain?</button>
+      <div class="collapse-body">
+        <div class="warn-box"><div class="warn-label">Common Mistake</div>Private blockchains ARE real blockchains. They still use cryptographic hashing, digital signatures, consensus mechanisms, and immutability. The only difference is <strong>who can participate</strong> — access requires permission.</div>
+      </div>
+    </div>
+    <div class="collapse-wrap">
+      <button class="collapse-btn" onclick="toggleCollapse(this)"><span class="arrow">▶</span> Trap 5: Confusing Current Hash vs Previous Hash</button>
+      <div class="collapse-body">
+        <div class="warn-box"><div class="warn-label">Common Mistake</div><strong>Current Hash</strong> = fingerprint of THIS block's data. <strong>Previous Hash</strong> = fingerprint of the PRIOR block (stored in THIS block). The Previous Hash is what creates the chain linkage. Remember: each block STORES the previous hash, it doesn't CREATE it.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⏱ Spaced Repetition Study Plan</div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Session</th><th>When</th><th>Focus</th></tr>
+        <tr><td>Session 1</td><td>Today</td><td>Full read of Explanation section. Understand all concepts.</td></tr>
+        <tr><td>Session 2</td><td>Tomorrow</td><td>Review Summary + do 10 MCQs without looking up answers.</td></tr>
+        <tr><td>Session 3</td><td>Day 3</td><td>Written questions — write answers from memory.</td></tr>
+        <tr><td>Session 4</td><td>Day 5</td><td>All MCQs. Note which you got wrong; re-read those sections.</td></tr>
+        <tr><td>Session 5</td><td>Night before exam</td><td>Revision Sheet ONLY. 20 minutes max.</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ SECTION 4: MCQ ═══════════════ -->
+<section id="mcq" class="section">
+  <h1 class="section-title">MCQ <span class="hi">Practice</span></h1>
+  <p class="section-sub">// 30 questions — Easy / Medium / Hard — Click option to reveal answer</p>
+
+  <div class="mcq-score-banner">
+    <div>
+      <div class="score-label">Your Score</div>
+      <div class="score-val" id="scoreVal">0 / 30</div>
+    </div>
+    <div>
+      <div class="score-label">Answered</div>
+      <div class="score-val" id="answeredVal" style="font-size:1.4rem">0</div>
+    </div>
+    <button class="reset-btn" onclick="resetMCQ()">↺ Reset All</button>
+  </div>
+
+  <div id="mcq-container"></div>
+</section>
+
+<!-- ═══════════════ SECTION 5: WRITTEN ═══════════════ -->
+<section id="written" class="section">
+  <h1 class="section-title">Written <span class="hi">Questions</span></h1>
+  <p class="section-sub">// Short answer + long-form + model answers — click to reveal</p>
+
+  <div id="written-container"></div>
+</section>
+
+<!-- ═══════════════ SECTION 6: REVISION ═══════════════ -->
+<section id="revision" class="section">
+  <h1 class="section-title">Rapid <span class="hi">Revision</span></h1>
+  <p class="section-sub">// Night-before cheat sheet — everything you need in one place</p>
+
+  <div class="cheat-header">
+    <h2>⚡ Night-Before Exam Sheet</h2>
+    <p>Blockchain Technology — Dr. Abdalla Sayed</p>
+  </div>
+
+  <div class="rev-grid">
+    <div class="rev-card">
+      <div class="rev-card-title">Definition</div>
+      <div class="rev-item"><strong>Blockchain</strong> = digital + decentralized + distributed ledger</div>
+      <div class="rev-item">Blocks cryptographically linked via <em>hashes</em></div>
+      <div class="rev-item">No central authority needed</div>
+    </div>
+    <div class="rev-card">
+      <div class="rev-card-title">Block Components (5)</div>
+      <div class="rev-item">1. <strong>Transaction Data</strong> – the payload</div>
+      <div class="rev-item">2. <strong>Timestamp</strong> – when created</div>
+      <div class="rev-item">3. <strong>Current Hash</strong> – this block's fingerprint</div>
+      <div class="rev-item">4. <strong>Previous Hash</strong> – creates the chain</div>
+      <div class="rev-item">5. <strong>Digital Signature</strong> – proves origin</div>
+    </div>
+    <div class="rev-card">
+      <div class="rev-card-title">6-Step Lifecycle</div>
+      <div class="rev-item">1. <strong>Create</strong></div>
+      <div class="rev-item">2. <strong>Sign</strong> (private key)</div>
+      <div class="rev-item">3. <strong>Verify</strong> (nodes check)</div>
+      <div class="rev-item">4. <strong>Group</strong> (into block)</div>
+      <div class="rev-item">5. <strong>Consensus</strong></div>
+      <div class="rev-item">6. <strong>Add</strong> (permanent)</div>
+    </div>
+    <div class="rev-card">
+      <div class="rev-card-title">Keys (Asymmetric Crypto)</div>
+      <div class="rev-item"><strong>Private Key</strong> → signs, secret, never share</div>
+      <div class="rev-item"><strong>Public Key</strong> → verifies, freely shared</div>
+      <div class="rev-item">Public derived FROM private (one-way)</div>
+      <div class="rev-item">Cannot reverse-engineer private from public</div>
+    </div>
+    <div class="rev-card">
+      <div class="rev-card-title">4 Pillars (DITS)</div>
+      <div class="rev-item"><strong>D</strong>ecentralization – no central authority</div>
+      <div class="rev-item"><strong>I</strong>mmutability – can't change without detection</div>
+      <div class="rev-item"><strong>T</strong>ransparency – publicly verifiable</div>
+      <div class="rev-item"><strong>S</strong>ecurity – cryptographic + distributed</div>
+    </div>
+    <div class="rev-card">
+      <div class="rev-card-title">3 Blockchain Types</div>
+      <div class="rev-item"><strong>Public</strong> – open, Bitcoin/Ethereum, no privacy</div>
+      <div class="rev-item"><strong>Private</strong> – permissioned, Hyperledger, fast</div>
+      <div class="rev-item"><strong>Hybrid</strong> – best of both, e.g. healthcare</div>
+      <div class="rev-item">Public sacrifices: speed + privacy</div>
+      <div class="rev-item">Private sacrifices: decentralization</div>
+    </div>
+    <div class="rev-card">
+      <div class="rev-card-title">Cryptography (CIAN)</div>
+      <div class="rev-item"><strong>C</strong>onfidentiality – encryption</div>
+      <div class="rev-item"><strong>I</strong>ntegrity – hash functions</div>
+      <div class="rev-item"><strong>A</strong>uthentication – digital signatures</div>
+      <div class="rev-item"><strong>N</strong>on-Repudiation – cannot deny signing</div>
+    </div>
+    <div class="rev-card">
+      <div class="rev-card-title">Node Verification (4 Checks)</div>
+      <div class="rev-item">1. Signature check</div>
+      <div class="rev-item">2. Balance / authorization check</div>
+      <div class="rev-item">3. Double-spend check</div>
+      <div class="rev-item">4. Reject if any check fails</div>
+    </div>
+    <div class="rev-card">
+      <div class="rev-card-title">P2P Network</div>
+      <div class="rev-item">Every node = client + server</div>
+      <div class="rev-item">No central routing</div>
+      <div class="rev-item">No single point of failure</div>
+      <div class="rev-item">Censorship-resistant</div>
+    </div>
+    <div class="rev-card">
+      <div class="rev-card-title">Immutability Mechanism</div>
+      <div class="rev-item">Hash change cascades through chain</div>
+      <div class="rev-item">Network rejects tampered copy</div>
+      <div class="rev-item">51% attack needed to rewrite history</div>
+      <div class="rev-item">Economically infeasible on large networks</div>
+    </div>
+    <div class="rev-card">
+      <div class="rev-card-title">Security Use Cases (8)</div>
+      <div class="rev-item">Secure DNS, IoT Auth, DDoS Resistance</div>
+      <div class="rev-item">Secure Messaging, Identity & Access</div>
+      <div class="rev-item">Supply Chain, Log Integrity</div>
+      <div class="rev-item">Smart Contract Firewalls</div>
+    </div>
+    <div class="rev-card">
+      <div class="rev-card-title">Key Exam Phrases</div>
+      <div class="rev-item">"Pseudonymous, not anonymous"</div>
+      <div class="rev-item">"One-way: public from private, not reverse"</div>
+      <div class="rev-item">"Public sacrifices speed & privacy"</div>
+      <div class="rev-item">"Private sacrifices decentralization"</div>
+      <div class="rev-item">"Previous hash creates the chain"</div>
+    </div>
+  </div>
+</section>
+
+<script>
+// ── THEME ──
+function toggleTheme() {
+  const html = document.documentElement;
+  html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+
+// ── TABS ──
+function switchTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── COLLAPSIBLE ──
+function toggleCollapse(btn) {
+  btn.classList.toggle('open');
+  const body = btn.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+// ── MCQ DATA ──
+const mcqs = [
+  {
+    q: "Which of the following BEST defines a blockchain?",
+    opts: [
+      "A centralized database managed by a trusted third party",
+      "A digital, decentralized, distributed ledger where records are cryptographically linked",
+      "A cloud storage system with encryption",
+      "A peer-to-peer file sharing protocol"
+    ],
+    ans: 1, diff: "easy",
+    exp: "Blockchain is specifically defined as digital, decentralized, AND distributed, with cryptographic linking. It eliminates the need for any trusted third party."
+  },
+  {
+    q: "What is the PRIMARY purpose of storing the 'Previous Hash' inside each block?",
+    opts: [
+      "To record who created the block",
+      "To store the timestamp of the previous block",
+      "To create the chain linkage and enforce sequential integrity",
+      "To encrypt the transaction data"
+    ],
+    ans: 2, diff: "easy",
+    exp: "The Previous Hash is what links blocks together into a chain. Changing any block changes its hash, which breaks the 'previous hash' reference in the next block, cascading invalidity through all subsequent blocks."
+  },
+  {
+    q: "In the transaction lifecycle, at which step is the private key used?",
+    opts: ["Create", "Sign", "Verify", "Consensus"],
+    ans: 1, diff: "easy",
+    exp: "The private key is used in Step 2 (Sign). The sender encrypts a hash of the transaction with their private key to create the digital signature."
+  },
+  {
+    q: "A digital signature is created by:",
+    opts: [
+      "Encrypting transaction data with the sender's public key",
+      "Hashing the transaction and encrypting the hash with the sender's private key",
+      "Encrypting the previous hash with the network's master key",
+      "Decrypting the transaction data with the recipient's private key"
+    ],
+    ans: 1, diff: "medium",
+    exp: "The process is: (1) Hash the transaction data, (2) Encrypt that hash with the sender's PRIVATE key. The resulting encrypted hash is the digital signature. Verification uses the PUBLIC key."
+  },
+  {
+    q: "Which blockchain type sacrifices decentralization in favor of speed and privacy?",
+    opts: ["Public blockchain", "Private blockchain", "Hybrid blockchain", "Permissionless blockchain"],
+    ans: 1, diff: "easy",
+    exp: "Private blockchains are controlled by one or more organizations, restricting access to known, vetted participants. This allows faster consensus (fewer nodes) and confidentiality, but means the blockchain is no longer truly decentralized."
+  },
+  {
+    q: "What property of blockchain means that once data is recorded, it cannot be changed without network detection?",
+    opts: ["Decentralization", "Transparency", "Immutability", "Consensus"],
+    ans: 2, diff: "easy",
+    exp: "Immutability is the property that makes blockchain records practically permanent. It works through hash-chain dependency, network-wide rejection of tampered copies, and the 51% attack threshold."
+  },
+  {
+    q: "In a peer-to-peer network, each node acts as:",
+    opts: [
+      "Only a client requesting data",
+      "Only a server providing data",
+      "Both a client and a server simultaneously",
+      "A relay station routing traffic to a central server"
+    ],
+    ans: 2, diff: "easy",
+    exp: "P2P networks are defined by each node being simultaneously a client (consuming data) and a server (providing data). There is no central server routing traffic."
+  },
+  {
+    q: "Which of the following is NOT a component found inside a block?",
+    opts: ["Transaction Data", "Previous Hash", "Consensus Algorithm", "Digital Signature"],
+    ans: 2, diff: "medium",
+    exp: "A block contains: Transaction Data, Timestamp, Current Hash, Previous Hash, and Digital Signature. The Consensus Algorithm is a NETWORK process — it is not stored inside the block itself."
+  },
+  {
+    q: "If an attacker modifies Block 5 in a chain of 10 blocks, what happens?",
+    opts: [
+      "Only Block 5 is invalidated",
+      "Blocks 1–5 are invalidated",
+      "Blocks 5–10 are invalidated because the hash cascade breaks the chain",
+      "Nothing — the change is accepted by the network automatically"
+    ],
+    ans: 2, diff: "medium",
+    exp: "Changing Block 5 changes its hash. Block 6 stores the 'old' hash of Block 5 as its previous hash, which no longer matches. This invalidates Block 6, which then invalidates Block 7, and so on — a cascade effect from Block 5 onward."
+  },
+  {
+    q: "The mathematical relationship between private and public keys is:",
+    opts: [
+      "Public key can be used to derive the private key",
+      "Both keys are identical — they are interchangeable",
+      "Private key can derive the public key, but not the reverse",
+      "They are completely independent and unrelated"
+    ],
+    ans: 2, diff: "medium",
+    exp: "This is fundamental to asymmetric cryptography. The public key is mathematically derived FROM the private key (one-way function). You cannot reverse-engineer the private key from the public key — this is what makes the system secure."
+  },
+  {
+    q: "Which of the following BEST describes 'Non-Repudiation' in blockchain cryptography?",
+    opts: [
+      "Only authorized parties can read encrypted data",
+      "Data cannot be modified after it is stored",
+      "Signers cannot later deny having signed a transaction",
+      "The network cannot be divided by an attacker"
+    ],
+    ans: 2, diff: "medium",
+    exp: "Non-Repudiation means that once you sign a transaction with your private key, you cannot deny it later — the cryptographic proof is immutable. This is different from Confidentiality (who can read), Integrity (data unchanged), and Authentication (who sent it)."
+  },
+  {
+    q: "In transaction verification, which check prevents an asset from being spent twice?",
+    opts: [
+      "Signature check",
+      "Balance check",
+      "Double-spend check",
+      "Timestamp check"
+    ],
+    ans: 2, diff: "easy",
+    exp: "The Double-Spend Check ensures the same asset hasn't already been spent in a prior transaction recorded on the chain. This is particularly critical for cryptocurrency transactions."
+  },
+  {
+    q: "A healthcare company stores patient records privately but publishes anonymized audit hashes publicly. This is an example of:",
+    opts: [
+      "A public blockchain",
+      "A private blockchain",
+      "A hybrid blockchain",
+      "A permissioned public blockchain"
+    ],
+    ans: 2, diff: "medium",
+    exp: "This is the classic hybrid blockchain use case described in the lecture — combining private data storage with public verifiability through audit hashes. It allows regulatory compliance without exposing private patient data."
+  },
+  {
+    q: "Which real-world platform is an example of a PUBLIC blockchain supporting smart contracts?",
+    opts: ["Hyperledger Fabric", "Corda", "Ethereum", "All of the above"],
+    ans: 2, diff: "easy",
+    exp: "Ethereum is a public blockchain famous for smart contracts and decentralized applications. Bitcoin is also public but primarily for digital currency. Hyperledger Fabric and Corda are PRIVATE/enterprise blockchains."
+  },
+  {
+    q: "What does 'self-sovereign identity' mean in the context of blockchain?",
+    opts: [
+      "Your identity is stored and managed by a government database",
+      "Users control their own credentials and identity without relying on centralized databases",
+      "Identity is shared across all public nodes automatically",
+      "Each transaction creates a new unique identity"
+    ],
+    ans: 1, diff: "medium",
+    exp: "Self-sovereign identity means users own and control their digital credentials using their key pair. No central organization holds your data. You share only what's necessary for each interaction — a major improvement over centralized password databases that can be breached."
+  },
+  {
+    q: "Which cybersecurity use case leverages blockchain to preserve forensic evidence after a breach?",
+    opts: [
+      "Secure DNS",
+      "DDoS Resistance",
+      "Log Integrity",
+      "IoT Authentication"
+    ],
+    ans: 2, diff: "hard",
+    exp: "Log Integrity is the use case where security logs are stored on-chain. Because blockchain is immutable, attackers who breach a system cannot secretly alter the audit logs — the forensic evidence is preserved for investigation."
+  },
+  {
+    q: "A 51% attack on a blockchain means:",
+    opts: [
+      "Hacking 51% of all private keys in the network",
+      "Gaining control of more than 50% of the network's computing power to rewrite history",
+      "Encrypting 51% of all blocks with a new key",
+      "Creating 51 false nodes to outvote legitimate nodes in any single transaction"
+    ],
+    ans: 1, diff: "hard",
+    exp: "A 51% attack requires controlling more than 50% of the entire network's computing power (in Proof of Work systems). This would allow an attacker to rewrite transaction history. On large networks like Bitcoin, this is economically infeasible due to the enormous required computational investment."
+  },
+  {
+    q: "Why is the 'Timestamp' stored in each block?",
+    opts: [
+      "To encrypt the transaction data",
+      "To establish verifiable chronological order of blocks",
+      "To link the block to the previous hash",
+      "To authenticate the node that created the block"
+    ],
+    ans: 1, diff: "easy",
+    exp: "The Timestamp records the exact date and time the block was created, establishing a verifiable chronological order. This is important for audit trails and preventing replay attacks."
+  },
+  {
+    q: "How does blockchain help prevent DDoS (Distributed Denial of Service) attacks?",
+    opts: [
+      "By encrypting all network traffic",
+      "By using a private key to authenticate all incoming requests",
+      "By having no single target — the decentralized infrastructure distributes the attack surface",
+      "By automatically blocking IP addresses that send too many requests"
+    ],
+    ans: 2, diff: "medium",
+    exp: "Traditional DDoS attacks overwhelm a single server. Blockchain's decentralized infrastructure has no single point to target — thousands of nodes are distributed globally, making it dramatically harder to overwhelm the entire network."
+  },
+  {
+    q: "What is the Genesis Block?",
+    opts: [
+      "The block with the highest transaction volume",
+      "The most recently added block to the chain",
+      "The very first block in a blockchain, which has no Previous Hash",
+      "A special block used to store public keys"
+    ],
+    ans: 2, diff: "medium",
+    exp: "The Genesis Block (Block 1) is the first block ever created in a blockchain. Since there is no block before it, its 'Previous Hash' field is empty (set to zero or a placeholder). It is the foundation of the entire chain."
+  },
+  {
+    q: "Which of the following is TRUE about public blockchains?",
+    opts: [
+      "They provide complete anonymity for all users",
+      "They are the fastest type of blockchain",
+      "They are pseudonymous — addresses are visible but not linked to real identities by default",
+      "They require permission from an administrator to join"
+    ],
+    ans: 2, diff: "hard",
+    exp: "Public blockchains are PSEUDONYMOUS, not anonymous. All transactions are publicly visible and linked to addresses (public keys), but these addresses aren't automatically tied to real-world identities. It's NOT anonymous (transactions are visible) and NOT identified (no forced real-name disclosure)."
+  },
+  {
+    q: "When a node receives a transaction, which check comes BEFORE verifying sufficient balance?",
+    opts: [
+      "Double-spend check",
+      "Signature check",
+      "Timestamp check",
+      "Consensus check"
+    ],
+    ans: 1, diff: "hard",
+    exp: "According to the lecture, the order is: (1) Signature Check → (2) Balance/Authorization Check → (3) Double-Spend Check → (4) Rejection if failed. The signature check comes first — there's no point checking balance if the transaction is fraudulent in the first place."
+  },
+  {
+    q: "What does it mean that blockchain is 'distributed'?",
+    opts: [
+      "The data is split into pieces stored on different servers",
+      "Identical complete copies of the ledger are held simultaneously across many nodes",
+      "Transactions are processed in parallel by multiple processors",
+      "The network routes data through distributed routers"
+    ],
+    ans: 1, diff: "medium",
+    exp: "Distributed means identical COMPLETE copies are held across many nodes simultaneously. This is different from distributed storage (splitting data). Every node has the FULL ledger. No node has a 'master' or 'special' copy."
+  },
+  {
+    q: "Smart Contract Firewalls in blockchain provide:",
+    opts: [
+      "Real-time antivirus scanning of blockchain data",
+      "Automated, code-enforced access control and transaction validation without human intermediaries",
+      "Encryption of all smart contract code before deployment",
+      "A physical firewall protecting blockchain nodes from network attacks"
+    ],
+    ans: 1, diff: "medium",
+    exp: "Smart Contract Firewalls are automated rules encoded in smart contracts that enforce access control and validate transactions automatically — without needing a human administrator to approve each action. This removes a potential human vulnerability."
+  },
+  {
+    q: "Which property of blockchain is MOST directly responsible for eliminating the need for costly reconciliation between trading partners in supply chain?",
+    opts: [
+      "Immutability",
+      "The Shared Ledger (identical copies on all nodes)",
+      "Digital Signatures",
+      "The 51% Attack Threshold"
+    ],
+    ans: 1, diff: "hard",
+    exp: "The Shared Ledger means all parties in a supply chain see the same, identical, real-time data. Traditionally, each partner kept their own records, requiring expensive reconciliation processes to sync them. With a shared ledger, there's one source of truth everyone trusts."
+  },
+  {
+    q: "Which statement about the relationship between Transparency and Privacy in public blockchain is MOST accurate?",
+    opts: [
+      "Public blockchain offers no privacy because all identities are revealed",
+      "Public blockchain is fully anonymous because transaction data is encrypted",
+      "Transactions are publicly visible but linked to pseudonymous addresses, not real identities",
+      "Transparency and privacy are mutually exclusive — you can't have both"
+    ],
+    ans: 2, diff: "hard",
+    exp: "Public blockchains achieve a balance: all transaction data is publicly visible (transparency), but it's linked to public keys/addresses — pseudonyms that don't automatically reveal who you are (privacy). This is why the lecture specifically notes 'pseudonymous addresses provide privacy while keeping records verifiable.'"
+  },
+  {
+    q: "Hyperledger Fabric and Corda are examples of:",
+    opts: [
+      "Public blockchains",
+      "Hybrid blockchains",
+      "Cryptocurrency platforms",
+      "Private/enterprise blockchains"
+    ],
+    ans: 3, diff: "easy",
+    exp: "Hyperledger Fabric and Corda are enterprise private blockchain frameworks. Hyperledger Fabric is used for general enterprise blockchain, while Corda is specifically designed for the financial industry."
+  },
+  {
+    q: "IoT (Internet of Things) authentication using blockchain gives each device:",
+    opts: [
+      "A shared password stored on the blockchain",
+      "A cryptographic identity for trustworthy machine-to-machine authentication",
+      "Access to all blockchain transactions",
+      "A dedicated node on the network"
+    ],
+    ans: 1, diff: "medium",
+    exp: "Each IoT device receives a cryptographic identity (a key pair), enabling trustworthy machine-to-machine authentication without relying on a central authentication server. This prevents device spoofing and unauthorized access in smart networks."
+  },
+  {
+    q: "What makes tampering with a blockchain block 'computationally infeasible' rather than just 'difficult'?",
+    opts: [
+      "Blocks are encrypted with an unbreakable cipher",
+      "The network automatically alerts all users when tampering is attempted",
+      "Altering one block requires recomputing all subsequent blocks while outpacing the entire honest network",
+      "All private keys would need to be compromised simultaneously"
+    ],
+    ans: 2, diff: "hard",
+    exp: "To tamper with Block N, the attacker must: recompute Block N's hash, then recompute all following blocks' hashes, AND do this faster than the honest network adds new blocks. On large networks with thousands of nodes, this requires more computing power than exists in practice — making it computationally infeasible, not just password-hard."
+  },
+  {
+    q: "Which of the following is the CORRECT order of the digital signature verification process?",
+    opts: [
+      "Decrypt signature with public key → Hash transaction → Compare",
+      "Hash transaction → Decrypt with private key → Compare",
+      "Encrypt with public key → Hash → Broadcast",
+      "Hash → Encrypt with public key → Decrypt with private key"
+    ],
+    ans: 0, diff: "hard",
+    exp: "To VERIFY a signature: (1) Decrypt the received signature using the sender's PUBLIC key to get the original hash. (2) Independently hash the received transaction data. (3) Compare the two hashes — if they match, the signature is valid. This proves the transaction came from the private key holder and was not tampered with."
+  }
+];
+
+// ── WRITTEN QUESTIONS ──
+const writtenQs = [
+  {
+    type: "Short Answer",
+    color: "badge-green",
+    q: "Define blockchain and explain what 'cryptographically linked' means.",
+    points: "5 marks",
+    answer: `Blockchain is a digital, decentralized, distributed public ledger in which records called blocks are cryptographically linked together and secured against alteration. 
+
+'Cryptographically linked' means each block stores the hash (a unique mathematical fingerprint) of the previous block. If any block is altered, its hash changes — immediately invalidating the stored 'previous hash' reference in the next block, causing a cascade of invalidity through all subsequent blocks. This linkage makes unauthorized modification practically detectable and infeasible.`
+  },
+  {
+    type: "Short Answer",
+    color: "badge-green",
+    q: "What are the five components of a block? Briefly explain the role of each.",
+    points: "5 marks",
+    answer: `1. Transaction Data – The actual payload; any meaningful event being recorded (currency transfer, identity update, supply chain event, etc.)
+2. Timestamp – Records the exact date and time the block was created, establishing a verifiable chronological order.
+3. Current Hash – A unique cryptographic fingerprint of this block's contents, generated by a hash function. Any change to the block changes this hash.
+4. Previous Hash – The hash of the preceding block, creating the chain linkage. This is what makes tampering cascade through subsequent blocks.
+5. Digital Signature – Cryptographic proof verifying the identity of the transaction's originator, providing authentication and non-repudiation.`
+  },
+  {
+    type: "Short Answer",
+    color: "badge-green",
+    q: "Explain the difference between a private key and a public key in blockchain.",
+    points: "4 marks",
+    answer: `Private Key: Known only to the owner; never shared with anyone. Used to SIGN transactions, proving ownership and intent. Loss means permanent loss of access; compromise means loss of control.
+
+Public Key: Freely distributed to the network. Used to VERIFY digital signatures. Functions as the user's blockchain address. Derived from the private key through a one-way mathematical function — you cannot reverse-engineer the private key from the public key.
+
+The critical relationship: the public key is derived FROM the private key, but this derivation is one-way only. This asymmetry is the foundation of blockchain security.`
+  },
+  {
+    type: "Short Answer",
+    color: "badge-green",
+    q: "Compare public and private blockchains, including their examples and trade-offs.",
+    points: "6 marks",
+    answer: `Public Blockchain: Open and permissionless — anyone can join, read the ledger, submit transactions, and participate in consensus. Maximally decentralized with thousands of global nodes. Fully transparent. Trade-off: sacrifices transaction speed and privacy for openness. Examples: Bitcoin, Ethereum.
+
+Private Blockchain: Operates within a controlled environment. Access requires explicit permission; participants are known and vetted. Transaction details are confidential to outsiders. Controlled by one or more organizations. Faster consensus due to fewer nodes. Trade-off: sacrifices decentralization for speed and privacy. Examples: Hyperledger Fabric, Corda.
+
+Key exam sentence: "Public blockchains sacrifice speed and privacy for openness; private blockchains sacrifice decentralization for speed and privacy."`
+  },
+  {
+    type: "Medium Answer",
+    color: "badge-orange",
+    q: "Describe the 6-step transaction lifecycle in blockchain. Why is the 'Verify' step critical?",
+    points: "8 marks",
+    answer: `The 6-step lifecycle:
+1. Create: A user initiates a transaction (e.g., transferring cryptocurrency or recording supply chain data).
+2. Sign: The transaction is signed with the sender's private key, producing a digital signature that proves the sender's identity.
+3. Verify: Network nodes validate the transaction through three checks — signature validity (using the sender's public key), sufficient balance or authorization, and double-spend detection (ensuring the asset hasn't already been spent).
+4. Group: Valid transactions are bundled together into a new candidate block.
+5. Consensus: The network runs a consensus algorithm to agree that this block is valid.
+6. Add: The block is permanently appended to the chain and broadcast to every node.
+
+Why Verify is critical: This step is the network's gatekeeping function. Without it, fraudulent, insufficient, or duplicate transactions would enter the chain, corrupting the ledger's integrity. The three-check system ensures only legitimate, authorized, and unique transactions become permanent records. Invalid transactions are rejected at this stage and never propagated, keeping the chain trustworthy.`
+  },
+  {
+    type: "Medium Answer",
+    color: "badge-orange",
+    q: "Explain how digital signatures work in blockchain. What security properties do they provide?",
+    points: "8 marks",
+    answer: `How digital signatures work:
+1. The sender creates a cryptographic hash of the transaction data (a unique fingerprint of the content).
+2. The sender encrypts this hash using their private key — the result is the digital signature.
+3. The signed transaction is broadcast to the network.
+4. Any network node can decrypt the signature using the sender's publicly known public key, recovering the original hash.
+5. The node independently computes the hash of the received transaction data.
+6. If the decrypted hash matches the computed hash, the signature is valid — confirming authenticity.
+
+Security properties provided:
+• Authentication: Only the legitimate owner of the private key could have created the signature, proving the transaction's origin.
+• Non-Repudiation: The sender cannot later deny having created the transaction — the cryptographic proof is permanent.
+• Integrity: If the transaction data was altered after signing, the hash would change, and the signature check would fail — tampering is immediately detected.
+• No Impersonation: Since the private key is never shared, no one else can create a valid signature on behalf of the owner.`
+  },
+  {
+    type: "Medium Answer",
+    color: "badge-orange",
+    q: "Describe the four pillars of blockchain and how each contributes to the overall system.",
+    points: "8 marks",
+    answer: `1. Decentralization: No single entity — no company, government, or individual — controls the blockchain. Authority is distributed across all participating nodes. This removes single points of failure, eliminates the need to trust any central authority, and makes the network resilient to attacks or censorship. Decisions are made collectively through protocol rules.
+
+2. Transparency: All transaction records in a public blockchain are openly accessible and independently verifiable. This enables trust without intermediaries, supports regulatory auditing, ensures accountability (all actions traced to public keys), and deters fraud. Importantly, transparency is pseudonymous — identities aren't automatically revealed, protecting user privacy while maintaining verifiability.
+
+3. Immutability: Once data is written to the chain, it is practically impossible to change or delete without network detection. This is enforced through three mechanisms: (a) hash dependency cascade — changing one block invalidates all following blocks; (b) network-wide rejection of tampered copies; (c) the 51% attack threshold — rewriting history would require controlling majority computing power, which is economically infeasible.
+
+4. Security: Blockchain's architecture provides cybersecurity solutions including DDoS resistance (no single attack target), IoT authentication (cryptographic device identities), secure DNS (resistant to cache poisoning), log integrity (immutable audit trails), self-sovereign identity management, supply chain tracking, and smart contract firewalls.
+
+These four pillars reinforce each other: decentralization enables security, immutability enforces trust, transparency enables accountability, and security makes decentralization viable.`
+  },
+  {
+    type: "Long Answer / Essay",
+    color: "badge-red",
+    q: "How can blockchain improve cybersecurity in future digital systems? Discuss at least TWO specific use cases and how each could be applied in a local context (e.g., Egypt / your region).",
+    points: "15 marks",
+    answer: `Introduction:
+Blockchain's core properties — decentralization, immutability, transparency, and cryptographic security — directly address some of the most persistent cybersecurity challenges in the modern world. Two compelling use cases with local applicability are Identity & Access Management and Supply Chain Security.
+
+Use Case 1: Identity & Access Management (Self-Sovereign Identity)
+Problem: Traditional identity systems (national ID databases, government registries, hospital records) are centralized — a single breach exposes millions of citizens' data. Egypt's digital transformation initiatives have expanded digital service access, but centralized ID verification creates significant attack surfaces.
+
+Blockchain Solution: With blockchain-based self-sovereign identity, each citizen would have a cryptographic key pair serving as their digital identity. Verifiable credentials (national ID number, educational certificates, professional licenses) would be cryptographically signed by trusted issuers (government agencies, universities) and stored on the user's device. When interacting with a service, the user proves their identity using their private key — no central database is queried, so there is nothing to breach at scale. 
+
+Local Application: A blockchain-based national identity system in Egypt could allow citizens to access government e-services, banking, and healthcare verification without submitting physical documents or relying on a single government database. This would reduce fraud, eliminate identity theft at the database level, and improve service efficiency.
+
+Use Case 2: Supply Chain Integrity
+Problem: Counterfeit goods are a significant problem in global and regional supply chains — including pharmaceuticals, food products, and consumer electronics. Current systems rely on trust and paper documentation that can be forged.
+
+Blockchain Solution: Each product's journey — from manufacturer to distributor to retailer to consumer — is recorded as an immutable transaction on the blockchain. Any participant can verify the product's complete provenance by scanning a QR code that queries the chain. Because records cannot be altered, any counterfeit introduction into the chain would be immediately detectable as an invalid or absent entry.
+
+Local Application: Egypt's pharmaceutical sector or agricultural export industry could implement blockchain-based product tracking. A consumer could scan a medicine's QR code to verify it came from a licensed manufacturer, passed quality checks, and was not tampered with in transit. This would reduce counterfeit medicine risks and build consumer trust in exported products.
+
+Conclusion:
+By removing centralized targets and embedding trust in cryptographic protocols, blockchain provides cybersecurity improvements that are resilient by design. The key insight is that blockchain doesn't just encrypt data — it changes the architecture of trust itself, from centralized institutions to distributed, mathematically verified networks.`
+  },
+  {
+    type: "Long Answer",
+    color: "badge-red",
+    q: "Explain how the P2P network architecture and the shared ledger together create a system that is both resilient and trustworthy. How does this compare to a traditional client-server model?",
+    points: "10 marks",
+    answer: `Traditional Client-Server Model:
+In a client-server architecture, all communication routes through a central server. This creates several vulnerabilities: (1) single point of failure — if the server goes down, the entire system becomes unavailable; (2) single point of trust — users must trust that the central operator behaves honestly and keeps records accurate; (3) single attack vector — hackers need only compromise one target to affect all users; (4) censorship potential — the central authority can block valid transactions or users.
+
+Peer-to-Peer Network with Shared Ledger:
+In blockchain's P2P architecture, every node simultaneously acts as both client and server, communicating directly with other nodes without central routing. The shared ledger means every node holds an identical, complete copy of the entire transaction history. Updates propagate to all nodes in real time, and no node holds a 'master' or 'special' copy.
+
+Resilience: With hundreds or thousands of globally distributed nodes, there is no single target an attacker can disable. Even if large numbers of nodes go offline simultaneously, the network continues operating. This creates near-perfect uptime and attack resistance that no centralized system can match.
+
+Trustworthiness: The shared ledger means all participants can independently verify any record without asking permission from anyone. There is no need to trust a central operator — the mathematical proof (hash verification + digital signatures) does the work of trust. Reconciliation between trading partners becomes unnecessary because everyone sees the same data.
+
+The combination effect: P2P distribution ensures the ledger always exists (resilience), while cryptographic linking ensures the ledger is always accurate (trustworthiness). These properties reinforce each other — decentralization is what makes immutability meaningful, and immutability is what makes decentralization valuable.`
+  }
+];
+
+// ── RENDER MCQ ──
+let mcqState = { answered: 0, correct: 0, total: mcqs.length };
+
+function renderMCQ() {
+  const container = document.getElementById('mcq-container');
+  container.innerHTML = '';
+  mcqs.forEach((mcq, i) => {
+    const diffBadge = mcq.diff === 'easy' ? 'badge-green' : mcq.diff === 'medium' ? 'badge-orange' : 'badge-red';
+    const card = document.createElement('div');
+    card.className = 'mcq-card';
+    card.id = `mcq-${i}`;
+    card.innerHTML = `
+      <div class="mcq-num">Q${i+1} of ${mcqs.length} <span class="badge ${diffBadge} mcq-difficulty">${mcq.diff.toUpperCase()}</span></div>
+      <div class="mcq-q">${mcq.q}</div>
+      <div class="mcq-options">
+        ${mcq.opts.map((opt, j) => `
+          <button class="mcq-opt" onclick="answerMCQ(${i}, ${j})" id="opt-${i}-${j}">
+            <span class="opt-label">${String.fromCharCode(65+j)}</span>
+            <span>${opt}</span>
+          </button>`).join('')}
+      </div>
+      <div class="mcq-explanation" id="exp-${i}">${mcq.exp}</div>
+    `;
+    container.appendChild(card);
+  });
+  updateScore();
+}
+
+function answerMCQ(qi, oi) {
+  const card = document.getElementById(`mcq-${qi}`);
+  if (card.dataset.answered) return;
+  card.dataset.answered = '1';
+  const isCorrect = oi === mcqs[qi].ans;
+  for (let j = 0; j < mcqs[qi].opts.length; j++) {
+    const btn = document.getElementById(`opt-${qi}-${j}`);
+    btn.disabled = true;
+    if (j === mcqs[qi].ans) btn.classList.add('correct');
+    else if (j === oi && !isCorrect) btn.classList.add('wrong');
+  }
+  document.getElementById(`exp-${qi}`).classList.add('visible');
+  mcqState.answered++;
+  if (isCorrect) mcqState.correct++;
+  updateScore();
+}
+
+function updateScore() {
+  document.getElementById('scoreVal').textContent = `${mcqState.correct} / ${mcqState.total}`;
+  document.getElementById('answeredVal').textContent = mcqState.answered;
+  document.getElementById('progressFill').style.width = `${(mcqState.answered / mcqState.total) * 100}%`;
+}
+
+function resetMCQ() {
+  mcqState = { answered: 0, correct: 0, total: mcqs.length };
+  renderMCQ();
+}
+
+// ── RENDER WRITTEN ──
+function renderWritten() {
+  const container = document.getElementById('written-container');
+  container.innerHTML = '';
+  writtenQs.forEach((wq, i) => {
+    const card = document.createElement('div');
+    card.className = 'wq-card';
+    card.innerHTML = `
+      <div class="wq-type"><span class="badge ${wq.color}">${wq.type}</span></div>
+      <div class="wq-q">Q${i+1}. ${wq.q}</div>
+      <button class="wq-toggle" onclick="toggleWQ(this)">Show Model Answer</button>
+      <div class="wq-answer" style="white-space:pre-line">${wq.answer}</div>
+      <div class="wq-points">${wq.points}</div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function toggleWQ(btn) {
+  const ans = btn.nextElementSibling;
+  if (ans.classList.contains('visible')) {
+    ans.classList.remove('visible');
+    btn.textContent = 'Show Model Answer';
+  } else {
+    ans.classList.add('visible');
+    btn.textContent = 'Hide Model Answer';
+  }
+}
+
+// ── INIT ──
+renderMCQ();
+renderWritten();
+</script>
+</body>
+</html>
