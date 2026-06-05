@@ -1,0 +1,2645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetSec & Blockchain — Exam Master</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg0: #0a0b0f;
+  --bg1: #111318;
+  --bg2: #181b22;
+  --bg3: #1f222c;
+  --bg4: #262a36;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text1: #f0f2f8;
+  --text2: #9ba3b8;
+  --text3: #5d6478;
+  --accent: #6c8eff;
+  --accent2: #4e6de8;
+  --accent-dim: rgba(108,142,255,0.12);
+  --accent-dim2: rgba(108,142,255,0.06);
+  --green: #3fd68f;
+  --green-dim: rgba(63,214,143,0.12);
+  --red: #ff5f6a;
+  --red-dim: rgba(255,95,106,0.12);
+  --amber: #f5a524;
+  --amber-dim: rgba(245,165,36,0.12);
+  --purple: #a78bfa;
+  --purple-dim: rgba(167,139,250,0.12);
+  --teal: #2dd4bf;
+  --teal-dim: rgba(45,212,191,0.12);
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+  --font-head: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg0);
+  color: var(--text1);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg0); }
+::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 3px; }
+
+/* ===== LAYOUT ===== */
+.app { display: flex; min-height: 100vh; }
+.sidebar {
+  width: 260px; min-width: 260px;
+  background: var(--bg1);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh;
+  overflow-y: auto;
+}
+.main { flex: 1; overflow-x: hidden; }
+
+/* ===== SIDEBAR ===== */
+.sidebar-logo {
+  padding: 24px 20px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.logo-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--accent-dim);
+  border: 1px solid rgba(108,142,255,0.2);
+  border-radius: var(--r-lg);
+  padding: 6px 12px;
+  font-family: var(--font-head);
+  font-size: 13px; font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+  margin-bottom: 8px;
+}
+.logo-title {
+  font-family: var(--font-head);
+  font-size: 18px; font-weight: 800;
+  color: var(--text1);
+  line-height: 1.2;
+}
+.logo-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+.stats-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 8px; padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.stat-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 10px 12px;
+}
+.stat-val {
+  font-family: var(--font-head);
+  font-size: 22px; font-weight: 700;
+  color: var(--text1);
+  line-height: 1;
+}
+.stat-label { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+.sidebar-nav { padding: 12px 12px; flex: 1; }
+.nav-section { margin-bottom: 4px; }
+.nav-section-title {
+  font-size: 10px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--text3);
+  padding: 8px 8px 4px;
+}
+.nav-btn {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 9px 10px;
+  border: none; background: none;
+  color: var(--text2); font-family: var(--font-body);
+  font-size: 14px; cursor: pointer;
+  border-radius: var(--r-sm);
+  transition: all 0.15s;
+  text-align: left;
+}
+.nav-btn:hover { background: var(--bg3); color: var(--text1); }
+.nav-btn.active { background: var(--accent-dim); color: var(--accent); }
+.nav-btn .icon { font-size: 16px; opacity: 0.7; }
+.nav-btn.active .icon { opacity: 1; }
+
+.streak-box {
+  margin: 12px 20px;
+  background: linear-gradient(135deg, rgba(245,165,36,0.1), rgba(245,165,36,0.05));
+  border: 1px solid rgba(245,165,36,0.2);
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+  display: flex; align-items: center; gap: 12px;
+}
+.streak-fire { font-size: 24px; }
+.streak-count { font-family: var(--font-head); font-size: 20px; font-weight: 700; color: var(--amber); }
+.streak-txt { font-size: 12px; color: var(--text3); }
+
+/* ===== VIEWS ===== */
+.view { display: none; }
+.view.active { display: block; }
+
+/* ===== HOME ===== */
+.hero {
+  padding: 48px 48px 32px;
+  background: radial-gradient(ellipse 60% 40% at 70% 20%, rgba(108,142,255,0.06) 0%, transparent 60%);
+}
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--accent-dim); border: 1px solid rgba(108,142,255,0.2);
+  color: var(--accent); border-radius: 100px;
+  font-size: 12px; font-weight: 500; padding: 4px 12px;
+  margin-bottom: 16px;
+}
+.hero h1 {
+  font-family: var(--font-head);
+  font-size: 36px; font-weight: 800;
+  line-height: 1.1; color: var(--text1);
+  margin-bottom: 12px;
+}
+.hero h1 span { color: var(--accent); }
+.hero p { font-size: 16px; color: var(--text2); max-width: 560px; line-height: 1.6; }
+
+.chapters-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px; padding: 0 48px 48px;
+}
+.chapter-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative; overflow: hidden;
+}
+.chapter-card::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: var(--card-accent, var(--accent));
+  opacity: 0.6;
+}
+.chapter-card:hover {
+  background: var(--bg3);
+  border-color: var(--border2);
+  transform: translateY(-2px);
+}
+.chapter-icon {
+  width: 44px; height: 44px;
+  border-radius: var(--r-md);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; margin-bottom: 14px;
+}
+.chapter-tag {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--text3);
+  margin-bottom: 6px;
+}
+.chapter-title {
+  font-family: var(--font-head);
+  font-size: 18px; font-weight: 700;
+  color: var(--text1); margin-bottom: 6px;
+}
+.chapter-desc { font-size: 13px; color: var(--text2); line-height: 1.5; margin-bottom: 16px; }
+.chapter-meta {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.chapter-count {
+  font-size: 12px; color: var(--text3);
+  background: var(--bg4); border-radius: 100px;
+  padding: 3px 10px;
+}
+.progress-mini { height: 4px; background: var(--bg4); border-radius: 2px; margin-top: 14px; }
+.progress-fill { height: 100%; border-radius: 2px; background: var(--card-accent, var(--accent)); transition: width 0.4s; }
+
+/* ===== QUICK START BUTTONS ===== */
+.quick-start { padding: 0 48px 32px; display: flex; gap: 12px; flex-wrap: wrap; }
+.qs-btn {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 20px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  font-family: var(--font-body); font-size: 14px;
+  color: var(--text1); cursor: pointer;
+  transition: all 0.15s;
+}
+.qs-btn:hover { background: var(--bg3); border-color: var(--border2); }
+.qs-btn.featured { background: var(--accent-dim); border-color: rgba(108,142,255,0.3); color: var(--accent); }
+.qs-btn .qs-icon { font-size: 18px; }
+
+/* ===== STUDY VIEW ===== */
+.study-header {
+  padding: 28px 48px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  background: var(--bg1);
+  position: sticky; top: 0; z-index: 10;
+}
+.study-title { font-family: var(--font-head); font-size: 22px; font-weight: 700; }
+.study-controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.ctrl-btn {
+  padding: 7px 14px;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: var(--r-sm); color: var(--text2);
+  font-size: 13px; cursor: pointer;
+  transition: all 0.15s; font-family: var(--font-body);
+}
+.ctrl-btn:hover { background: var(--bg4); color: var(--text1); }
+.ctrl-btn.active { background: var(--accent-dim); border-color: rgba(108,142,255,0.3); color: var(--accent); }
+
+.progress-bar-wrap {
+  padding: 0 48px;
+  background: var(--bg1);
+  border-bottom: 1px solid var(--border);
+}
+.progress-bar-track { height: 3px; background: var(--bg4); border-radius: 2px; }
+.progress-bar-fill { height: 100%; border-radius: 2px; background: var(--accent); transition: width 0.5s; }
+
+.study-body { padding: 32px 48px 64px; }
+
+/* ===== QUESTION CARD ===== */
+.q-card {
+  max-width: 820px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 32px;
+  margin-bottom: 20px;
+  position: relative;
+  animation: fadeIn 0.25s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+.q-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.q-badge {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.06em; padding: 3px 9px;
+  border-radius: 100px; border: 1px solid;
+}
+.badge-mcq { color: var(--accent); border-color: rgba(108,142,255,0.3); background: var(--accent-dim); }
+.badge-tf { color: var(--green); border-color: rgba(63,214,143,0.3); background: var(--green-dim); }
+.badge-ms { color: var(--purple); border-color: rgba(167,139,250,0.3); background: var(--purple-dim); }
+.badge-fitb { color: var(--teal); border-color: rgba(45,212,191,0.3); background: var(--teal-dim); }
+.badge-scen { color: var(--amber); border-color: rgba(245,165,36,0.3); background: var(--amber-dim); }
+.badge-match { color: var(--red); border-color: rgba(255,95,106,0.3); background: var(--red-dim); }
+.badge-cmp { color: #c084fc; border-color: rgba(192,132,252,0.3); background: rgba(192,132,252,0.08); }
+.diff-badge {
+  font-size: 11px; padding: 3px 9px; border-radius: 100px;
+  background: var(--bg4); color: var(--text3);
+}
+.diff-medium { color: var(--amber); background: var(--amber-dim); }
+.diff-hard { color: var(--red); background: var(--red-dim); }
+
+.q-num { font-size: 12px; color: var(--text3); margin-left: auto; }
+.bookmark-btn {
+  background: none; border: none; cursor: pointer;
+  color: var(--text3); font-size: 18px; padding: 2px;
+  transition: color 0.15s;
+}
+.bookmark-btn.active { color: var(--amber); }
+.bookmark-btn:hover { color: var(--text1); }
+
+.q-text {
+  font-size: 16px; color: var(--text1);
+  line-height: 1.65; margin-bottom: 22px;
+  font-weight: 400;
+}
+.q-text strong { font-weight: 600; color: var(--text1); }
+.q-text code {
+  background: var(--bg4); border-radius: 4px;
+  padding: 1px 6px; font-size: 14px; color: var(--teal);
+  font-family: 'Courier New', monospace;
+}
+
+/* ===== OPTIONS ===== */
+.options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.option {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 14px 16px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 15px; color: var(--text1);
+  text-align: left; width: 100%;
+  font-family: var(--font-body);
+  line-height: 1.5;
+}
+.option:hover:not(.disabled) { background: var(--bg4); border-color: var(--border2); }
+.option-letter {
+  width: 26px; min-width: 26px; height: 26px;
+  border-radius: 8px;
+  background: var(--bg4); border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600; color: var(--text2);
+  flex-shrink: 0;
+}
+.option.selected { border-color: rgba(108,142,255,0.4); background: var(--accent-dim); }
+.option.selected .option-letter { background: var(--accent); border-color: var(--accent); color: #fff; }
+.option.correct { border-color: rgba(63,214,143,0.4); background: var(--green-dim); }
+.option.correct .option-letter { background: var(--green); border-color: var(--green); color: #0a0b0f; }
+.option.wrong { border-color: rgba(255,95,106,0.4); background: var(--red-dim); }
+.option.wrong .option-letter { background: var(--red); border-color: var(--red); color: #fff; }
+.option.disabled { cursor: default; }
+.option.ms-selected { border-color: rgba(167,139,250,0.4); background: var(--purple-dim); }
+.option.ms-selected .option-letter { background: var(--purple); border-color: var(--purple); color: #0a0b0f; }
+
+.checkbox-wrap { display: flex; align-items: flex-start; gap: 12px; }
+
+/* ===== FILL IN THE BLANK ===== */
+.fitb-wrap { margin-bottom: 20px; }
+.fitb-input {
+  width: 100%; padding: 12px 16px;
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: var(--r-md); color: var(--text1);
+  font-size: 15px; font-family: var(--font-body);
+  outline: none; transition: border-color 0.15s;
+}
+.fitb-input:focus { border-color: rgba(108,142,255,0.5); background: var(--bg4); }
+.fitb-input.correct { border-color: rgba(63,214,143,0.5); }
+.fitb-input.wrong { border-color: rgba(255,95,106,0.5); }
+
+/* ===== MATCHING ===== */
+.match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.match-col { display: flex; flex-direction: column; gap: 8px; }
+.match-item {
+  padding: 10px 14px;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: var(--r-sm); font-size: 14px;
+  cursor: pointer; transition: all 0.15s;
+  user-select: none;
+}
+.match-item:hover { background: var(--bg4); }
+.match-item.match-selected { border-color: rgba(108,142,255,0.4); background: var(--accent-dim); color: var(--accent); }
+.match-item.match-correct { border-color: rgba(63,214,143,0.4); background: var(--green-dim); }
+.match-item.match-wrong { border-color: rgba(255,95,106,0.4); background: var(--red-dim); }
+
+/* ===== SUBMIT / BUTTONS ===== */
+.q-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn {
+  padding: 10px 22px;
+  border: none; border-radius: var(--r-md);
+  font-family: var(--font-body); font-size: 14px;
+  font-weight: 500; cursor: pointer;
+  transition: all 0.15s; display: flex; align-items: center; gap: 8px;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent2); }
+.btn-secondary { background: var(--bg4); color: var(--text1); border: 1px solid var(--border2); }
+.btn-secondary:hover { background: var(--bg3); }
+.btn-ghost { background: none; color: var(--text2); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--bg3); color: var(--text1); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ===== EXPLANATION ===== */
+.explanation {
+  margin-top: 20px; padding: 20px 22px;
+  background: var(--bg1); border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  animation: fadeIn 0.2s ease;
+}
+.exp-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.exp-result {
+  font-family: var(--font-head);
+  font-size: 15px; font-weight: 700;
+}
+.exp-result.correct-r { color: var(--green); }
+.exp-result.wrong-r { color: var(--red); }
+.exp-body { font-size: 14px; color: var(--text2); line-height: 1.7; }
+.exp-body strong { color: var(--text1); font-weight: 500; }
+.exp-tip {
+  margin-top: 12px; padding: 10px 14px;
+  background: var(--amber-dim); border-left: 3px solid var(--amber);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  font-size: 13px; color: var(--amber);
+}
+.exp-tip strong { color: var(--amber); }
+
+/* ===== EXAM MODE ===== */
+.exam-header {
+  background: var(--bg1);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 48px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 20;
+}
+.exam-timer {
+  font-family: var(--font-head);
+  font-size: 28px; font-weight: 700;
+  color: var(--accent);
+}
+.exam-timer.warning { color: var(--red); animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+.exam-progress-text { font-size: 14px; color: var(--text2); }
+
+/* ===== RESULTS ===== */
+.results-wrap { padding: 48px; max-width: 900px; }
+.result-hero {
+  text-align: center;
+  padding: 48px; margin-bottom: 32px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  position: relative; overflow: hidden;
+}
+.result-score-circle {
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  background: conic-gradient(var(--accent) var(--pct), var(--bg4) 0);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  position: relative;
+}
+.result-score-circle::after {
+  content: ''; position: absolute;
+  width: 110px; height: 110px; border-radius: 50%;
+  background: var(--bg2);
+}
+.result-score-num {
+  position: relative; z-index: 1;
+  font-family: var(--font-head);
+  font-size: 36px; font-weight: 800;
+  color: var(--text1);
+}
+.result-grade {
+  font-family: var(--font-head);
+  font-size: 28px; font-weight: 800;
+  margin-bottom: 8px;
+}
+.result-stats-row {
+  display: flex; gap: 16px; justify-content: center;
+  flex-wrap: wrap; margin-top: 16px;
+}
+.result-stat {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 12px 20px;
+  text-align: center;
+}
+.result-stat-val { font-family: var(--font-head); font-size: 24px; font-weight: 700; }
+.result-stat-lbl { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+.weak-section { margin-top: 24px; }
+.weak-title { font-family: var(--font-head); font-size: 18px; font-weight: 700; margin-bottom: 14px; }
+.weak-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px; margin-bottom: 8px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+.weak-bar-wrap { flex: 1; height: 6px; background: var(--bg4); border-radius: 3px; }
+.weak-bar { height: 100%; border-radius: 3px; }
+
+/* ===== DASHBOARD ===== */
+.dashboard-wrap { padding: 32px 48px; }
+.dash-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px; margin-bottom: 32px;
+}
+.dash-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 20px;
+}
+.dash-val { font-family: var(--font-head); font-size: 32px; font-weight: 700; color: var(--text1); }
+.dash-lbl { font-size: 13px; color: var(--text3); margin-top: 4px; }
+.dash-chart-wrap {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 24px; margin-bottom: 24px;
+}
+.dash-chart-title { font-family: var(--font-head); font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+.topic-bars { display: flex; flex-direction: column; gap: 10px; }
+.topic-row { display: flex; align-items: center; gap: 12px; }
+.topic-name { font-size: 13px; color: var(--text2); min-width: 160px; }
+.topic-bar-wrap { flex: 1; height: 8px; background: var(--bg4); border-radius: 4px; }
+.topic-bar { height: 100%; border-radius: 4px; transition: width 0.5s; }
+.topic-pct { font-size: 12px; color: var(--text3); min-width: 36px; text-align: right; }
+
+/* ===== SEARCH ===== */
+.search-wrap { padding: 24px 48px; }
+.search-box {
+  width: 100%; max-width: 600px;
+  padding: 12px 18px;
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: var(--r-lg); color: var(--text1);
+  font-size: 16px; font-family: var(--font-body);
+  outline: none; margin-bottom: 20px;
+}
+.search-box:focus { border-color: rgba(108,142,255,0.4); }
+.search-results { display: flex; flex-direction: column; gap: 10px; }
+.search-result-item {
+  padding: 14px 18px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r-md); cursor: pointer; transition: all 0.15s;
+}
+.search-result-item:hover { background: var(--bg3); border-color: var(--border2); }
+.search-result-q { font-size: 14px; color: var(--text1); margin-bottom: 4px; }
+.search-result-meta { font-size: 12px; color: var(--text3); }
+mark { background: rgba(108,142,255,0.25); color: var(--accent); border-radius: 2px; padding: 0 2px; }
+
+/* ===== FILTERS ===== */
+.filter-bar { display: flex; gap: 8px; flex-wrap: wrap; padding: 0 48px 16px; }
+.filter-chip {
+  padding: 6px 14px;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 100px; font-size: 13px; color: var(--text2);
+  cursor: pointer; transition: all 0.15s; font-family: var(--font-body);
+}
+.filter-chip:hover { background: var(--bg4); color: var(--text1); }
+.filter-chip.active { background: var(--accent-dim); border-color: rgba(108,142,255,0.3); color: var(--accent); }
+
+/* ===== TOAST ===== */
+#toast-container {
+  position: fixed; bottom: 24px; right: 24px;
+  display: flex; flex-direction: column; gap: 8px; z-index: 9999;
+}
+.toast {
+  padding: 12px 20px;
+  border-radius: var(--r-md); font-size: 14px;
+  display: flex; align-items: center; gap: 10px;
+  animation: slideIn 0.3s ease; pointer-events: none;
+  max-width: 320px;
+}
+@keyframes slideIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+.toast.success { background: var(--green-dim); border: 1px solid rgba(63,214,143,0.3); color: var(--green); }
+.toast.error { background: var(--red-dim); border: 1px solid rgba(255,95,106,0.3); color: var(--red); }
+.toast.info { background: var(--accent-dim); border: 1px solid rgba(108,142,255,0.3); color: var(--accent); }
+.toast.warning { background: var(--amber-dim); border: 1px solid rgba(245,165,36,0.3); color: var(--amber); }
+
+/* ===== REVIEW VIEW ===== */
+.review-q {
+  max-width: 820px; padding: 20px 24px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r-lg); margin-bottom: 12px;
+}
+.review-q-text { font-size: 15px; color: var(--text1); margin-bottom: 10px; }
+.review-answer { font-size: 14px; color: var(--text2); }
+.review-answer .correct-ans { color: var(--green); font-weight: 500; }
+.review-answer .your-ans { color: var(--red); font-weight: 500; }
+
+/* ===== KEYBOARD SHORTCUTS ===== */
+.shortcuts-modal {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7); z-index: 9998;
+  align-items: center; justify-content: center;
+}
+.shortcuts-modal.open { display: flex; }
+.shortcuts-box {
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: var(--r-xl); padding: 32px;
+  max-width: 440px; width: 90%;
+}
+.shortcuts-title { font-family: var(--font-head); font-size: 20px; font-weight: 700; margin-bottom: 20px; }
+.shortcut-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+  font-size: 14px; color: var(--text2);
+}
+.shortcut-row:last-child { border-bottom: none; }
+kbd {
+  background: var(--bg4); border: 1px solid var(--border2);
+  border-radius: 6px; padding: 3px 8px;
+  font-size: 12px; color: var(--text1); font-family: monospace;
+}
+
+/* ===== MOBILE ===== */
+.mobile-nav {
+  display: none; position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--bg1); border-top: 1px solid var(--border);
+  z-index: 100; padding: 8px 0;
+}
+.mobile-nav-inner { display: flex; justify-content: space-around; }
+.mobile-nav-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  background: none; border: none; cursor: pointer;
+  color: var(--text3); font-size: 11px; font-family: var(--font-body);
+  padding: 6px 12px; border-radius: var(--r-sm);
+  transition: color 0.15s;
+}
+.mobile-nav-btn.active { color: var(--accent); }
+.mobile-nav-btn .mn-icon { font-size: 20px; }
+
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .mobile-nav { display: block; }
+  .hero, .chapters-grid, .study-body, .dashboard-wrap, .search-wrap { padding: 16px; }
+  .hero h1 { font-size: 24px; }
+  .quick-start { padding: 0 16px 16px; }
+  .filter-bar { padding: 0 16px 12px; }
+  .study-header { padding: 16px; }
+  .progress-bar-wrap { padding: 0 16px; }
+  .results-wrap { padding: 16px; }
+  .chapters-grid { grid-template-columns: 1fr; }
+  .main { padding-bottom: 72px; }
+}
+@media (min-width: 769px) { .mobile-nav { display: none; } }
+
+/* Section headers */
+.section-divider {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--text3);
+  padding: 4px 0 8px; margin-top: 8px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px; max-width: 820px;
+}
+
+.empty-state {
+  text-align: center; padding: 64px 24px;
+  color: var(--text3);
+}
+.empty-icon { font-size: 48px; margin-bottom: 16px; }
+.empty-title { font-family: var(--font-head); font-size: 20px; font-weight: 700; color: var(--text2); margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<div id="shortcuts-modal" class="shortcuts-modal">
+  <div class="shortcuts-box">
+    <div class="shortcuts-title">Keyboard Shortcuts</div>
+    <div class="shortcut-row"><span>Submit answer</span><kbd>Enter</kbd></div>
+    <div class="shortcut-row"><span>Next question</span><kbd>→</kbd></div>
+    <div class="shortcut-row"><span>Previous question</span><kbd>←</kbd></div>
+    <div class="shortcut-row"><span>Select option A</span><kbd>1</kbd></div>
+    <div class="shortcut-row"><span>Select option B</span><kbd>2</kbd></div>
+    <div class="shortcut-row"><span>Select option C</span><kbd>3</kbd></div>
+    <div class="shortcut-row"><span>Select option D</span><kbd>4</kbd></div>
+    <div class="shortcut-row"><span>Bookmark question</span><kbd>B</kbd></div>
+    <div class="shortcut-row"><span>Show shortcuts</span><kbd>?</kbd></div>
+    <div class="shortcut-row"><span>Close this dialog</span><kbd>Esc</kbd></div>
+    <button class="btn btn-secondary" style="margin-top:16px;width:100%;" onclick="closeShortcuts()">Close</button>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-badge">🔐 NetSec</div>
+      <div class="logo-title">Exam Master</div>
+      <div class="logo-sub">Advanced Software Engineering</div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-val" id="sb-total">0</div>
+        <div class="stat-label">Answered</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val" id="sb-correct" style="color:var(--green)">0</div>
+        <div class="stat-label">Correct</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val" id="sb-acc">—</div>
+        <div class="stat-label">Accuracy</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val" id="sb-bm">0</div>
+        <div class="stat-label">Bookmarks</div>
+      </div>
+    </div>
+
+    <div class="streak-box">
+      <div class="streak-fire">🔥</div>
+      <div>
+        <div class="streak-count" id="streak-num">0</div>
+        <div class="streak-txt">Question streak</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Navigation</div>
+        <button class="nav-btn active" onclick="showView('home')"><span class="icon">🏠</span> Home</button>
+        <button class="nav-btn" onclick="showView('dashboard')"><span class="icon">📊</span> Dashboard</button>
+        <button class="nav-btn" onclick="showView('search')"><span class="icon">🔍</span> Search</button>
+        <button class="nav-btn" onclick="showView('bookmarks')"><span class="icon">🔖</span> Bookmarks</button>
+        <button class="nav-btn" onclick="showView('review')"><span class="icon">📋</span> Review Mistakes</button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Study Modes</div>
+        <button class="nav-btn" onclick="startPractice(null)"><span class="icon">📖</span> Practice Mode</button>
+        <button class="nav-btn" onclick="startExam()"><span class="icon">⏱️</span> Exam Simulation</button>
+        <button class="nav-btn" onclick="startWeak()"><span class="icon">⚡</span> Weak Areas</button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Tools</div>
+        <button class="nav-btn" onclick="openShortcuts()"><span class="icon">⌨️</span> Shortcuts</button>
+        <button class="nav-btn" onclick="resetAll()" style="color:var(--red)"><span class="icon">🗑️</span> Reset Progress</button>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <!-- HOME VIEW -->
+    <div id="view-home" class="view active">
+      <div class="hero">
+        <div class="hero-tag">🎓 Dr. Abdalla Sayed · Advanced Software Engineering</div>
+        <h1>Master <span>VPN, IPsec,</span><br>SSL & Blockchain</h1>
+        <p>Exam-ready question bank with 80+ questions across 3 chapters. Detect traps, learn concepts deeply, and ace your exam.</p>
+      </div>
+
+      <div class="quick-start">
+        <button class="qs-btn featured" onclick="startPractice(null)">
+          <span class="qs-icon">▶️</span> Start Practice
+        </button>
+        <button class="qs-btn" onclick="startExam()">
+          <span class="qs-icon">⏱️</span> Exam Simulation (45 min)
+        </button>
+        <button class="qs-btn" onclick="startRandom()">
+          <span class="qs-icon">🎲</span> Random 20 Questions
+        </button>
+        <button class="qs-btn" onclick="startWeak()">
+          <span class="qs-icon">⚡</span> Weak Areas Drill
+        </button>
+      </div>
+
+      <div class="chapters-grid" id="chapters-grid"></div>
+    </div>
+
+    <!-- STUDY VIEW -->
+    <div id="view-study" class="view">
+      <div class="study-header">
+        <div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:4px;" id="study-chapter-label">Chapter</div>
+          <div class="study-title" id="study-title">Practice Mode</div>
+        </div>
+        <div class="study-controls">
+          <button class="ctrl-btn" onclick="toggleMode()" id="mode-btn">📖 Practice</button>
+          <button class="ctrl-btn" onclick="shuffleRemaining()">🔀 Shuffle</button>
+          <button class="ctrl-btn" onclick="skipQuestion()">⏭ Skip</button>
+          <button class="ctrl-btn" onclick="showView('home')">✕ Exit</button>
+        </div>
+      </div>
+      <div class="progress-bar-wrap">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:12px;color:var(--text3);">
+          <span id="progress-label">Question 1 of 20</span>
+          <span id="progress-score">Score: 0/0</span>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+        </div>
+        <div style="height:8px"></div>
+      </div>
+      <div class="study-body">
+        <div class="filter-bar" id="filter-bar" style="padding:0 0 16px;"></div>
+        <div id="question-container"></div>
+      </div>
+    </div>
+
+    <!-- EXAM VIEW -->
+    <div id="view-exam" class="view">
+      <div class="exam-header">
+        <div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:2px;">Exam Simulation</div>
+          <div style="font-family:var(--font-head);font-size:18px;font-weight:700;">VPN · IPsec · SSL · Blockchain</div>
+        </div>
+        <div class="exam-timer" id="exam-timer">45:00</div>
+        <div class="exam-progress-text" id="exam-prog-text">0 / 40 answered</div>
+        <button class="btn btn-primary" onclick="submitExam()">Submit Exam</button>
+      </div>
+      <div style="padding:32px 48px 80px;max-width:880px;">
+        <div id="exam-questions-container"></div>
+      </div>
+    </div>
+
+    <!-- RESULTS VIEW -->
+    <div id="view-results" class="view">
+      <div class="results-wrap">
+        <div class="result-hero">
+          <div class="result-score-circle" id="score-circle">
+            <div class="result-score-num" id="result-pct">0%</div>
+          </div>
+          <div class="result-grade" id="result-grade">—</div>
+          <div style="color:var(--text2);font-size:15px;" id="result-msg"></div>
+          <div class="result-stats-row">
+            <div class="result-stat">
+              <div class="result-stat-val" style="color:var(--green)" id="r-correct">0</div>
+              <div class="result-stat-lbl">Correct</div>
+            </div>
+            <div class="result-stat">
+              <div class="result-stat-val" style="color:var(--red)" id="r-wrong">0</div>
+              <div class="result-stat-lbl">Wrong</div>
+            </div>
+            <div class="result-stat">
+              <div class="result-stat-val" style="color:var(--amber)" id="r-skipped">0</div>
+              <div class="result-stat-lbl">Skipped</div>
+            </div>
+            <div class="result-stat">
+              <div class="result-stat-val" id="r-time">—</div>
+              <div class="result-stat-lbl">Time Used</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="weak-section" id="weak-section"></div>
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;">
+          <button class="btn btn-primary" onclick="reviewMistakes()">📋 Review Mistakes</button>
+          <button class="btn btn-secondary" onclick="retryWrong()">🔁 Retry Wrong</button>
+          <button class="btn btn-ghost" onclick="showView('home')">🏠 Home</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD VIEW -->
+    <div id="view-dashboard" class="view">
+      <div class="dashboard-wrap">
+        <h2 style="font-family:var(--font-head);font-size:24px;font-weight:700;margin-bottom:24px;">📊 Performance Dashboard</h2>
+        <div class="dash-grid" id="dash-grid"></div>
+        <div class="dash-chart-wrap">
+          <div class="dash-chart-title">Accuracy by Topic</div>
+          <div class="topic-bars" id="topic-bars"></div>
+        </div>
+        <div class="dash-chart-wrap">
+          <div class="dash-chart-title">Question Types Performance</div>
+          <div class="topic-bars" id="type-bars"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEARCH VIEW -->
+    <div id="view-search" class="view">
+      <div class="search-wrap">
+        <h2 style="font-family:var(--font-head);font-size:24px;font-weight:700;margin-bottom:20px;">🔍 Search Questions</h2>
+        <input class="search-box" id="search-input" placeholder="Search by keyword (e.g. ESP, TLS, blockchain)..." oninput="doSearch()" autofocus>
+        <div id="search-results"></div>
+      </div>
+    </div>
+
+    <!-- BOOKMARKS VIEW -->
+    <div id="view-bookmarks" class="view">
+      <div style="padding:32px 48px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+          <h2 style="font-family:var(--font-head);font-size:24px;font-weight:700;">🔖 Bookmarked Questions</h2>
+          <button class="btn btn-primary" onclick="practiceBookmarks()">Practice Bookmarks</button>
+        </div>
+        <div id="bookmarks-list"></div>
+      </div>
+    </div>
+
+    <!-- REVIEW VIEW -->
+    <div id="view-review" class="view">
+      <div style="padding:32px 48px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+          <h2 style="font-family:var(--font-head);font-size:24px;font-weight:700;">📋 Incorrect Answers</h2>
+          <button class="btn btn-primary" onclick="retryWrong()">Retry All Wrong</button>
+        </div>
+        <div id="review-list"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav">
+  <div class="mobile-nav-inner">
+    <button class="mobile-nav-btn active" onclick="showView('home')"><span class="mn-icon">🏠</span>Home</button>
+    <button class="mobile-nav-btn" onclick="startPractice(null)"><span class="mn-icon">📖</span>Practice</button>
+    <button class="mobile-nav-btn" onclick="startExam()"><span class="mn-icon">⏱️</span>Exam</button>
+    <button class="mobile-nav-btn" onclick="showView('dashboard')"><span class="mn-icon">📊</span>Stats</button>
+    <button class="mobile-nav-btn" onclick="showView('bookmarks')"><span class="mn-icon">🔖</span>Saved</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// QUESTION BANK
+// ============================================================
+const CHAPTERS = [
+  {
+    id: 'vpn1',
+    title: 'VPN Fundamentals',
+    subtitle: 'Chapter 1 — Core Concepts',
+    desc: 'VPN definitions, types, tunneling, encryption, authentication, and real-world use.',
+    icon: '🔐',
+    color: 'var(--accent)',
+    qids: []
+  },
+  {
+    id: 'ipsec',
+    title: 'IPsec & SSL/TLS',
+    subtitle: 'Chapters 2–3 — Protocols & Security',
+    desc: 'IPsec protocols (AH/ESP), modes, IKE, SSL/TLS, handshake, certificates, attacks.',
+    icon: '🛡️',
+    color: 'var(--teal)',
+    qids: []
+  },
+  {
+    id: 'blockchain',
+    title: 'Blockchain Technology',
+    subtitle: 'Chapter 4 — Distributed Ledgers',
+    desc: 'Blockchain anatomy, cryptography, P2P networks, types, features, and cybersecurity use cases.',
+    icon: '⛓️',
+    color: 'var(--purple)',
+    qids: []
+  }
+];
+
+const Q = [
+// ============================================================
+// CHAPTER 1: VPN FUNDAMENTALS
+// ============================================================
+{
+  id:1, ch:'vpn1', type:'mcq', diff:'medium',
+  text:'A VPN is described as <strong>"virtual"</strong> because it:',
+  opts:['Encrypts all data using virtual keys','Uses shared public infrastructure rather than a dedicated physical link','Creates virtual IP addresses for all users','Operates at the virtual machine layer of the network'],
+  ans:1,
+  exp:'Virtual in VPN means no dedicated physical wire — it uses existing shared infrastructure (the internet). The "private" part comes from encryption and authentication, not physical separation. This is a common trap: students confuse "virtual" with encryption or with VMs.',
+  tip:'Think: Virtual = No physical cable, Private = Encrypted, Network = Connects devices.'
+},
+{
+  id:2, ch:'vpn1', type:'tf', diff:'medium',
+  text:'True or False: From the perspective of the destination server, all traffic through a VPN appears to originate from the <strong>client\'s real IP address</strong>.',
+  opts:['True','False'],
+  ans:1,
+  exp:'FALSE. This is a classic trap. When using a VPN, traffic appears to originate from the VPN server\'s IP address, NOT the client\'s real address. This is called IP masking — a core VPN function that hides the client\'s real identity and location.',
+  tip:'Key VPN function: IP Masking = your real IP is HIDDEN, traffic appears to come from VPN server.'
+},
+{
+  id:3, ch:'vpn1', type:'mcq', diff:'medium-hard',
+  text:'Which combination correctly represents ALL four core VPN functions?',
+  opts:['Encryption, Tunneling, Routing, Authentication','Encryption, Integrity, Authentication, IP Masking','Confidentiality, Availability, Integrity, Non-repudiation','Compression, Encryption, Tunneling, Firewalling'],
+  ans:1,
+  exp:'The four core VPN functions are: Encryption (confidentiality), Integrity (tamper detection), Authentication (authorized access only), and IP Masking (hiding real IP). Tunneling is the mechanism, not a separate function. The CIA triad is a different framework. Firewalling is unrelated.',
+  tip:'Remember: E-I-A-M: Encryption · Integrity · Authentication · Masking'
+},
+{
+  id:4, ch:'vpn1', type:'mcq', diff:'medium',
+  text:'A <strong>Site-to-Site VPN</strong> primarily differs from a Remote Access VPN in that:',
+  opts:['Site-to-Site requires VPN client software on each user\'s device','Site-to-Site connects entire networks; individual user devices need no special VPN configuration','Site-to-Site only works within the same country','Site-to-Site uses SSL while Remote Access uses IPsec'],
+  ans:1,
+  exp:'Site-to-Site VPNs connect two entire networks (e.g., branch offices). The VPN gateways handle encryption/decryption transparently — individual end-user devices do NOT need VPN software installed. In contrast, Remote Access VPN requires client software or configuration on each individual device.',
+  tip:'Site-to-Site = network-to-network, handled by gateways, users unaware. Remote Access = individual device needs client.'
+},
+{
+  id:5, ch:'vpn1', type:'mcq', diff:'medium',
+  text:'Which VPN type is MOST suitable for a managed corporate environment where IT wants granular control over resource access and often pairs with MFA?',
+  opts:['Site-to-Site VPN','Remote Access VPN','Client-to-Site VPN','Peer-to-Peer VPN'],
+  ans:2,
+  exp:'Client-to-Site VPN is used in managed corporate environments. IT enforces security policies and access controls at the VPN gateway level. It\'s often paired with multi-factor authentication (MFA) and gives more control than basic remote access. Remote Access VPN is more general; Site-to-Site connects networks.',
+  tip:'Client-to-Site = centralized control + MFA + IT-managed access policies.'
+},
+{
+  id:6, ch:'vpn1', type:'tf', diff:'medium',
+  text:'True or False: In a VPN, the encrypted tunnel ensures that even the ISP (Internet Service Provider) cannot read the content of your data.',
+  opts:['True','False'],
+  ans:0,
+  exp:'TRUE. The encryption creates an encrypted tunnel between the client device and the VPN server. Since the data is encrypted before leaving the client, the ISP only sees ciphertext — they cannot read the actual content. This is a key benefit: protection from eavesdropping even by your own ISP.',
+  tip:'VPN encrypts BEFORE data leaves your device. ISP sees only ciphertext.'
+},
+{
+  id:7, ch:'vpn1', type:'ms', diff:'medium-hard',
+  text:'Select ALL that apply: Which of the following are examples of commercial Remote Access VPN implementations mentioned in the slides?',
+  opts:['Cisco AnyConnect','OpenVPN','WireGuard','IPsec with IKEv2 only'],
+  ans:[0,1,2],
+  exp:'Cisco AnyConnect, OpenVPN, and WireGuard are all cited as common Remote Access VPN implementations. IPsec with IKEv2 alone is not a standalone VPN client product — it\'s a protocol. The slides specifically name these three for Remote Access VPNs.',
+  tip:'Three named implementations: Cisco AnyConnect, OpenVPN, WireGuard.'
+},
+{
+  id:8, ch:'vpn1', type:'mcq', diff:'hard',
+  text:'A company with three branch offices wants all employees at each location to communicate as if on the same local network, WITHOUT requiring any VPN software on employee laptops. What is the correct VPN architecture?',
+  opts:['Remote Access VPN at each site','Client-to-Site VPN for all employees','Site-to-Site VPN with gateways at each location','SSL VPN deployed on each workstation'],
+  ans:2,
+  exp:'Site-to-Site VPN is the answer. Gateways at each site handle encryption/decryption transparently. Employee laptops require NO special VPN configuration. This is the defining characteristic of Site-to-Site VPN — the gateway does the work, not the individual devices.',
+  tip:'Key differentiator: Site-to-Site = NO VPN software on user devices; the gateway handles everything.'
+},
+
+// ============================================================
+// CHAPTER 2: IPSEC ARCHITECTURE
+// ============================================================
+{
+  id:9, ch:'ipsec', type:'mcq', diff:'medium',
+  text:'IPsec operates at which layer of the OSI model?',
+  opts:['Layer 7 — Application','Layer 4 — Transport','Layer 3 — Network','Layer 2 — Data Link'],
+  ans:2,
+  exp:'IPsec operates at Layer 3 — the Network Layer. This is crucial: it means IPsec secures ALL traffic at the packet level, regardless of application. In contrast, TLS/SSL operates at Layer 7 (Application Layer) — this distinction is a very common exam question. IPsec being at Layer 3 makes it transparent to applications.',
+  tip:'IPsec = Layer 3 (Network). TLS/SSL = Layer 7 (Application). This difference is exam gold.'
+},
+{
+  id:10, ch:'ipsec', type:'tf', diff:'medium',
+  text:'True or False: IPsec is a proprietary protocol suite developed by a specific vendor.',
+  opts:['True','False'],
+  ans:1,
+  exp:'FALSE. IPsec is an OPEN STANDARDS framework — not proprietary. It was developed through the IETF standardization process and is implemented by many vendors interoperably. This makes it different from vendor-specific VPN solutions and is why it\'s widely deployed across heterogeneous environments.',
+  tip:'IPsec = open standard. This is specifically stated as a "key characteristic" in the slides.'
+},
+{
+  id:11, ch:'ipsec', type:'mcq', diff:'medium-hard',
+  text:'Which IPsec security service SPECIFICALLY prevents an attacker from capturing a valid packet and successfully re-transmitting it later?',
+  opts:['Confidentiality','Data Integrity','Anti-Replay Protection','Origin Authentication'],
+  ans:2,
+  exp:'Anti-Replay Protection is the specific service for this attack. Each IPsec packet carries a unique sequence number. The receiver tracks these numbers and REJECTS any duplicate or out-of-window packets. Integrity prevents modification but doesn\'t stop re-transmission of an unmodified captured packet. Authentication verifies identity.',
+  tip:'Anti-Replay = sequence numbers. Integrity = hash checking. These solve DIFFERENT problems.'
+},
+{
+  id:12, ch:'ipsec', type:'mcq', diff:'medium',
+  text:'What is the current <strong>gold standard</strong> bulk encryption algorithm in IPsec?',
+  opts:['DES (56-bit)','3DES (168-bit)','SEAL','AES (128/192/256-bit)'],
+  ans:3,
+  exp:'AES is the current gold standard — strongest security, hardware-accelerated, and most widely deployed. The progression: DES (legacy, no longer secure) → 3DES (stronger but slower, being phased out) → SEAL (stream cipher, low CPU cost) → AES (current standard). This is a likely exam ordering/identification question.',
+  tip:'Evolution: DES → 3DES → SEAL → AES. AES wins: hardware acceleration + strongest security.'
+},
+{
+  id:13, ch:'ipsec', type:'mcq', diff:'hard',
+  text:'In the Diffie-Hellman key exchange, what is TRUE about the shared secret?',
+  opts:['The shared secret is transmitted encrypted over the public channel','Both parties must first meet privately to agree on the secret before using DH','Neither party sends the actual secret; both independently compute it from exchanged public values','The shared secret is stored in DH groups 14, 19, and 20 for retrieval'],
+  ans:2,
+  exp:'This is the elegance of DH: Neither party sends the secret. They exchange public values; an eavesdropper who captures those values cannot derive the actual secret. Each party independently computes the SAME shared secret using their own private key + the other\'s public value. DH groups define the key size/algorithm, not stored secrets.',
+  tip:'DH magic: Public values exchanged → private keys never sent → both arrive at same secret independently.'
+},
+{
+  id:14, ch:'ipsec', type:'ms', diff:'medium-hard',
+  text:'Select ALL IPsec security services provided (choose all that apply):',
+  opts:['Confidentiality (encryption)','Data Integrity','Anti-Replay Protection','Non-repudiation','Origin Authentication','Key Management via IKE'],
+  ans:[0,1,2,4,5],
+  exp:'IPsec provides: Confidentiality, Data Integrity, Anti-Replay Protection, Origin Authentication, and Key Management via IKE. NON-REPUDIATION is listed under cryptography generally and blockchain digital signatures, but is NOT explicitly listed as a core IPsec security service in the slides. This is a subtle trap.',
+  tip:'5 IPsec services: Confidentiality · Integrity · Anti-Replay · Origin Authentication · Key Management'
+},
+
+// ============================================================
+// AH vs ESP
+// ============================================================
+{
+  id:15, ch:'ipsec', type:'mcq', diff:'medium',
+  text:'Authentication Header (AH) provides all of the following EXCEPT:',
+  opts:['Data origin authentication','Anti-replay protection','Payload encryption','IP header protection'],
+  ans:2,
+  exp:'AH does NOT provide encryption. This is the single most important AH limitation. AH provides: data origin authentication, connectionless integrity, anti-replay protection, and IP header protection. Anyone intercepting AH-protected traffic CAN read the data — they just cannot modify it undetected.',
+  tip:'AH = No encryption. AH authenticates but doesn\'t hide. ESP encrypts. This is THE classic AH trap.'
+},
+{
+  id:16, ch:'ipsec', type:'mcq', diff:'medium-hard',
+  text:'Which statement about ESP (Encapsulating Security Payload) is CORRECT?',
+  opts:['ESP provides encryption but cannot authenticate packets','ESP\'s authentication is mandatory and cannot be disabled','ESP provides encryption, optional authentication, and anti-replay support','ESP protects the outer IP header in transport mode'],
+  ans:2,
+  exp:'ESP provides: encryption (mandatory), authentication (optional), and anti-replay support. Crucially, ESP\'s authentication is OPTIONAL — ESP can be used for encryption only. Also, in transport mode, ESP does NOT protect the outer IP header — only the inner packet payload. In tunnel mode, the entire original packet is protected inside a new outer packet.',
+  tip:'ESP encryption = mandatory. ESP authentication = OPTIONAL. AH authentication = covers outer header.'
+},
+{
+  id:17, ch:'ipsec', type:'match', diff:'medium',
+  text:'Match each IPsec feature to the correct protocol (AH or ESP):',
+  opts:['AH — Authentication Header', 'ESP — Encapsulating Security Payload'],
+  pairs:[
+    {left:'Payload encryption', right:1},
+    {left:'IP header authentication', right:0},
+    {left:'Optional authentication', right:1},
+    {left:'Standard for modern VPN deployments', right:1},
+    {left:'Integrity without encryption', right:0}
+  ],
+  exp:'AH: provides IP header authentication, integrity without encryption — used in rare integrity-only scenarios. ESP: provides payload encryption, optional authentication, anti-replay — the standard for ALL modern VPN deployments due to encryption capability.',
+  tip:'AH = authentication, no encryption. ESP = encryption + optional auth. ESP wins in modern deployments.'
+},
+{
+  id:18, ch:'ipsec', type:'tf', diff:'medium',
+  text:'True or False: AH and ESP can be used simultaneously when both full IP header integrity and payload encryption are required.',
+  opts:['True','False'],
+  ans:0,
+  exp:'TRUE. AH and ESP CAN be used together — AH provides full IP header protection (including outer header) while ESP provides payload encryption. However, the slides note this is UNCOMMON in practice. This is a subtle trap: students may assume they\'re mutually exclusive.',
+  tip:'AH + ESP = possible but uncommon. Usually just ESP is sufficient for most deployments.'
+},
+{
+  id:19, ch:'ipsec', type:'mcq', diff:'medium',
+  text:'Why is ESP the MOST commonly deployed IPsec protocol in modern VPN implementations?',
+  opts:['Because AH was deprecated in 2018','Because ESP protects the outer IP header better than AH','Because ESP provides encryption capability — AH does not','Because ESP uses less CPU than AH'],
+  ans:2,
+  exp:'ESP is dominant because it provides encryption. Without encryption, confidentiality is not achieved — data is readable by anyone intercepting it. AH only provides integrity/authentication without hiding content. Modern VPNs require confidentiality, so ESP is the default choice. AH is NOT deprecated — it\'s just rarely needed.',
+  tip:'ESP = encryption. AH = no encryption. Encryption is non-negotiable for modern VPNs → ESP wins.'
+},
+
+// ============================================================
+// TRANSPORT VS TUNNEL MODE
+// ============================================================
+{
+  id:20, ch:'ipsec', type:'mcq', diff:'medium',
+  text:'In <strong>Transport Mode</strong>, what remains VISIBLE to intermediate routers and devices?',
+  opts:['Only the encrypted payload','Nothing — everything is hidden','The original IP header with source and destination addresses','The VPN gateway addresses only'],
+  ans:2,
+  exp:'In Transport Mode, the ORIGINAL IP header remains intact and visible. This means intermediate routers can see the actual source/destination IP addresses of the communicating hosts. Only the upper-layer payload (TCP/UDP data) is protected. This exposes network topology — a key weakness of Transport Mode.',
+  tip:'Transport Mode: original IP header = VISIBLE. Tunnel Mode: original header = HIDDEN inside new outer packet.'
+},
+{
+  id:21, ch:'ipsec', type:'mcq', diff:'medium',
+  text:'A company needs to connect two branch offices over the internet, hiding internal IP addressing from external observation. Which IPsec mode should be used?',
+  opts:['Transport Mode — lower overhead is preferred','Tunnel Mode — it encapsulates the entire original IP packet','Either mode works equally well for this purpose','AH-only mode provides sufficient protection'],
+  ans:1,
+  exp:'Tunnel Mode is correct. It encapsulates the ENTIRE original IP packet (including its header) inside a new outer IP packet. The outer header contains VPN gateway addresses, not internal host addresses. This hides internal network topology. This is the PRIMARY use case for site-to-site VPN gateways.',
+  tip:'Tunnel Mode = wraps entire packet. Outer header = gateway IPs. Internal addresses = HIDDEN.'
+},
+{
+  id:22, ch:'ipsec', type:'cmp', diff:'medium-hard',
+  text:'Compare Transport Mode vs. Tunnel Mode. Which statement is <strong>INCORRECT</strong>?',
+  opts:['Transport Mode has lower overhead because no additional IP header is added','Tunnel Mode hides internal network topology by using gateway addresses in the outer header','Transport Mode is the standard choice for site-to-site enterprise VPN gateways','Tunnel Mode encrypts the entire original IP packet including its header'],
+  ans:2,
+  exp:'INCORRECT statement: Transport Mode is the standard for site-to-site enterprise VPNs. The OPPOSITE is true — Tunnel Mode is the standard for site-to-site VPN gateways. Transport Mode is for host-to-host (peer-to-peer) communication. This is the key distinction: Transport = end hosts, Tunnel = gateway deployments.',
+  tip:'Transport Mode = host-to-host. Tunnel Mode = gateway-to-gateway (site-to-site). This is reversed in trick questions.'
+},
+{
+  id:23, ch:'ipsec', type:'fitb', diff:'medium',
+  text:'In Tunnel Mode, the outer IP header contains the addresses of the _______, not the actual communicating hosts.',
+  ans:'VPN gateways',
+  alts:['gateways','vpn gateway','vpn gateways','gateway'],
+  exp:'The outer IP header in Tunnel Mode references the VPN GATEWAYS at each site. This is why internal host addresses and network topology are hidden from external observers — they only see traffic between gateways, not the actual devices communicating behind them.',
+  tip:'Outer header = gateway IPs. Hides internal topology. This is the privacy advantage of Tunnel Mode.'
+},
+
+// ============================================================
+// SSL / TLS
+// ============================================================
+{
+  id:24, ch:'ipsec', type:'mcq', diff:'medium',
+  text:'SSL operates at which layer of the OSI model?',
+  opts:['Layer 2 — Data Link','Layer 3 — Network (same as IPsec)','Layer 4 — Transport','Layer 7 — Application'],
+  ans:3,
+  exp:'SSL/TLS operates at the Application Layer (Layer 7). This is in SHARP CONTRAST to IPsec at Layer 3. This difference drives the main SSL VPN vs. IPsec VPN comparison: SSL VPN can work through browsers without special client software because it operates at the application level using standard HTTPS (port 443).',
+  tip:'SSL = Layer 7. IPsec = Layer 3. This OSI layer difference drives ALL the other SSL vs IPsec differences.'
+},
+{
+  id:25, ch:'ipsec', type:'tf', diff:'medium',
+  text:'True or False: Modern secure connections still rely on SSL 3.0 since TLS is just a marketing rename.',
+  opts:['True','False'],
+  ans:1,
+  exp:'FALSE. SSL 2.0 and SSL 3.0 were formally DEPRECATED due to critical vulnerabilities (SSL 3.0 is vulnerable to the POODLE attack). Modern connections rely EXCLUSIVELY on TLS 1.2 or TLS 1.3. TLS is not a rename — it\'s a cryptographically improved replacement. Only TLS 1.2+ should be used.',
+  tip:'SSL is DEAD — deprecated due to POODLE (SSL 3.0) and other attacks. TLS 1.2/1.3 only.'
+},
+{
+  id:26, ch:'ipsec', type:'mcq', diff:'medium-hard',
+  text:'SSL uses a <strong>hybrid encryption model</strong>. What is the correct sequence?',
+  opts:['Symmetric encryption during handshake, then asymmetric for session data','Asymmetric encryption during handshake to establish trust, then symmetric for bulk data transfer','Only asymmetric encryption throughout the entire session','RSA for the first 50% of data, AES for the rest'],
+  ans:1,
+  exp:'SSL\'s hybrid model: 1) Asymmetric (RSA/DH/ECDH) during the handshake phase — computationally expensive but secure for key exchange. 2) Symmetric (AES/ChaCha20) for all bulk data — fast and efficient. This balances security (asymmetric solves key distribution) with performance (symmetric handles bulk traffic).',
+  tip:'Handshake = asymmetric (slow but secure). Session data = symmetric (fast). Never reversed.'
+},
+{
+  id:27, ch:'ipsec', type:'mcq', diff:'medium',
+  text:'What is the MAIN purpose of a Certificate Authority (CA) in the SSL/TLS ecosystem?',
+  opts:['To encrypt website data on behalf of the server','To issue, validate, and revoke SSL certificates — acting as a trusted third party','To manage encryption keys for all websites','To prevent DDoS attacks on web servers'],
+  ans:1,
+  exp:'CAs are trusted third-party organizations that: verify identity of certificate applicants, digitally sign certificates to guarantee authenticity, and maintain Certificate Revocation Lists (CRLs). They form the root of the internet\'s Public Key Infrastructure (PKI). Without CAs, anyone could create a fake certificate for any domain.',
+  tip:'CA = identity verifier + certificate signer + revocation manager. The trust anchor of the web.'
+},
+{
+  id:28, ch:'ipsec', type:'mcq', diff:'medium-hard',
+  text:'A bank\'s website needs the HIGHEST level of SSL certificate trust, including displaying the company name prominently in the browser. Which certificate type is required?',
+  opts:['Domain Validation (DV)','Organization Validation (OV)','Extended Validation (EV)','Wildcard Certificate'],
+  ans:2,
+  exp:'Extended Validation (EV) certificates: highest trust level, rigorous vetting of legal entity, physical address, and operational status, and display the company name in the browser. Required for banking and e-commerce. DV only verifies domain ownership (automated, no organizational identity). OV has moderate trust. Wildcard protects multiple subdomains.',
+  tip:'EV = highest trust + company name shown + rigorous vetting. Required for banking. DV = lowest (just domain check).'
+},
+{
+  id:29, ch:'ipsec', type:'mcq', diff:'medium',
+  text:'An organization has dozens of subdomains (e.g., mail.example.com, app.example.com, api.example.com). Which certificate type is MOST cost-effective?',
+  opts:['One EV certificate per subdomain','A Wildcard Certificate (*.example.com)','Multiple DV certificates','A Multi-Domain (SAN) Certificate for separate domains'],
+  ans:1,
+  exp:'A Wildcard Certificate (*.example.com) protects the primary domain AND all its subdomains with a single certificate — most cost-effective for one domain with many subdomains. SAN/Multi-Domain certificates are for protecting multiple DIFFERENT domain names (e.g., example.com, example.org, example.net).',
+  tip:'Wildcard (*.domain.com) = one domain, all subdomains. SAN = multiple different domains.'
+},
+{
+  id:30, ch:'ipsec', type:'mcq', diff:'medium-hard',
+  text:'Which SSL attack specifically DOWNGRADES a secure HTTPS connection to unencrypted HTTP?',
+  opts:['Man-in-the-Middle (MITM)','SSL Stripping','POODLE Attack','Certificate Spoofing'],
+  ans:1,
+  exp:'SSL Stripping is the specific attack that downgrades HTTPS to HTTP. The attacker intercepts the INITIAL connection before SSL negotiates, so the user communicates in plaintext while the attacker relays to the server over HTTPS. The user thinks they\'re secure but data is exposed. Mitigated by HTTP Strict Transport Security (HSTS).',
+  tip:'SSL Stripping = HTTPS downgraded to HTTP before handshake. Mitigated by HSTS. POODLE = SSL 3.0 vulnerability.'
+},
+{
+  id:31, ch:'ipsec', type:'cmp', diff:'hard',
+  text:'Comparing SSL VPN vs. IPsec VPN — which statement is CORRECT?',
+  opts:['SSL VPN requires dedicated VPN client software; IPsec VPN works through a browser','IPsec VPN is simpler to deploy because it uses standard HTTPS port 443','SSL VPN offers browser-based access and application-level access; IPsec VPN provides full network-level access','IPsec VPN provides better performance for web traffic than SSL VPN'],
+  ans:2,
+  exp:'SSL VPN: browser-based (no client needed), works through standard HTTPS port 443, provides application-level access, simpler deployment. IPsec VPN: requires dedicated client software, provides full network-level (Layer 3) access, used for site-to-site and power users, higher performance for large-volume tunneled traffic. They target different use cases.',
+  tip:'SSL VPN = browser, Layer 7, application access, simple. IPsec VPN = client required, Layer 3, full network, complex but powerful.'
+},
+{
+  id:32, ch:'ipsec', type:'ms', diff:'medium-hard',
+  text:'Select ALL security vulnerabilities or risks specifically associated with VPN usage (not SSL certificates):',
+  opts:['Performance degradation from encryption overhead','IP and DNS leaks from misconfigured clients','POODLE attack on SSL 3.0','Logging by VPN providers who may share data','VPN blocking by firewalls or ISPs'],
+  ans:[0,1,3,4],
+  exp:'VPN-specific risks: performance degradation, IP/DNS leaks, provider logging, and VPN blocking by firewalls/ISPs/censorship systems. POODLE is an SSL 3.0 protocol vulnerability — it\'s an SSL/TLS risk, not a VPN-operational risk. This question tests whether you can separate SSL risks from VPN deployment risks.',
+  tip:'POODLE = SSL protocol bug, not VPN risk. VPN risks: performance, leaks, logging, blocking.'
+},
+{
+  id:33, ch:'ipsec', type:'mcq', diff:'medium',
+  text:'What is the recommended mitigation for IP and DNS leaks in a VPN?',
+  opts:['Use EV certificates instead of DV certificates','Regularly test using tools like ipleak.net and dnsleaktest.com','Switch from IPsec to SSL VPN','Enable POODLE attack prevention protocols'],
+  ans:1,
+  exp:'The slides specifically recommend testing VPN connections using ipleak.net and dnsleaktest.com to confirm that no identifying information is exposed. IP/DNS leaks occur when misconfigured VPN clients expose the user\'s real IP or DNS queries despite the VPN being "connected" — defeating its privacy purpose.',
+  tip:'Test for leaks: ipleak.net and dnsleaktest.com. Named explicitly in best practices.'
+},
+{
+  id:34, ch:'ipsec', type:'fitb', diff:'medium',
+  text:'The _______ attack exploits SSL 3.0 specifically, which is one reason SSL 3.0 has been deprecated.',
+  ans:'POODLE',
+  alts:['poodle'],
+  exp:'The POODLE (Padding Oracle On Downgraded Legacy Encryption) attack targets SSL 3.0. It allows attackers to decrypt secure messages. This is specifically why SSL 3.0 was deprecated. Best practice states: disable SSL 3.0, TLS 1.0, TLS 1.1 — use only TLS 1.2 or TLS 1.3.',
+  tip:'POODLE → SSL 3.0 deprecated. BEAST/CRIME target TLS 1.0. Heartbleed = OpenSSL bug (not protocol).'
+},
+{
+  id:35, ch:'ipsec', type:'scen', diff:'hard',
+  text:'A corporate IT administrator is setting up remote access for employees working from home. They want: (1) no software installation on personal devices, (2) access to specific web applications only, (3) simple deployment through existing HTTPS infrastructure. Which solution is BEST?',
+  opts:['IPsec VPN in tunnel mode with IKEv2','Site-to-Site VPN between home and office','SSL VPN','AH-only IPsec in transport mode'],
+  ans:2,
+  exp:'SSL VPN perfectly matches all three requirements: (1) browser-based — no client software needed, (2) granular application-level access control — restrict to specific web apps, (3) operates over port 443 (standard HTTPS) — no special firewall rules. IPsec requires client software and provides full network access (too broad). Site-to-Site connects networks, not individual users.',
+  tip:'No software + web-app access + HTTPS port = SSL VPN. Full network access + site connection = IPsec.'
+},
+
+// ============================================================
+// CHAPTER 3: BLOCKCHAIN
+// ============================================================
+{
+  id:36, ch:'blockchain', type:'mcq', diff:'medium',
+  text:'Which combination correctly defines blockchain according to its technical definition?',
+  opts:['A centralized encrypted database with version control','A digital, decentralized, distributed public ledger with cryptographically linked blocks','A private cloud storage system with redundant copies','A peer-to-peer file sharing protocol with encryption'],
+  ans:1,
+  exp:'Blockchain is specifically defined as: digital (electronic form), decentralized (no single authority), distributed (copies across many nodes), with cryptographically linked blocks. "Public ledger" refers to the accessible record — though private blockchains exist. All five components matter: missing "cryptographically linked" would just be a distributed database.',
+  tip:'5 key terms: Digital + Decentralized + Distributed + Public Ledger + Cryptographically Linked.'
+},
+{
+  id:37, ch:'blockchain', type:'mcq', diff:'medium',
+  text:'What are the FIVE components of a blockchain block?',
+  opts:['Hash, nonce, timestamp, IP address, transaction data','Transaction data, timestamp, current hash, previous hash, digital signature','Block number, previous block, next block, data, checksum','Transaction data, encryption key, miner ID, timestamp, block size'],
+  ans:1,
+  exp:'Each block contains: Transaction Data (payload), Timestamp (chronological order), Current Hash (cryptographic fingerprint of this block), Previous Hash (links to prior block — creates the chain), and Digital Signature (proves originator identity). The "previous hash" field is what creates the chain — altering any block changes its hash, breaking all subsequent links.',
+  tip:'Block anatomy: Data + Timestamp + Current Hash + Previous Hash + Digital Signature. 5 components.'
+},
+{
+  id:38, ch:'blockchain', type:'tf', diff:'medium',
+  text:'True or False: In blockchain, if Block 3 is altered, only Block 3\'s hash changes — subsequent blocks are unaffected because they have already been sealed.',
+  opts:['True','False'],
+  ans:1,
+  exp:'FALSE. This is a critical concept trap. When Block 3 is altered, its hash changes. Block 4 contains Block 3\'s hash in its "previous hash" field — so Block 4 is now invalid. Block 5 references Block 4\'s hash — now also invalid. This CASCADE EFFECT makes tampering computationally infeasible and immediately detectable across the ENTIRE network.',
+  tip:'Altering one block = CASCADE FAILURE through all subsequent blocks. This is blockchain immutability.'
+},
+{
+  id:39, ch:'blockchain', type:'mcq', diff:'medium',
+  text:'In the blockchain transaction lifecycle, what is the CORRECT order of steps?',
+  opts:['Create → Sign → Verify → Group → Consensus → Add','Sign → Create → Verify → Add → Group → Consensus','Create → Verify → Sign → Group → Add → Consensus','Group → Sign → Verify → Create → Consensus → Add'],
+  ans:0,
+  exp:'The correct 6-step sequence: 1) Create (user initiates transaction) → 2) Sign (with sender\'s private key) → 3) Verify (nodes validate signature, balance, double-spend) → 4) Group (valid transactions bundled into a block) → 5) Consensus (network agrees on validity) → 6) Add (permanently appended, broadcast to all nodes).',
+  tip:'C-S-V-G-C-A: Create, Sign, Verify, Group, Consensus, Add. Memorize this lifecycle.'
+},
+{
+  id:40, ch:'blockchain', type:'mcq', diff:'medium',
+  text:'A digital signature in blockchain is created by:',
+  opts:['Encrypting the transaction data with the recipient\'s public key','Hashing the transaction data, then encrypting that hash with the sender\'s PRIVATE key','Hashing the transaction data twice and storing it in the block header','Encrypting the transaction data with a symmetric key shared between sender and receiver'],
+  ans:1,
+  exp:'Digital signature creation: 1) Hash the transaction data. 2) Encrypt that hash with the SENDER\'s PRIVATE key → this is the digital signature. Verification: any node decrypts the signature using the sender\'s PUBLIC key, then compares to the transaction hash. If they match = authentic. Private key proves ownership — only the legitimate owner could have signed.',
+  tip:'Sign = Hash → encrypt with PRIVATE key. Verify = decrypt with PUBLIC key → compare hashes.'
+},
+{
+  id:41, ch:'blockchain', type:'mcq', diff:'medium-hard',
+  text:'During transaction verification, nodes perform several checks. Which check SPECIFICALLY prevents someone from spending the same cryptocurrency twice?',
+  opts:['Signature Check','Balance Check','Double-Spend Check','Rejection Check'],
+  ans:2,
+  exp:'The Double-Spend Check specifically ensures the same asset (e.g., cryptocurrency) hasn\'t already been spent in a prior transaction recorded on the chain. The Signature Check verifies identity. The Balance/Authorization Check confirms sufficient funds. Without the double-spend check, someone could duplicate a transaction and spend the same coins multiple times.',
+  tip:'Double-spend = the defining problem blockchain solves. Signature = who. Balance = how much. Double-spend = already spent?'
+},
+{
+  id:42, ch:'blockchain', type:'ms', diff:'medium',
+  text:'Select ALL examples of what a "transaction" can represent on a blockchain (not limited to currency):',
+  opts:['Cryptocurrency transfer','Medical record verification','Digital identity registration','IoT device authentication','Supply chain goods movement','All of the above — blockchain is not limited to financial transactions'],
+  ans:[5],
+  exp:'ALL of the above is correct — a "transaction" in blockchain terms is ANY meaningful event needing secure recording: cryptocurrency, medical records, digital identity, IoT authentication, supply chain tracking. Blockchain is not limited to financial transactions. This "all of the above" option is the trap for students who think blockchain = Bitcoin only.',
+  tip:'Blockchain transactions = ANY event. Not just money. Medical, IoT, identity, supply chain all count.'
+},
+{
+  id:43, ch:'blockchain', type:'mcq', diff:'medium',
+  text:'What is the mathematical relationship between a private key and a public key in blockchain?',
+  opts:['They are randomly generated and completely independent of each other','You can compute the public key from the private key, but cannot reverse-engineer the private key from the public key','They are the same key used in different contexts','The public key is generated first, then the private key is derived from it'],
+  ans:1,
+  exp:'One-way mathematical relationship: PRIVATE KEY → PUBLIC KEY (possible). PUBLIC KEY → PRIVATE KEY (computationally infeasible — this is the foundation of blockchain security). The private key is generated first, then the public key is derived. Losing a private key means permanent loss of access — this one-way property is non-reversible.',
+  tip:'One-way: Private → Public (easy). Public → Private (impossible). This asymmetry = blockchain\'s security foundation.'
+},
+{
+  id:44, ch:'blockchain', type:'tf', diff:'medium',
+  text:'True or False: In a Public Key Infrastructure, the private key is shared freely with the network to enable anyone to verify transactions.',
+  opts:['True','False'],
+  ans:1,
+  exp:'FALSE. This reverses the roles. The PUBLIC key is shared freely — it\'s how others verify your signature. The PRIVATE key is NEVER shared — it\'s kept secret by the owner and used ONLY to sign transactions. Sharing a private key = losing control of all associated assets. This role reversal is a very common exam trap.',
+  tip:'PUBLIC key = share freely. PRIVATE key = NEVER share. Reversed roles = a very common trick question.'
+},
+{
+  id:45, ch:'blockchain', type:'mcq', diff:'medium',
+  text:'In a Peer-to-Peer (P2P) network, how does each node function?',
+  opts:['As a client only — requesting data from central servers','As a server only — providing data to clients','Simultaneously as both client AND server','As a validator node only — it cannot store data'],
+  ans:2,
+  exp:'In P2P networks, each node is SIMULTANEOUSLY both a client (requesting data) and a server (providing data). There is no central server — all nodes are equal peers. This is in contrast to the client-server model where all communication flows through a central server. This dual role enables decentralization.',
+  tip:'P2P node = client AND server simultaneously. No central server. Equal peers. Contrast with client-server.'
+},
+{
+  id:46, ch:'blockchain', type:'mcq', diff:'medium',
+  text:'Which property of P2P network architecture gives blockchain its resistance to single-point failures?',
+  opts:['Asymmetric encryption across all nodes','No single target to disable — hundreds/thousands of nodes hold copies','The central authority coordinates all backups','Each node uses a different encryption algorithm'],
+  ans:1,
+  exp:'No single point of failure: with hundreds or thousands of nodes each holding an identical copy of the ledger, there is no single server to attack or disable. Even if many nodes go offline simultaneously, the network continues operating. This is fundamentally different from a centralized database where one server failure = system failure.',
+  tip:'P2P + blockchain: no single target. Attacker must compromise 51%+ of ALL nodes simultaneously — economically infeasible.'
+},
+{
+  id:47, ch:'blockchain', type:'mcq', diff:'medium-hard',
+  text:'What would happen to blockchain\'s "shared ledger" if an attacker modifies the local blockchain copy on their own node?',
+  opts:['The entire network adopts the attacker\'s version','Only the attacker\'s node is affected; the rest of the network holds the correct version and rejects the tampered chain','The modified block becomes permanently sealed','The modification can only be detected if a CA revokes the block'],
+  ans:1,
+  exp:'If an attacker modifies their local copy, their chain becomes invalid (altered hash breaks subsequent block links). The rest of the network holds the CORRECT version. When nodes compare, the attacker\'s version is rejected as invalid. To successfully rewrite history, an attacker needs to control 51%+ of the network\'s computing power — the "51% attack threshold" — which is economically infeasible on large networks.',
+  tip:'Local tampering = immediately rejected by honest majority. 51% attack = only way to alter history, economically infeasible.'
+},
+{
+  id:48, ch:'blockchain', type:'mcq', diff:'medium',
+  text:'Which type of blockchain is FULLY OPEN — anyone can join, read, and participate in consensus without permission?',
+  opts:['Private Blockchain','Hybrid Blockchain','Consortium Blockchain','Public Blockchain'],
+  ans:3,
+  exp:'Public Blockchain: fully open, permissionless, maximally decentralized, fully transparent. Examples: Bitcoin, Ethereum. Trade-off: sacrifices transaction speed and privacy for openness. Private blockchain: permission required, organization-controlled, faster, private. Hybrid: combines both. Consortium is sometimes used for private multi-org blockchains (Hyperledger).',
+  tip:'Public = permissionless, anyone joins, slow but decentralized. Examples: Bitcoin, Ethereum.'
+},
+{
+  id:49, ch:'blockchain', type:'mcq', diff:'medium-hard',
+  text:'A healthcare company wants to store sensitive patient records securely but also publish audit hashes to enable regulatory compliance verification without exposing private data. Which blockchain architecture is MOST appropriate?',
+  opts:['Public blockchain — maximum transparency for compliance','Private blockchain — full control and confidentiality','Hybrid blockchain — private layer for data, public layer for audit hashes','Consortium blockchain with government nodes only'],
+  ans:2,
+  exp:'This is the textbook example of Hybrid blockchain use: private layer stores sensitive patient records (confidential), public chain receives anonymized audit hashes (verifiable by regulators). Neither purely public (exposes private data) nor purely private (lacks public verifiability) — hybrid provides the best of both.',
+  tip:'Hybrid = private data + public verifiability. Healthcare/compliance = perfect hybrid use case. Memorize this example.'
+},
+{
+  id:50, ch:'blockchain', type:'cmp', diff:'hard',
+  text:'Which statement about Private vs. Public blockchain is INCORRECT?',
+  opts:['Private blockchain has faster consensus because fewer nodes are involved','Public blockchain is fully transparent and permissionless','Private blockchain examples include Hyperledger Fabric and Corda','Private blockchain is more decentralized than public blockchain because only trusted entities participate'],
+  ans:3,
+  exp:'INCORRECT statement: Private blockchain is MORE decentralized. The opposite is true — PRIVATE blockchains SACRIFICE decentralization for speed and privacy. They\'re controlled by one organization or consortium. PUBLIC blockchains are more decentralized (thousands of global nodes). "Only trusted entities" = centralized control, not decentralization.',
+  tip:'Private = LESS decentralized (controlled, faster, private). Public = MORE decentralized (open, slower, transparent).'
+},
+{
+  id:51, ch:'blockchain', type:'mcq', diff:'medium',
+  text:'Which blockchain feature describes the property that once data is written to the chain, it CANNOT be changed or deleted without detection?',
+  opts:['Decentralization','Transparency','Immutability','Security'],
+  ans:2,
+  exp:'Immutability is the defining property: once data is written, practically impossible to change without detection. This is enforced by the hash-chain linkage (altering one block breaks all subsequent), network-wide rejection (honest majority rejects tampered chains), and the 51% attack threshold (controlling 51%+ of computing power is economically infeasible).',
+  tip:'Immutability = unchangeable after writing. Enforced by: hash chain + network majority rejection + 51% threshold.'
+},
+{
+  id:52, ch:'blockchain', type:'ms', diff:'medium-hard',
+  text:'Select ALL cybersecurity applications of blockchain mentioned in the slides:',
+  opts:['Secure DNS (decentralized, DDoS-resistant)','IoT device authentication','DDoS resistance through decentralization','Secure messaging with verified identities','Self-sovereign identity management','Log integrity preservation','Smart contract access control'],
+  ans:[0,1,2,3,4,5,6],
+  exp:'ALL seven are listed blockchain cybersecurity applications in the slides: Secure DNS, IoT Authentication, DDoS Resistance, Secure Messaging, Identity & Access (self-sovereign), Log Integrity (on-chain tamper-evident logs), and Smart Contract Firewalls. This "all of the above" trap tests whether students read the full security use cases section.',
+  tip:'7 blockchain security applications — all in the slides. When you see a complete matching list, consider "all" as a valid answer.'
+},
+{
+  id:53, ch:'blockchain', type:'fitb', diff:'medium',
+  text:'To successfully rewrite blockchain history, an attacker would need to control more than _____% of the entire network\'s computing power simultaneously.',
+  ans:'50',
+  alts:['51', '50%', '51%'],
+  exp:'The 51% Attack Threshold: an attacker must control more than 50% of the network\'s total computing power (hash rate) simultaneously to rewrite history. This is described as "economically unfeasible on large networks" — the cost of acquiring 51%+ of Bitcoin\'s computing power would exceed the potential gain.',
+  tip:'51% attack = majority computing power = can rewrite history. Economically infeasible on large networks like Bitcoin.'
+},
+{
+  id:54, ch:'blockchain', type:'mcq', diff:'medium',
+  text:'In blockchain, transparency does NOT mean:',
+  opts:['All transaction records are publicly viewable on public blockchains','Participants can independently verify any record','All actions are traceable to the originator\'s public key','Personal real-world identities of all users are exposed'],
+  ans:3,
+  exp:'Transparency in blockchain does NOT expose personal real-world identities. Blockchain uses PSEUDONYMOUS addresses (public keys/wallet addresses) — not names or personal information. Records are verifiable and traceable to a public key, but linking that public key to a real person requires additional investigation. This is why Bitcoin is "pseudonymous" not "anonymous."',
+  tip:'Blockchain transparency = verifiable transactions, NOT real-world identity exposure. Public key ≠ real name.'
+},
+{
+  id:55, ch:'blockchain', type:'scen', diff:'hard',
+  text:'A logistics company tracks 10,000 products moving from manufacturers to customers. They need full supply-chain transparency for customers AND confidential pricing terms with suppliers. Which blockchain solution fits BEST?',
+  opts:['Public blockchain for everything — maximum transparency','Private blockchain only — confidential but no customer transparency','Hybrid blockchain — public tracking data, private pricing terms','Consortium blockchain among only the top 10 suppliers'],
+  ans:2,
+  exp:'Hybrid blockchain: public layer for customer-facing product tracking (full transparency, counterfeit detection) + private layer for confidential pricing agreements with suppliers. Neither fully public (exposes confidential supplier terms) nor fully private (loses customer-facing transparency). This is a supply chain hybrid blockchain application.',
+  tip:'Supply chain hybrid: public = product tracking, private = confidential business terms. Classic real-world hybrid use case.'
+},
+{
+  id:56, ch:'blockchain', type:'tf', diff:'medium',
+  text:'True or False: Blockchain can only be used for financial transactions and cryptocurrency.',
+  opts:['True','False'],
+  ans:1,
+  exp:'FALSE. Blockchain can record ANY meaningful event: cryptocurrency, medical records, digital identity, IoT device authentication, supply chain movement, security logs, smart contracts, DNS records, and more. The "transaction" concept is generalized — it\'s any event needing secure, verifiable recording. Students who equate blockchain = Bitcoin will get this wrong.',
+  tip:'Blockchain ≠ cryptocurrency only. Any event, record, or asset can be tracked. Bitcoin is just one application.'
+},
+{
+  id:57, ch:'blockchain', type:'mcq', diff:'medium-hard',
+  text:'Cryptography provides all of the following properties for blockchain EXCEPT:',
+  opts:['Confidentiality — only authorized parties can read encrypted data','Integrity — hash functions detect unauthorized modifications','Authentication — digital signatures prove sender identity','Availability — ensures the blockchain network is always online'],
+  ans:3,
+  exp:'Availability (ensuring the network is always online) is a cybersecurity concept (from the CIA triad) but is NOT provided by cryptography — it\'s provided by the P2P/decentralized architecture. Cryptography provides: Confidentiality, Integrity, Authentication, and Non-Repudiation. Availability comes from decentralization, not cryptographic functions.',
+  tip:'Cryptography = CIA - Availability + Non-repudiation. Availability = P2P architecture. Don\'t confuse cryptography with architecture.'
+},
+{
+  id:58, ch:'blockchain', type:'mcq', diff:'hard',
+  text:'What happens to blockchain\'s "shared ledger" when updates occur?',
+  opts:['Only the mining nodes update first, then distribute to others after 24 hours','The central coordinator broadcasts updates to registered nodes','Updates propagate to all nodes in real time; every node immediately receives the latest chain version','Updates are stored in a pending pool and applied weekly during maintenance windows'],
+  ans:2,
+  exp:'When a block is added: it\'s immediately broadcast to EVERY node in the network in real time. All nodes update to the latest version simultaneously. There is no central coordinator — propagation is peer-to-peer. No node has a "master" copy. This real-time synchronization ensures consensus is maintained across the entire distributed system.',
+  tip:'Blockchain updates: immediate + broadcast to all nodes + real time. No central coordinator. No delay.'
+},
+{
+  id:59, ch:'blockchain', type:'mcq', diff:'medium',
+  text:'Traditional centralized databases vs. blockchain: which is a key advantage of blockchain\'s shared ledger in finance or healthcare?',
+  opts:['Blockchain is always faster than traditional databases','Blockchain eliminates the need for costly reconciliation between parties','Blockchain requires less storage than traditional databases','Blockchain allows a central authority to easily override incorrect records'],
+  ans:1,
+  exp:'The shared ledger eliminates costly reconciliation between parties. In traditional finance or healthcare, two organizations maintain SEPARATE records and must periodically reconcile them — expensive and error-prone. Blockchain gives both parties the SAME immutable record, removing the need for reconciliation. Speed and storage are not blockchain advantages over traditional databases.',
+  tip:'Blockchain shared ledger = eliminates reconciliation. Both parties see same record. Major efficiency gain in finance/healthcare.'
+},
+{
+  id:60, ch:'blockchain', type:'cmp', diff:'hard',
+  text:'Which of the following is NOT one of the "Four Pillars" of blockchain listed in the slides?',
+  opts:['Security','Immutability','Transparency','Scalability'],
+  ans:3,
+  exp:'The Four Pillars of Blockchain per the slides are: Security, Immutability, Transparency, and Decentralization. "Scalability" is NOT listed — in fact, scalability is more often discussed as a blockchain LIMITATION (public blockchains sacrifice speed/scalability for openness). Confusing "scalability" with "decentralization" is a common trap.',
+  tip:'4 pillars: Security + Immutability + Transparency + DECENTRALIZATION. NOT scalability — that\'s actually a limitation.'
+},
+{
+  id:61, ch:'blockchain', type:'mcq', diff:'medium',
+  text:'What does "censorship resistance" mean in the context of blockchain\'s P2P architecture?',
+  opts:['The blockchain encrypts all content to prevent reading','A central authority filters harmful content before adding it to blocks','Without a central authority, no single entity can block valid transactions or silence participants','Blockchain automatically removes fraudulent transactions before they are recorded'],
+  ans:2,
+  exp:'Censorship resistance: because there is NO central authority, no government, corporation, or ISP can block valid transactions from being included in the blockchain. Compare to a centralized payment processor (e.g., bank) that can freeze accounts or refuse transactions. This property is deliberate and fundamental to decentralized design.',
+  tip:'No central authority = no entity can selectively block transactions = censorship resistance. This is architectural, not cryptographic.'
+},
+{
+  id:62, ch:'blockchain', type:'fitb', diff:'medium',
+  text:'Bitcoin and Ethereum are examples of _______ blockchains.',
+  ans:'public',
+  alts:['Public', 'public blockchain', 'Public Blockchain'],
+  exp:'Bitcoin (digital currency) and Ethereum (smart contracts and decentralized applications) are the primary examples of PUBLIC blockchains — fully open, permissionless, maximally decentralized. Hyperledger Fabric and Corda are examples of PRIVATE blockchains.',
+  tip:'Public: Bitcoin, Ethereum. Private: Hyperledger Fabric, Corda. Know these examples — they\'re explicitly named.'
+},
+{
+  id:63, ch:'blockchain', type:'scen', diff:'hard',
+  text:'An attacker gains control of a powerful server that equals 30% of a major public blockchain\'s computing power. They attempt to rewrite the last 10 blocks to reverse their transactions. Will they succeed?',
+  opts:['Yes — 30% is enough to initiate a 51% attack','No — they need more than 50% of computing power for a successful 51% attack','Yes — once blocks are created, any node can rewrite them locally','No — blocks older than 6 are automatically locked and cannot be altered by any means'],
+  ans:1,
+  exp:'No. To successfully rewrite blockchain history, an attacker needs MORE THAN 50% of the network\'s computing power (51% attack). With only 30%, the honest majority (70%) produces the longer valid chain faster than the attacker can, and the network rejects the attacker\'s version. This threshold is what makes blockchain immutability practical on large networks.',
+  tip:'51% attack requires >50% computing power. 30% = fail. The honest majority always outpaces the attacker.'
+},
+{
+  id:64, ch:'ipsec', type:'mcq', diff:'hard',
+  text:'IKE (Internet Key Exchange) is described as automating which THREE functions?',
+  opts:['Encryption, Compression, Routing','Negotiation, Generation, and Periodic Renewal of cryptographic keys','Authentication, Tunneling, and Packet forwarding','Certificate issuance, Revocation, and Distribution'],
+  ans:1,
+  exp:'IKE automates: (1) NEGOTIATION of cryptographic parameters, (2) GENERATION of cryptographic keys, and (3) PERIODIC RENEWAL of keys (supporting forward secrecy). This eliminates the need for manual key distribution — a major security and operational improvement. IKE also handles peer authentication as part of the setup process.',
+  tip:'IKE = Negotiate + Generate + Renew keys. Plus: peer authentication. Eliminates manual key distribution.'
+},
+{
+  id:65, ch:'ipsec', type:'mcq', diff:'medium',
+  text:'Which HMAC algorithm represents the CURRENT standard for IPsec data integrity and authentication?',
+  opts:['HMAC-MD5','HMAC-SHA-1','HMAC-SHA-256 / SHA-384','HMAC-DES'],
+  ans:2,
+  exp:'The evolution of HMAC algorithms: HMAC-MD5 (legacy — weakened, limited use) → HMAC-SHA-1 (transitional) → HMAC-SHA-256 / SHA-384 (CURRENT STANDARD). HMAC-DES doesn\'t exist as an HMAC variant. This mirrors the encryption algorithm progression: old → current. Know which is current vs. legacy.',
+  tip:'HMAC evolution: MD5 (weak) → SHA-1 (transitional) → SHA-256/SHA-384 (current). Same pattern as AES replacing DES.'
+},
+{
+  id:66, ch:'vpn1', type:'mcq', diff:'medium',
+  text:'Why is symmetric encryption used for BULK DATA in SSL/TLS rather than asymmetric encryption?',
+  opts:['Symmetric encryption provides better authentication','Asymmetric encryption requires a CA; symmetric does not','Symmetric encryption is significantly faster — essential for per-packet processing efficiency','Symmetric keys can be transmitted openly without risk'],
+  ans:2,
+  exp:'Symmetric encryption is used for bulk data because it is SIGNIFICANTLY FASTER than asymmetric encryption. IP packets may arrive out of sequence, and fast per-packet processing is essential to avoid network bottlenecks. Asymmetric encryption is computationally expensive — suitable only for the handshake phase where it\'s used sparingly.',
+  tip:'Symmetric = fast = bulk data. Asymmetric = slow = handshake/key exchange only. Speed determines the split.'
+},
+{
+  id:67, ch:'ipsec', type:'mcq', diff:'hard',
+  text:'What is the purpose of NAT-T (NAT Traversal) in IPsec deployments?',
+  opts:['To accelerate encryption using hardware','To enable IPsec to work through Network Address Translation devices using UDP port 4500','To replace IKE with a simpler key exchange','To tunnel AH traffic through ESP without modification'],
+  ans:1,
+  exp:'NAT Traversal (NAT-T) enables IPsec to work through NAT devices (e.g., home routers). IPsec normally conflicts with NAT because NAT changes IP addresses and port numbers, breaking IPsec\'s integrity checks. NAT-T encapsulates IPsec packets in UDP (port 4500) to allow them to pass through NAT. This is listed as a deployment complexity/limitation.',
+  tip:'NAT + IPsec = problem. NAT-T = solution. Uses UDP port 4500. Standard IPsec uses UDP 500 and protocol 50 (ESP).'
+},
+{
+  id:68, ch:'vpn1', type:'mcq', diff:'medium',
+  text:'Which statement about IPsec\'s "transparent" operation is correct?',
+  opts:['Applications must be specially coded to work with IPsec','IPsec requires a user-visible login step before each session','IPsec operates below the application layer, so applications need no modification to be protected','IPsec transparency means packet contents are not encrypted'],
+  ans:2,
+  exp:'IPsec operates at Layer 3 (Network Layer) — BELOW all applications. Applications are completely unaware that IPsec is protecting their traffic. They don\'t need modification, special coding, or any configuration. This "transparent" operation is one of IPsec\'s key advantages over application-layer security like TLS, which requires each application to implement it separately.',
+  tip:'IPsec transparent = apps need ZERO modification. Layer 3 = below all apps. Contrast: TLS requires per-app implementation.'
+},
+{
+  id:69, ch:'blockchain', type:'mcq', diff:'medium-hard',
+  text:'In the context of blockchain security logs, what specific advantage does on-chain log storage provide over traditional logging?',
+  opts:['Logs are automatically encrypted with AES-256','Logs stored on-chain cannot be secretly altered by attackers who breach the system — preserving forensic evidence','Blockchain logs are faster to query than traditional databases','On-chain logs are automatically backed up to cloud storage'],
+  ans:1,
+  exp:'Blockchain log integrity: when security logs are stored on-chain, they become IMMUTABLE — an attacker who breaches a system cannot delete or alter log files to cover their tracks (a common attacker move). Traditional log files can be deleted or modified by a sufficiently privileged attacker. On-chain logs preserve forensic evidence even after a breach.',
+  tip:'Traditional logs = attacker deletes them after breach. Blockchain logs = immutable, can\'t be erased. Forensic evidence preserved.'
+},
+{
+  id:70, ch:'blockchain', type:'mcq', diff:'medium',
+  text:'What does "non-repudiation" mean in the context of blockchain digital signatures?',
+  opts:['Users can deny having made a transaction if they lose their private key','Signers cannot later deny having signed or created a transaction','Transactions can be anonymously denied by any network node','Non-repudiation means the transaction was not replayed'],
+  ans:1,
+  exp:'Non-repudiation: because a digital signature is created using the sender\'s unique PRIVATE KEY (which only they possess), they CANNOT later deny having authorized the transaction. The signature is cryptographic proof of their intent and identity. This is why private key compromise is so serious — someone else could sign on your behalf.',
+  tip:'Non-repudiation = you signed it with your private key → you can\'t deny it. Mathematical proof of intent.'
+},
+{
+  id:71, ch:'ipsec', type:'mcq', diff:'medium',
+  text:'What is a key application of IPsec in e-commerce scenarios?',
+  opts:['IPsec replaces TLS for all web transactions','IPsec provides an ADDITIONAL layer of security at the network level, supplementing TLS','IPsec is used only for customer login pages','IPsec handles certificate validation for e-commerce sites'],
+  ans:1,
+  exp:'For e-commerce, IPsec provides an ADDITIONAL layer of network-level security SUPPLEMENTING TLS (which operates at the application layer). TLS protects the application data stream; IPsec protects at the IP packet level. They can work together, providing defense in depth. IPsec doesn\'t REPLACE TLS for web transactions.',
+  tip:'IPsec + TLS together = defense in depth. IPsec adds network-layer protection on top of TLS application-layer protection.'
+},
+{
+  id:72, ch:'ipsec', type:'tf', diff:'medium',
+  text:'True or False: SSL Stripping attacks can be mitigated by implementing HTTP Strict Transport Security (HSTS).',
+  opts:['True','False'],
+  ans:0,
+  exp:'TRUE. HSTS (HTTP Strict Transport Security) tells browsers to ONLY connect via HTTPS — never HTTP — for a specified duration. This prevents SSL stripping because even if an attacker intercepts the first connection, the browser refuses to downgrade to HTTP. HSTS is the primary defense against SSL Stripping.',
+  tip:'HSTS = forces HTTPS always. Prevents SSL Stripping. Stores the HTTPS-only policy in the browser cache.'
+},
+{
+  id:73, ch:'vpn1', type:'mcq', diff:'hard',
+  text:'IPsec processor overhead is a significant limitation. What is the RECOMMENDED solution for high-throughput environments?',
+  opts:['Disable encryption for high-bandwidth connections','Use TLS instead of IPsec for all traffic','Deploy hardware acceleration (dedicated crypto chips)','Reduce packet size to minimize encryption time'],
+  ans:2,
+  exp:'Hardware acceleration (dedicated crypto chips/ASICs) is the recommended solution for high-throughput environments. These chips offload cryptographic operations from the main CPU, preventing bandwidth reduction and latency increases. Disabling encryption defeats the purpose. Using TLS changes the architecture. Reducing packet size is counterproductive.',
+  tip:'IPsec CPU overhead → solution: hardware acceleration (crypto chips/ASICs). Not disabling encryption.'
+},
+{
+  id:74, ch:'ipsec', type:'mcq', diff:'medium-hard',
+  text:'When a CA is compromised, what is the MOST severe consequence?',
+  opts:['All TLS connections automatically upgrade to a higher security level','Attackers can issue fraudulent certificates for ANY domain, enabling large-scale MITM attacks','Only certificates issued that day are invalidated','The CA automatically notifies all websites to switch to self-signed certificates'],
+  ans:1,
+  exp:'CA compromise is catastrophic: attackers can issue valid-looking fraudulent certificates for ANY domain (e.g., bank.com). Since browsers trust that CA, they won\'t warn users about these certificates. This enables large-scale MITM attacks against any site — intercepting traffic while appearing legitimate to users. This is why CA security is paramount.',
+  tip:'Compromised CA = fraudulent certs for ANY domain = MITM at scale. The entire PKI trust chain breaks.'
+},
+{
+  id:75, ch:'blockchain', type:'mcq', diff:'medium',
+  text:'How does blockchain\'s decentralized architecture address DDoS (Distributed Denial of Service) attacks?',
+  opts:['Blockchain uses faster servers that can absorb DDoS traffic','Decentralized infrastructure has no single target — greatly reducing DDoS impact','Blockchain automatically rate-limits incoming requests from suspicious IPs','Blockchain uses proof-of-work to slow down attackers'],
+  ans:1,
+  exp:'Blockchain\'s DDoS resistance comes from decentralization: with thousands of nodes globally, there\'s NO SINGLE SERVER to overwhelm. A DDoS attack that takes down 100 nodes still leaves thousands active. Compare to a centralized DNS server — taking it down affects millions of websites. Decentralization eliminates the single point of attack.',
+  tip:'DDoS + blockchain = ineffective. Thousands of nodes = no single target. Decentralization = DDoS resilience by design.'
+},
+{
+  id:76, ch:'ipsec', type:'mcq', diff:'hard',
+  text:'Which port number does standard IKE (Phase 1) negotiation use?',
+  opts:['UDP 443','TCP 80','UDP 500','ESP Protocol 50'],
+  ans:2,
+  exp:'IKE uses UDP port 500 for Phase 1 and Phase 2 negotiations. ESP (the actual encrypted data) uses IP Protocol 50 (not a TCP/UDP port — it\'s a separate IP protocol number). NAT-T uses UDP 4500. Port 443 = HTTPS/SSL. These specific port numbers matter for firewall configuration — a common deployment complexity.',
+  tip:'IKE = UDP 500. ESP = Protocol 50 (IP protocol, not port). NAT-T = UDP 4500. Firewall rules need all three.'
+},
+{
+  id:77, ch:'vpn1', type:'scen', diff:'hard',
+  text:'An employee traveling internationally reports that their company VPN is blocked by the country\'s internet infrastructure. Which VPN type would MOST LIKELY bypass this blocking?',
+  opts:['IPsec VPN in tunnel mode','SSL VPN using port 443','Site-to-site VPN with dedicated hardware appliances','AH-only IPsec transport mode'],
+  ans:1,
+  exp:'SSL VPN using port 443 is most likely to bypass VPN blocking. Port 443 is the standard HTTPS port — blocking it would break most of the internet, making it politically/practically difficult. IPsec (UDP 500, Protocol 50) can be easily identified and blocked by deep packet inspection. SSL VPN traffic is harder to distinguish from normal HTTPS traffic.',
+  tip:'VPN blocking: IPsec (UDP 500) = easily blocked. SSL VPN (port 443 HTTPS) = hard to block without breaking the web.'
+},
+{
+  id:78, ch:'blockchain', type:'mcq', diff:'medium',
+  text:'The "genesis block" refers to:',
+  opts:['The block created during a 51% attack','The first block in a blockchain (Block 1), which has no previous hash','The block that contains the blockchain\'s encryption keys','The block created by the founding organization of the blockchain'],
+  ans:1,
+  exp:'The genesis block is the FIRST block in a blockchain. Since it\'s the first, it has no previous block — its "previous hash" field is typically set to all zeros or a null value. It\'s a special starting point of the chain. All subsequent blocks reference back (directly or indirectly) to the genesis block.',
+  tip:'Genesis block = Block 1 = first block = no previous hash. All zeros in "previous hash" field.'
+},
+{
+  id:79, ch:'ipsec', type:'mcq', diff:'medium-hard',
+  text:'In SSL, after the handshake is complete, the session key used for bulk encryption is:',
+  opts:['The server\'s public key, shared during the handshake','A symmetric key derived during the handshake, unique per connection and discarded afterward','The same pre-master secret used in all sessions for efficiency','An asymmetric key generated by the CA for each session'],
+  ans:1,
+  exp:'After the handshake, a symmetric SESSION KEY is used — it\'s: unique per connection (no reuse), derived during the handshake from exchanged values, and discarded afterward (enabling forward secrecy). It\'s NOT the public key (that\'s asymmetric, used only in the handshake). The session key\'s uniqueness ensures that compromising one session doesn\'t compromise past or future sessions.',
+  tip:'Session key: symmetric + unique per connection + discarded after = forward secrecy. Never reused across sessions.'
+},
+{
+  id:80, ch:'blockchain', type:'mcq', diff:'medium',
+  text:'Self-sovereign identity in blockchain means:',
+  opts:['The blockchain automatically creates identities for all users without their consent','Users control their own credentials — sharing only what\'s necessary for each interaction — without centralized databases','A government authority manages all blockchain identities on behalf of citizens','Identity is controlled by the mining nodes that validate transactions'],
+  ans:1,
+  exp:'Self-sovereign identity: users hold their own cryptographic identity (public/private key pair) and control exactly which attributes to reveal — without relying on centralized databases that could be breached. They can share only necessary attributes (e.g., proving age without revealing birthdate). This replaces the model where Facebook/Google/government control your digital identity.',
+  tip:'Self-sovereign = YOU control your identity. Share ONLY what\'s needed. No centralized database to breach.'
+},
+{
+  id:81, ch:'blockchain', type:'mcq', diff:'hard',
+  text:'Smart contract "firewalls" on blockchain automate which function WITHOUT human intermediaries?',
+  opts:['Encryption of transaction data before sending','Firewall hardware configuration and network routing','Access control and transaction validation — enforced by code','Certificate revocation and renewal'],
+  ans:2,
+  exp:'Smart contract firewalls automate access control and transaction validation through code. The rules are embedded in the smart contract and execute automatically when conditions are met — no human admin needs to approve/deny each transaction. This removes human error, bias, and latency from access control decisions.',
+  tip:'Smart contract firewalls = code-enforced access control. Automated, trustless, no human intermediary needed.'
+},
+{
+  id:82, ch:'blockchain', type:'tf', diff:'hard',
+  text:'True or False: In a public blockchain, the transaction data and public keys are visible to ALL participants, but linking a public key to a real-world identity requires additional investigation.',
+  opts:['True','False'],
+  ans:0,
+  exp:'TRUE. Public blockchains use pseudonymous addresses (derived from public keys) — not real names. All transactions are publicly visible, but they\'re associated with a wallet address (like 1A2B3C...), not a name. Linking that address to a real-world identity requires additional forensic work (exchange KYC records, on-chain analysis). This is why blockchain is "pseudonymous" not "anonymous."',
+  tip:'Pseudonymous ≠ Anonymous. Transactions public → linked to address. Address → real identity requires external investigation.'
+}
+];
+
+// Assign question IDs to chapters
+Q.forEach(q => {
+  const ch = CHAPTERS.find(c => c.id === q.ch);
+  if(ch) ch.qids.push(q.id);
+});
+
+// ============================================================
+// STATE
+// ============================================================
+let state = {
+  answers: {}, // qid → {selected, correct}
+  bookmarks: new Set(),
+  streak: 0,
+  maxStreak: 0,
+  sessionStart: Date.now(),
+  examTimer: null,
+  examTimeLeft: 0,
+  examStartTime: 0,
+  currentQueue: [],
+  currentIndex: 0,
+  mode: 'practice', // practice | exam
+  examMode: false,
+  chapterFilter: 'all',
+  typeFilter: 'all',
+  matchState: {},
+  multiSelect: {}
+};
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem('exammaster_state');
+    if(saved) {
+      const parsed = JSON.parse(saved);
+      state.answers = parsed.answers || {};
+      state.bookmarks = new Set(parsed.bookmarks || []);
+      state.streak = parsed.streak || 0;
+      state.maxStreak = parsed.maxStreak || 0;
+    }
+  } catch(e) {}
+}
+
+function saveState() {
+  try {
+    localStorage.setItem('exammaster_state', JSON.stringify({
+      answers: state.answers,
+      bookmarks: Array.from(state.bookmarks),
+      streak: state.streak,
+      maxStreak: state.maxStreak
+    }));
+  } catch(e) {}
+}
+
+// ============================================================
+// UI HELPERS
+// ============================================================
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.mobile-nav-btn').forEach(b => b.classList.remove('active'));
+  updateSidebar();
+  if(id === 'home') renderChapters();
+  if(id === 'dashboard') renderDashboard();
+  if(id === 'bookmarks') renderBookmarks();
+  if(id === 'review') renderReview();
+}
+
+function toast(msg, type='info') {
+  const container = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = 'toast '+type;
+  t.textContent = msg;
+  container.appendChild(t);
+  setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity 0.3s'; setTimeout(()=>t.remove(),300); }, 2500);
+}
+
+function updateSidebar() {
+  const answered = Object.keys(state.answers).length;
+  const correct = Object.values(state.answers).filter(a=>a.correct).length;
+  document.getElementById('sb-total').textContent = answered;
+  document.getElementById('sb-correct').textContent = correct;
+  document.getElementById('sb-acc').textContent = answered > 0 ? Math.round(correct/answered*100)+'%' : '—';
+  document.getElementById('sb-bm').textContent = state.bookmarks.size;
+  document.getElementById('streak-num').textContent = state.streak;
+}
+
+// ============================================================
+// HOME / CHAPTERS
+// ============================================================
+function renderChapters() {
+  const grid = document.getElementById('chapters-grid');
+  grid.innerHTML = '';
+  CHAPTERS.forEach(ch => {
+    const total = ch.qids.length;
+    const done = ch.qids.filter(id => state.answers[id]).length;
+    const correct = ch.qids.filter(id => state.answers[id]?.correct).length;
+    const pct = total > 0 ? Math.round(done/total*100) : 0;
+
+    const card = document.createElement('div');
+    card.className = 'chapter-card';
+    card.style.setProperty('--card-accent', ch.color);
+    card.innerHTML = `
+      <div class="chapter-icon" style="background:${ch.color}20;">${ch.icon}</div>
+      <div class="chapter-tag">${ch.subtitle}</div>
+      <div class="chapter-title">${ch.title}</div>
+      <div class="chapter-desc">${ch.desc}</div>
+      <div class="chapter-meta">
+        <span class="chapter-count">${total} questions</span>
+        <span style="font-size:12px;color:var(--text3)">${done}/${total} done · ${done>0?Math.round(correct/done*100)+'% acc':'—'}</span>
+      </div>
+      <div class="progress-mini">
+        <div class="progress-fill" style="width:${pct}%;background:${ch.color}"></div>
+      </div>`;
+    card.onclick = () => startPractice(ch.id);
+    grid.appendChild(card);
+  });
+}
+
+// ============================================================
+// PRACTICE MODE
+// ============================================================
+function startPractice(chapterId) {
+  state.mode = 'practice';
+  state.examMode = false;
+  let qs = chapterId ? Q.filter(q=>q.ch===chapterId) : Q;
+  state.currentQueue = shuffle([...qs]).map(q=>q.id);
+  state.currentIndex = 0;
+  state.chapterFilter = chapterId || 'all';
+  state.typeFilter = 'all';
+
+  const ch = chapterId ? CHAPTERS.find(c=>c.id===chapterId) : null;
+  document.getElementById('study-title').textContent = ch ? ch.title : 'All Chapters';
+  document.getElementById('study-chapter-label').textContent = ch ? ch.subtitle : 'Full Practice Mode';
+  document.getElementById('mode-btn').textContent = '📖 Practice';
+
+  buildFilterBar();
+  showView('study');
+  renderQuestion();
+}
+
+function startRandom() {
+  state.mode = 'practice';
+  state.examMode = false;
+  const qs = shuffle([...Q]).slice(0,20);
+  state.currentQueue = qs.map(q=>q.id);
+  state.currentIndex = 0;
+  document.getElementById('study-title').textContent = 'Random 20 Questions';
+  document.getElementById('study-chapter-label').textContent = 'Mixed topics';
+  buildFilterBar();
+  showView('study');
+  renderQuestion();
+  toast('20 random questions loaded!', 'info');
+}
+
+function startWeak() {
+  const wrong = Object.entries(state.answers)
+    .filter(([id,a])=>!a.correct)
+    .map(([id])=>parseInt(id));
+  if(wrong.length === 0) {
+    toast('No wrong answers yet! Practice first.', 'info');
+    return;
+  }
+  state.mode = 'practice';
+  state.examMode = false;
+  state.currentQueue = shuffle([...wrong]);
+  state.currentIndex = 0;
+  document.getElementById('study-title').textContent = 'Weak Areas Drill';
+  document.getElementById('study-chapter-label').textContent = `${wrong.length} previously wrong questions`;
+  buildFilterBar();
+  showView('study');
+  renderQuestion();
+  toast(`Drilling ${wrong.length} weak questions!`, 'warning');
+}
+
+function practiceBookmarks() {
+  if(state.bookmarks.size === 0) {
+    toast('No bookmarks yet!', 'info');
+    return;
+  }
+  state.mode = 'practice';
+  state.examMode = false;
+  state.currentQueue = shuffle([...state.bookmarks]);
+  state.currentIndex = 0;
+  document.getElementById('study-title').textContent = 'Bookmarked Questions';
+  document.getElementById('study-chapter-label').textContent = `${state.bookmarks.size} saved questions`;
+  buildFilterBar();
+  showView('study');
+  renderQuestion();
+}
+
+function retryWrong() {
+  startWeak();
+}
+
+function reviewMistakes() {
+  showView('review');
+}
+
+function buildFilterBar() {
+  const bar = document.getElementById('filter-bar');
+  bar.innerHTML = '';
+  const filters = [
+    {label:'All', val:'all', field:'type'},
+    {label:'MCQ', val:'mcq', field:'type'},
+    {label:'True/False', val:'tf', field:'type'},
+    {label:'Multi-Select', val:'ms', field:'type'},
+    {label:'Fill in Blank', val:'fitb', field:'type'},
+    {label:'Scenario', val:'scen', field:'type'},
+    {label:'Compare', val:'cmp', field:'type'},
+  ];
+  filters.forEach(f => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-chip' + (state.typeFilter === f.val ? ' active' : '');
+    btn.textContent = f.label;
+    btn.onclick = () => {
+      state.typeFilter = f.val;
+      document.querySelectorAll('.filter-chip').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      filterQueue();
+    };
+    bar.appendChild(btn);
+  });
+}
+
+function filterQueue() {
+  let qs = state.chapterFilter !== 'all' ? Q.filter(q=>q.ch===state.chapterFilter) : Q;
+  if(state.typeFilter !== 'all') qs = qs.filter(q=>q.type===state.typeFilter);
+  state.currentQueue = shuffle(qs.map(q=>q.id));
+  state.currentIndex = 0;
+  renderQuestion();
+  toast(`Filtered to ${state.currentQueue.length} questions`, 'info');
+}
+
+// ============================================================
+// EXAM MODE
+// ============================================================
+function startExam() {
+  if(!confirm('Start 45-minute exam simulation with 40 random questions? Answers will be hidden until submission.')) return;
+  state.mode = 'exam';
+  state.examMode = true;
+  const examQs = shuffle([...Q]).slice(0, 40);
+  state.currentQueue = examQs.map(q=>q.id);
+  state.examAnswers = {};
+  state.examTimeLeft = 45 * 60;
+  state.examStartTime = Date.now();
+
+  renderExamQuestions();
+  showView('exam');
+  startExamTimer();
+}
+
+function renderExamQuestions() {
+  const container = document.getElementById('exam-questions-container');
+  container.innerHTML = '';
+  state.currentQueue.forEach((qid, idx) => {
+    const q = Q.find(q=>q.id===qid);
+    if(!q) return;
+    const div = document.createElement('div');
+    div.className = 'q-card';
+    div.id = 'exam-q-'+qid;
+    div.innerHTML = buildExamQuestion(q, idx);
+    container.appendChild(div);
+  });
+  updateExamProgress();
+}
+
+function buildExamQuestion(q, idx) {
+  const typeName = {mcq:'MCQ',tf:'True/False',ms:'Multi-Select',fitb:'Fill in Blank',scen:'Scenario',cmp:'Compare',match:'Matching'}[q.type] || 'Question';
+  let opts = '';
+  if(q.type === 'mcq' || q.type === 'tf' || q.type === 'cmp' || q.type === 'scen') {
+    q.opts.forEach((opt,i) => {
+      opts += `<button class="option" onclick="selectExamOpt(${q.id},${i})" id="exam-opt-${q.id}-${i}">
+        <span class="option-letter">${String.fromCharCode(65+i)}</span>${opt}
+      </button>`;
+    });
+  } else if(q.type === 'ms') {
+    q.opts.forEach((opt,i) => {
+      opts += `<button class="option" onclick="toggleExamMs(${q.id},${i})" id="exam-opt-${q.id}-${i}">
+        <span class="option-letter">${String.fromCharCode(65+i)}</span>${opt}
+      </button>`;
+    });
+  } else if(q.type === 'fitb') {
+    opts = `<div class="fitb-wrap"><input class="fitb-input" id="exam-fitb-${q.id}" placeholder="Type your answer..." oninput="state.examAnswers[${q.id}]=this.value;updateExamProgress()"></div>`;
+  }
+  return `
+    <div class="q-meta">
+      <span class="q-badge badge-${q.type}">${typeName}</span>
+      <span class="q-num">Q${idx+1}</span>
+    </div>
+    <div class="q-text">${q.text}</div>
+    <div class="options" id="exam-opts-${q.id}">${opts}</div>`;
+}
+
+function selectExamOpt(qid, optIdx) {
+  state.examAnswers = state.examAnswers || {};
+  state.examAnswers[qid] = optIdx;
+  document.querySelectorAll(`[id^="exam-opt-${qid}-"]`).forEach((el,i) => {
+    el.classList.toggle('selected', i === optIdx);
+  });
+  updateExamProgress();
+}
+
+function toggleExamMs(qid, optIdx) {
+  state.examAnswers = state.examAnswers || {};
+  if(!state.examAnswers[qid]) state.examAnswers[qid] = [];
+  const arr = state.examAnswers[qid];
+  const i = arr.indexOf(optIdx);
+  if(i >= 0) arr.splice(i,1); else arr.push(optIdx);
+  document.getElementById(`exam-opt-${qid}-${optIdx}`)?.classList.toggle('ms-selected', arr.includes(optIdx));
+  updateExamProgress();
+}
+
+function updateExamProgress() {
+  const answered = Object.keys(state.examAnswers||{}).length;
+  document.getElementById('exam-prog-text').textContent = `${answered} / ${state.currentQueue.length} answered`;
+}
+
+function startExamTimer() {
+  clearInterval(state.examTimer);
+  state.examTimer = setInterval(() => {
+    state.examTimeLeft--;
+    const m = Math.floor(state.examTimeLeft/60);
+    const s = state.examTimeLeft % 60;
+    const el = document.getElementById('exam-timer');
+    if(el) {
+      el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+      el.classList.toggle('warning', state.examTimeLeft < 300);
+    }
+    if(state.examTimeLeft <= 0) {
+      clearInterval(state.examTimer);
+      toast('Time\'s up! Submitting...', 'warning');
+      setTimeout(submitExam, 1000);
+    }
+  }, 1000);
+}
+
+function submitExam() {
+  clearInterval(state.examTimer);
+  const timeUsed = Math.round((Date.now() - state.examStartTime)/1000);
+  const ea = state.examAnswers || {};
+  let correct = 0, wrong = 0, skipped = 0;
+  const topicScore = {};
+
+  state.currentQueue.forEach(qid => {
+    const q = Q.find(q=>q.id===qid);
+    if(!q) return;
+    const ch = CHAPTERS.find(c=>c.id===q.ch);
+    const chTitle = ch ? ch.title : q.ch;
+    if(!topicScore[chTitle]) topicScore[chTitle] = {c:0,t:0};
+    topicScore[chTitle].t++;
+
+    const userAns = ea[qid];
+    let isCorrect = false;
+    if(userAns === undefined || userAns === null || userAns === '') {
+      skipped++;
+    } else {
+      if(q.type === 'ms') {
+        const ua = Array.isArray(userAns) ? userAns.sort().join(',') : '';
+        const ca = (Array.isArray(q.ans) ? q.ans : [q.ans]).sort().join(',');
+        isCorrect = ua === ca;
+      } else if(q.type === 'fitb') {
+        const alts = [q.ans, ...(q.alts||[])].map(a=>a.toLowerCase().trim());
+        isCorrect = alts.includes(String(userAns).toLowerCase().trim());
+      } else {
+        isCorrect = userAns === q.ans;
+      }
+      if(isCorrect) { correct++; topicScore[chTitle].c++; }
+      else wrong++;
+    }
+    state.answers[qid] = { selected: userAns, correct: isCorrect };
+  });
+
+  saveState();
+  showResults(correct, wrong, skipped, state.currentQueue.length, timeUsed, topicScore);
+}
+
+// ============================================================
+// QUESTION RENDERING (PRACTICE)
+// ============================================================
+function renderQuestion() {
+  if(state.currentIndex >= state.currentQueue.length) {
+    showPracticeComplete();
+    return;
+  }
+  const qid = state.currentQueue[state.currentIndex];
+  const q = Q.find(q=>q.id===qid);
+  if(!q) { state.currentIndex++; renderQuestion(); return; }
+
+  updateProgress();
+  const container = document.getElementById('question-container');
+  container.innerHTML = '';
+
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.innerHTML = buildQuestion(q);
+  container.appendChild(card);
+
+  // Attach event listeners
+  if(q.type === 'mcq' || q.type === 'tf' || q.type === 'cmp' || q.type === 'scen') {
+    q.opts.forEach((_,i) => {
+      document.getElementById(`opt-${q.id}-${i}`)?.addEventListener('click', () => selectOpt(q, i));
+    });
+  } else if(q.type === 'ms') {
+    q.opts.forEach((_,i) => {
+      document.getElementById(`opt-${q.id}-${i}`)?.addEventListener('click', () => toggleMs(q, i));
+    });
+  } else if(q.type === 'match') {
+    setupMatchListeners(q);
+  }
+}
+
+function buildQuestion(q) {
+  const typeNames = {mcq:'Multiple Choice',tf:'True / False',ms:'Multiple Select',fitb:'Fill in the Blank',scen:'Scenario',cmp:'Critical Analysis',match:'Matching'};
+  const badgeClass = {mcq:'badge-mcq',tf:'badge-tf',ms:'badge-ms',fitb:'badge-fitb',scen:'badge-scen',cmp:'badge-cmp',match:'badge-match'}[q.type] || 'badge-mcq';
+  const diffClass = {medium:'diff-medium','medium-hard':'diff-medium',hard:'diff-hard'}[q.diff] || '';
+  const diffLabel = {'medium':'Medium','medium-hard':'Medium-Hard','hard':'Hard'}[q.diff] || '';
+  const bookmarked = state.bookmarks.has(q.id);
+  const alreadyAnswered = state.answers[q.id];
+
+  let opts = '';
+  if(q.type === 'mcq' || q.type === 'tf' || q.type === 'cmp' || q.type === 'scen') {
+    q.opts.forEach((opt, i) => {
+      let cls = '';
+      if(alreadyAnswered) {
+        if(i === q.ans) cls = 'correct disabled';
+        else if(i === alreadyAnswered.selected && !alreadyAnswered.correct) cls = 'wrong disabled';
+        else cls = 'disabled';
+      }
+      opts += `<button class="option ${cls}" id="opt-${q.id}-${i}">
+        <span class="option-letter">${String.fromCharCode(65+i)}</span><span>${opt}</span>
+      </button>`;
+    });
+  } else if(q.type === 'ms') {
+    q.opts.forEach((opt, i) => {
+      let cls = '';
+      if(alreadyAnswered) {
+        const ans = Array.isArray(q.ans) ? q.ans : [q.ans];
+        const sel = alreadyAnswered.selected || [];
+        if(ans.includes(i)) cls = 'correct disabled';
+        else if(sel.includes(i)) cls = 'wrong disabled';
+        else cls = 'disabled';
+      }
+      opts += `<button class="option ${cls}" id="opt-${q.id}-${i}">
+        <span class="option-letter">${String.fromCharCode(65+i)}</span><span>${opt}</span>
+      </button>`;
+    });
+  } else if(q.type === 'fitb') {
+    const prev = alreadyAnswered ? String(alreadyAnswered.selected||'') : '';
+    const cls = alreadyAnswered ? (alreadyAnswered.correct ? 'correct' : 'wrong') : '';
+    opts = `<div class="fitb-wrap">
+      <input class="fitb-input ${cls}" id="fitb-${q.id}" placeholder="Type your answer..." value="${prev}" ${alreadyAnswered?'disabled':''}>
+    </div>`;
+  } else if(q.type === 'match') {
+    opts = buildMatchUI(q, alreadyAnswered);
+  }
+
+  let expHtml = '';
+  if(alreadyAnswered) {
+    expHtml = buildExplanation(q, alreadyAnswered);
+  }
+
+  let msNote = q.type === 'ms' ? '<div style="font-size:13px;color:var(--text3);margin-bottom:12px;">⬜ Select ALL that apply, then click Submit</div>' : '';
+  let submitBtn = '';
+  if(!alreadyAnswered) {
+    if(q.type === 'ms' || q.type === 'fitb' || q.type === 'match') {
+      submitBtn = `<button class="btn btn-primary" id="submit-btn" onclick="submitAnswer(${q.id})">Submit Answer</button>`;
+    }
+  }
+  let nextBtn = `<button class="btn btn-secondary" onclick="nextQuestion()">Next Question →</button>`;
+  let skipBtn = !alreadyAnswered ? `<button class="btn btn-ghost" onclick="skipQuestion()">Skip</button>` : '';
+
+  return `
+    <div class="q-meta">
+      <span class="q-badge ${badgeClass}">${typeNames[q.type]||'Question'}</span>
+      <span class="q-badge diff-badge ${diffClass}">${diffLabel}</span>
+      <button class="bookmark-btn ${bookmarked?'active':''}" id="bm-${q.id}" onclick="toggleBookmark(${q.id})" title="Bookmark">⭐</button>
+      <span class="q-num">${state.currentIndex+1} / ${state.currentQueue.length}</span>
+    </div>
+    <div class="q-text">${q.text}</div>
+    ${msNote}
+    <div class="options" id="opts-${q.id}">${opts}</div>
+    <div class="q-actions">${submitBtn}${nextBtn}${skipBtn}</div>
+    ${expHtml}`;
+}
+
+function buildExplanation(q, ans) {
+  const isCorrect = ans.correct;
+  let correctAnsText = '';
+  if(q.type === 'mcq' || q.type === 'tf' || q.type === 'cmp' || q.type === 'scen') {
+    correctAnsText = `<strong>Correct Answer: ${String.fromCharCode(65+q.ans)}.</strong> ${q.opts[q.ans]}`;
+  } else if(q.type === 'ms') {
+    const ans2 = Array.isArray(q.ans) ? q.ans : [q.ans];
+    correctAnsText = `<strong>Correct Answers: ${ans2.map(i=>String.fromCharCode(65+i)).join(', ')}</strong>`;
+  } else if(q.type === 'fitb') {
+    correctAnsText = `<strong>Correct Answer: "${q.ans}"</strong>`;
+  } else if(q.type === 'match') {
+    correctAnsText = '<strong>See correct matches below.</strong>';
+  }
+  return `
+    <div class="explanation">
+      <div class="exp-header">
+        <span class="exp-result ${isCorrect?'correct-r':'wrong-r'}">${isCorrect ? '✅ Correct!' : '❌ Incorrect'}</span>
+      </div>
+      <div class="exp-body">${correctAnsText}<br><br>${q.exp}</div>
+      ${q.tip ? `<div class="exp-tip">💡 <strong>Memory Tip:</strong> ${q.tip}</div>` : ''}
+    </div>`;
+}
+
+// ============================================================
+// ANSWER SELECTION
+// ============================================================
+function selectOpt(q, idx) {
+  if(state.answers[q.id]) return;
+  const isCorrect = idx === q.ans;
+  state.answers[q.id] = {selected: idx, correct: isCorrect};
+  updateStreak(isCorrect);
+
+  q.opts.forEach((_, i) => {
+    const el = document.getElementById(`opt-${q.id}-${i}`);
+    if(!el) return;
+    el.classList.add('disabled');
+    if(i === q.ans) el.classList.add('correct');
+    else if(i === idx && !isCorrect) el.classList.add('wrong');
+  });
+
+  const opts = document.getElementById(`opts-${q.id}`);
+  if(opts) opts.insertAdjacentHTML('afterend', buildExplanation(q, state.answers[q.id]));
+
+  document.querySelector('.q-actions')?.remove();
+  const card = document.querySelector('.q-card');
+  if(card) {
+    card.insertAdjacentHTML('beforeend', `<div class="q-actions"><button class="btn btn-primary" onclick="nextQuestion()">Next Question →</button></div>`);
+  }
+
+  saveState();
+  updateSidebar();
+}
+
+function toggleMs(q, idx) {
+  if(state.answers[q.id]) return;
+  if(!state.multiSelect[q.id]) state.multiSelect[q.id] = [];
+  const arr = state.multiSelect[q.id];
+  const i = arr.indexOf(idx);
+  if(i >= 0) arr.splice(i,1); else arr.push(idx);
+  const el = document.getElementById(`opt-${q.id}-${idx}`);
+  if(el) el.classList.toggle('ms-selected', arr.includes(idx));
+}
+
+function submitAnswer(qid) {
+  const q = Q.find(q=>q.id===qid);
+  if(!q || state.answers[qid]) return;
+
+  let isCorrect = false;
+  let selected;
+  if(q.type === 'ms') {
+    selected = (state.multiSelect[qid] || []).sort((a,b)=>a-b);
+    const correctArr = (Array.isArray(q.ans) ? q.ans : [q.ans]).sort((a,b)=>a-b);
+    isCorrect = JSON.stringify(selected) === JSON.stringify(correctArr);
+    state.answers[qid] = {selected, correct: isCorrect};
+
+    q.opts.forEach((_, i) => {
+      const el = document.getElementById(`opt-${qid}-${i}`);
+      if(!el) return;
+      el.classList.add('disabled');
+      const correctArr2 = Array.isArray(q.ans) ? q.ans : [q.ans];
+      if(correctArr2.includes(i)) el.classList.add('correct');
+      else if(selected.includes(i)) el.classList.add('wrong');
+    });
+  } else if(q.type === 'fitb') {
+    const input = document.getElementById(`fitb-${qid}`);
+    selected = input ? input.value.trim() : '';
+    const alts = [q.ans, ...(q.alts||[])].map(a=>a.toLowerCase().trim());
+    isCorrect = alts.includes(selected.toLowerCase());
+    state.answers[qid] = {selected, correct: isCorrect};
+    if(input) { input.disabled = true; input.classList.add(isCorrect ? 'correct' : 'wrong'); }
+  } else if(q.type === 'match') {
+    // Matching is scored differently
+    selected = state.matchState[qid] || {};
+    let matchCorrect = 0;
+    q.pairs.forEach((pair, i) => {
+      if(parseInt(selected[i]) === pair.right) matchCorrect++;
+    });
+    isCorrect = matchCorrect === q.pairs.length;
+    state.answers[qid] = {selected, correct: isCorrect};
+  }
+
+  updateStreak(isCorrect);
+  const opts = document.getElementById(`opts-${qid}`);
+  if(opts) opts.insertAdjacentHTML('afterend', buildExplanation(q, state.answers[qid]));
+
+  const submitBtn = document.getElementById('submit-btn');
+  if(submitBtn) submitBtn.remove();
+  const card = document.querySelector('.q-card');
+  if(card) {
+    const actions = card.querySelector('.q-actions');
+    if(actions) actions.innerHTML = `<button class="btn btn-primary" onclick="nextQuestion()">Next Question →</button>`;
+  }
+
+  saveState();
+  updateSidebar();
+}
+
+function updateStreak(isCorrect) {
+  if(isCorrect) {
+    state.streak++;
+    if(state.streak > state.maxStreak) state.maxStreak = state.streak;
+    if(state.streak % 5 === 0) toast(`🔥 ${state.streak} in a row! Amazing!`, 'success');
+    else toast('✅ Correct!', 'success');
+  } else {
+    if(state.streak > 0) toast(`Streak broken at ${state.streak}`, 'warning');
+    else toast('❌ Incorrect — check explanation', 'error');
+    state.streak = 0;
+  }
+  document.getElementById('streak-num').textContent = state.streak;
+}
+
+function nextQuestion() {
+  state.currentIndex++;
+  if(state.currentIndex >= state.currentQueue.length) {
+    showPracticeComplete();
+  } else {
+    renderQuestion();
+  }
+}
+
+function skipQuestion() {
+  state.currentIndex++;
+  if(state.currentIndex >= state.currentQueue.length) state.currentIndex = 0;
+  renderQuestion();
+  toast('Question skipped', 'info');
+}
+
+function shuffleRemaining() {
+  const remaining = state.currentQueue.slice(state.currentIndex);
+  const done = state.currentQueue.slice(0, state.currentIndex);
+  state.currentQueue = [...done, ...shuffle(remaining)];
+  renderQuestion();
+  toast('Questions shuffled!', 'info');
+}
+
+function updateProgress() {
+  const pct = state.currentQueue.length > 0 ? Math.round((state.currentIndex/state.currentQueue.length)*100) : 0;
+  document.getElementById('progress-bar').style.width = pct+'%';
+  document.getElementById('progress-label').textContent = `Question ${state.currentIndex+1} of ${state.currentQueue.length}`;
+  const answered = state.currentQueue.slice(0, state.currentIndex).filter(id => state.answers[id]).length;
+  const correct = state.currentQueue.slice(0, state.currentIndex).filter(id => state.answers[id]?.correct).length;
+  document.getElementById('progress-score').textContent = answered > 0 ? `Score: ${correct}/${answered}` : 'Score: —';
+}
+
+function showPracticeComplete() {
+  const answered = state.currentQueue.filter(id => state.answers[id]).length;
+  const correct = state.currentQueue.filter(id => state.answers[id]?.correct).length;
+  const wrong = answered - correct;
+  const skipped = state.currentQueue.length - answered;
+  const timeUsed = Math.round((Date.now() - state.sessionStart)/1000);
+
+  const topicScore = {};
+  state.currentQueue.forEach(qid => {
+    const q = Q.find(q=>q.id===qid);
+    if(!q) return;
+    const ch = CHAPTERS.find(c=>c.id===q.ch);
+    const chTitle = ch ? ch.title : q.ch;
+    if(!topicScore[chTitle]) topicScore[chTitle] = {c:0,t:0};
+    topicScore[chTitle].t++;
+    if(state.answers[qid]?.correct) topicScore[chTitle].c++;
+  });
+
+  showResults(correct, wrong, skipped, state.currentQueue.length, timeUsed, topicScore);
+}
+
+// ============================================================
+// RESULTS
+// ============================================================
+function showResults(correct, wrong, skipped, total, timeUsed, topicScore) {
+  const pct = total > 0 ? Math.round(correct/total*100) : 0;
+  const grade = pct >= 90 ? '🏆 Excellent!' : pct >= 75 ? '🎓 Good Job!' : pct >= 60 ? '📚 Keep Going' : '💪 Need Practice';
+  const msg = pct >= 90 ? 'You\'re exam-ready!' : pct >= 75 ? 'Strong performance — review weak areas.' : pct >= 60 ? 'Getting there — focus on wrong answers.' : 'Review material and retry weak areas.';
+
+  const circle = document.getElementById('score-circle');
+  circle.style.setProperty('--pct', `${pct}%`);
+  circle.style.background = `conic-gradient(${pct>=75?'var(--green)':'var(--accent)'} ${pct}%, var(--bg4) 0)`;
+  document.getElementById('result-pct').textContent = pct+'%';
+  document.getElementById('result-grade').textContent = grade;
+  document.getElementById('result-msg').textContent = msg;
+  document.getElementById('r-correct').textContent = correct;
+  document.getElementById('r-wrong').textContent = wrong;
+  document.getElementById('r-skipped').textContent = skipped;
+
+  const m = Math.floor(timeUsed/60), s = timeUsed%60;
+  document.getElementById('r-time').textContent = `${m}:${String(s).padStart(2,'0')}`;
+
+  const ws = document.getElementById('weak-section');
+  ws.innerHTML = `<div class="weak-title">📊 Performance by Topic</div>`;
+  Object.entries(topicScore).forEach(([topic, data]) => {
+    const tpct = data.t > 0 ? Math.round(data.c/data.t*100) : 0;
+    const color = tpct >= 75 ? 'var(--green)' : tpct >= 50 ? 'var(--amber)' : 'var(--red)';
+    ws.innerHTML += `<div class="weak-item">
+      <div style="min-width:160px;font-size:14px;color:var(--text2)">${topic}</div>
+      <div class="weak-bar-wrap"><div class="weak-bar" style="width:${tpct}%;background:${color}"></div></div>
+      <div style="font-size:13px;color:var(--text3);min-width:80px;text-align:right">${data.c}/${data.t} (${tpct}%)</div>
+    </div>`;
+  });
+
+  showView('results');
+}
+
+// ============================================================
+// MATCHING
+// ============================================================
+function buildMatchUI(q, answered) {
+  const pairs = q.pairs;
+  let leftHtml = '', rightHtml = '';
+  pairs.forEach((pair, i) => {
+    let cls = '';
+    if(answered) {
+      const sel = (answered.selected||{})[i];
+      cls = parseInt(sel) === pair.right ? 'match-correct' : 'match-wrong';
+    }
+    leftHtml += `<div class="match-item ${cls}" id="match-left-${q.id}-${i}">${pair.left}</div>`;
+  });
+  q.opts.forEach((opt, i) => {
+    rightHtml += `<div class="match-item" id="match-right-${q.id}-${i}" data-right="${i}">${opt}</div>`;
+  });
+  return `<div class="match-grid">
+    <div class="match-col">${leftHtml}</div>
+    <div class="match-col">${rightHtml}</div>
+  </div>`;
+}
+
+function setupMatchListeners(q) {
+  if(!state.matchState[q.id]) state.matchState[q.id] = {};
+  let selectedLeft = null;
+  q.pairs.forEach((_, i) => {
+    const leftEl = document.getElementById(`match-left-${q.id}-${i}`);
+    if(leftEl) leftEl.addEventListener('click', () => {
+      document.querySelectorAll(`[id^="match-left-${q.id}-"]`).forEach(el => el.classList.remove('match-selected'));
+      leftEl.classList.add('match-selected');
+      selectedLeft = i;
+    });
+  });
+  q.opts.forEach((_, ri) => {
+    const rightEl = document.getElementById(`match-right-${q.id}-${ri}`);
+    if(rightEl) rightEl.addEventListener('click', () => {
+      if(selectedLeft === null) { toast('Select a left item first!', 'info'); return; }
+      state.matchState[q.id][selectedLeft] = ri;
+      document.getElementById(`match-left-${q.id}-${selectedLeft}`)?.classList.remove('match-selected');
+      document.getElementById(`match-left-${q.id}-${selectedLeft}`)?.classList.add('match-selected');
+      selectedLeft = null;
+      toast('Pair selected! Continue matching.', 'info');
+    });
+  });
+}
+
+// ============================================================
+// BOOKMARKS
+// ============================================================
+function toggleBookmark(qid) {
+  if(state.bookmarks.has(qid)) {
+    state.bookmarks.delete(qid);
+    toast('Bookmark removed', 'info');
+  } else {
+    state.bookmarks.add(qid);
+    toast('⭐ Bookmarked!', 'success');
+  }
+  const btn = document.getElementById('bm-'+qid);
+  if(btn) btn.classList.toggle('active', state.bookmarks.has(qid));
+  saveState();
+  updateSidebar();
+}
+
+function renderBookmarks() {
+  const list = document.getElementById('bookmarks-list');
+  if(state.bookmarks.size === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">🔖</div><div class="empty-title">No bookmarks yet</div><div>Star questions while practicing to save them here.</div></div>';
+    return;
+  }
+  list.innerHTML = '';
+  Array.from(state.bookmarks).forEach(qid => {
+    const q = Q.find(q=>q.id===qid);
+    if(!q) return;
+    const ch = CHAPTERS.find(c=>c.id===q.ch);
+    const item = document.createElement('div');
+    item.className = 'review-q';
+    item.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <span class="q-badge badge-${q.type}" style="font-size:11px;">${q.type.toUpperCase()}</span>
+        <button class="bookmark-btn active" onclick="toggleBookmark(${q.id});renderBookmarks()">⭐</button>
+      </div>
+      <div class="review-q-text">${q.text}</div>
+      <div style="font-size:12px;color:var(--text3);margin-top:6px;">${ch?ch.title:q.ch}</div>`;
+    list.appendChild(item);
+  });
+}
+
+// ============================================================
+// REVIEW MISTAKES
+// ============================================================
+function renderReview() {
+  const list = document.getElementById('review-list');
+  const wrong = Object.entries(state.answers).filter(([id,a])=>!a.correct);
+  if(wrong.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">🎉</div><div class="empty-title">No mistakes yet!</div><div>Practice to see your wrong answers here.</div></div>';
+    return;
+  }
+  list.innerHTML = `<div style="color:var(--text3);font-size:14px;margin-bottom:20px;">${wrong.length} incorrect answer${wrong.length===1?'':'s'}</div>`;
+  wrong.forEach(([qid, ans]) => {
+    const q = Q.find(q=>q.id===parseInt(qid));
+    if(!q) return;
+    let correctAns = '', yourAns = '';
+    if(q.type === 'mcq' || q.type === 'tf' || q.type === 'cmp' || q.type === 'scen') {
+      correctAns = q.opts[q.ans];
+      yourAns = ans.selected !== undefined ? q.opts[ans.selected] : '(skipped)';
+    } else if(q.type === 'ms') {
+      const ca = Array.isArray(q.ans) ? q.ans : [q.ans];
+      correctAns = ca.map(i=>q.opts[i]).join(', ');
+      yourAns = Array.isArray(ans.selected) ? ans.selected.map(i=>q.opts[i]).join(', ') : '(none)';
+    } else if(q.type === 'fitb') {
+      correctAns = q.ans;
+      yourAns = ans.selected || '(blank)';
+    }
+    const item = document.createElement('div');
+    item.className = 'review-q';
+    item.innerHTML = `
+      <div class="review-q-text">${q.text}</div>
+      <div class="review-answer">
+        <div>Your answer: <span class="your-ans">${yourAns}</span></div>
+        <div>Correct: <span class="correct-ans">${correctAns}</span></div>
+        ${q.tip ? `<div style="margin-top:8px;font-size:12px;color:var(--amber);">💡 ${q.tip}</div>` : ''}
+      </div>`;
+    list.appendChild(item);
+  });
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function renderDashboard() {
+  const answered = Object.keys(state.answers).length;
+  const correct = Object.values(state.answers).filter(a=>a.correct).length;
+  const wrong = answered - correct;
+  const acc = answered > 0 ? Math.round(correct/answered*100) : 0;
+
+  const grid = document.getElementById('dash-grid');
+  grid.innerHTML = `
+    <div class="dash-card">
+      <div class="dash-val">${answered}</div>
+      <div class="dash-lbl">Questions Answered</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-val" style="color:var(--green)">${correct}</div>
+      <div class="dash-lbl">Correct</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-val" style="color:var(--red)">${wrong}</div>
+      <div class="dash-lbl">Incorrect</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-val" style="color:var(--accent)">${acc}%</div>
+      <div class="dash-lbl">Accuracy</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-val" style="color:var(--amber)">${state.maxStreak}</div>
+      <div class="dash-lbl">Best Streak</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-val" style="color:var(--purple)">${state.bookmarks.size}</div>
+      <div class="dash-lbl">Bookmarks</div>
+    </div>`;
+
+  const topicBars = document.getElementById('topic-bars');
+  topicBars.innerHTML = '';
+  CHAPTERS.forEach(ch => {
+    const chQs = ch.qids.map(id => state.answers[id]).filter(Boolean);
+    const tot = ch.qids.length;
+    const ans = chQs.length;
+    const cor = chQs.filter(a=>a.correct).length;
+    const pct = ans > 0 ? Math.round(cor/ans*100) : 0;
+    const color = pct >= 75 ? 'var(--green)' : pct >= 50 ? 'var(--amber)' : pct > 0 ? 'var(--red)' : 'var(--bg4)';
+    topicBars.innerHTML += `<div class="topic-row">
+      <div class="topic-name">${ch.title}</div>
+      <div class="topic-bar-wrap"><div class="topic-bar" style="width:${pct}%;background:${color}"></div></div>
+      <div class="topic-pct">${ans > 0 ? pct+'%' : '—'}</div>
+    </div>`;
+  });
+
+  const typeBars = document.getElementById('type-bars');
+  typeBars.innerHTML = '';
+  const types = {mcq:'MCQ',tf:'True/False',ms:'Multi-Select',fitb:'Fill in Blank',scen:'Scenario',cmp:'Critical',match:'Matching'};
+  Object.entries(types).forEach(([type, label]) => {
+    const tQs = Q.filter(q=>q.type===type).map(q=>state.answers[q.id]).filter(Boolean);
+    const pct = tQs.length > 0 ? Math.round(tQs.filter(a=>a.correct).length/tQs.length*100) : 0;
+    const color = pct >= 75 ? 'var(--green)' : pct >= 50 ? 'var(--amber)' : tQs.length > 0 ? 'var(--red)' : 'var(--bg4)';
+    typeBars.innerHTML += `<div class="topic-row">
+      <div class="topic-name">${label}</div>
+      <div class="topic-bar-wrap"><div class="topic-bar" style="width:${pct}%;background:${color}"></div></div>
+      <div class="topic-pct">${tQs.length > 0 ? pct+'%' : '—'}</div>
+    </div>`;
+  });
+}
+
+// ============================================================
+// SEARCH
+// ============================================================
+function doSearch() {
+  const query = document.getElementById('search-input').value.toLowerCase().trim();
+  const resultsEl = document.getElementById('search-results');
+  if(query.length < 2) { resultsEl.innerHTML = '<div style="color:var(--text3);font-size:14px;">Type at least 2 characters to search...</div>'; return; }
+
+  const results = Q.filter(q => {
+    const text = (q.text + ' ' + (q.opts||[]).join(' ') + ' ' + (q.exp||'')).toLowerCase();
+    return text.includes(query);
+  });
+
+  if(results.length === 0) { resultsEl.innerHTML = '<div style="color:var(--text3);font-size:14px;">No questions found for "'+query+'"</div>'; return; }
+
+  resultsEl.innerHTML = `<div style="color:var(--text3);font-size:13px;margin-bottom:12px;">${results.length} result${results.length===1?'':'s'}</div>`;
+  results.forEach(q => {
+    const ch = CHAPTERS.find(c=>c.id===q.ch);
+    const ans = state.answers[q.id];
+    const statusDot = ans ? (ans.correct ? '🟢' : '🔴') : '⚪';
+    const highlighted = highlightText(q.text.replace(/<[^>]+>/g,''), query);
+    const item = document.createElement('div');
+    item.className = 'search-result-item';
+    item.innerHTML = `
+      <div class="search-result-q">${statusDot} ${highlighted}</div>
+      <div class="search-result-meta">${ch?ch.title:q.ch} · ${q.type.toUpperCase()} · ${q.diff}</div>`;
+    item.onclick = () => {
+      const idx = Q.findIndex(qq=>qq.id===q.id);
+      state.currentQueue = Q.map(q=>q.id);
+      state.currentIndex = idx;
+      document.getElementById('study-title').textContent = 'Search Result';
+      document.getElementById('study-chapter-label').textContent = 'Practice Mode';
+      buildFilterBar();
+      showView('study');
+      renderQuestion();
+    };
+    resultsEl.appendChild(item);
+  });
+}
+
+function highlightText(text, query) {
+  const re = new RegExp('('+query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')', 'gi');
+  return text.replace(re, '<mark>$1</mark>');
+}
+
+// ============================================================
+// SHORTCUTS
+// ============================================================
+function openShortcuts() { document.getElementById('shortcuts-modal').classList.add('open'); }
+function closeShortcuts() { document.getElementById('shortcuts-modal').classList.remove('open'); }
+
+document.addEventListener('keydown', e => {
+  if(e.target.tagName === 'INPUT') return;
+  const view = document.querySelector('.view.active');
+  if(!view || view.id !== 'view-study') return;
+  if(e.key === 'Escape') closeShortcuts();
+  if(e.key === '?') { openShortcuts(); return; }
+  if(e.key === 'ArrowRight') { nextQuestion(); return; }
+  if(e.key === 'b' || e.key === 'B') {
+    const qid = state.currentQueue[state.currentIndex];
+    if(qid) toggleBookmark(qid);
+    return;
+  }
+  const optIdx = parseInt(e.key) - 1;
+  if(optIdx >= 0 && optIdx <= 3) {
+    const qid = state.currentQueue[state.currentIndex];
+    const q = Q.find(q=>q.id===qid);
+    if(q && (q.type === 'mcq' || q.type === 'tf' || q.type === 'cmp' || q.type === 'scen') && !state.answers[qid]) {
+      if(optIdx < q.opts.length) selectOpt(q, optIdx);
+    }
+  }
+});
+
+// ============================================================
+// UTILS
+// ============================================================
+function shuffle(arr) {
+  for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
+  return arr;
+}
+
+function toggleMode() {
+  const btn = document.getElementById('mode-btn');
+}
+
+function resetAll() {
+  if(!confirm('Reset ALL progress? This cannot be undone.')) return;
+  state.answers = {};
+  state.bookmarks = new Set();
+  state.streak = 0;
+  state.maxStreak = 0;
+  saveState();
+  updateSidebar();
+  renderChapters();
+  toast('Progress reset!', 'info');
+  showView('home');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+loadState();
+updateSidebar();
+renderChapters();
+</script>
+</body>
+</html>
