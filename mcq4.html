@@ -1,0 +1,1897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VPN & IPsec — Exam Master</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700&family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg0:#070b10;--bg1:#0d1520;--bg2:#111d2e;--bg3:#16253a;
+  --card:#0f1a28;--card2:#152236;
+  --border:#1c2f45;--border2:#253d57;
+  --cyan:#00d4ff;--cyan2:rgba(0,212,255,.13);--cyan3:rgba(0,212,255,.06);
+  --green:#00e676;--green2:rgba(0,230,118,.13);
+  --red:#ff4757;--red2:rgba(255,71,87,.13);
+  --yellow:#ffd32a;--yellow2:rgba(255,211,42,.12);
+  --purple:#a78bfa;--purple2:rgba(167,139,250,.13);
+  --txt:#dce8f2;--txt2:#7a94a8;--txt3:#3d5570;
+  --mono:'Space Mono',monospace;
+  --serif:'DM Serif Display',serif;
+  --sans:'DM Sans',sans-serif;
+  --r:10px;--r2:6px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg0);color:var(--txt);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,255,.025)1px,transparent 1px),
+  linear-gradient(90deg,rgba(0,212,255,.025)1px,transparent 1px);
+  background-size:48px 48px;pointer-events:none;z-index:0}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(7,11,16,.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;height:56px}
+.nav-brand{display:flex;align-items:center;gap:10px}
+.nav-brand-icon{width:28px;height:28px;border:1.5px solid var(--cyan);border-radius:5px;
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;color:var(--cyan)}
+.nav-brand-text{font-family:var(--mono);font-size:12px;color:var(--txt);letter-spacing:.04em}
+.nav-brand-text span{color:var(--cyan)}
+.nav-tabs{display:flex;gap:2px}
+.nav-tab{padding:6px 14px;border-radius:var(--r2);font-size:12px;font-weight:500;
+  color:var(--txt2);cursor:pointer;transition:all .2s;border:none;background:none;font-family:var(--sans);
+  display:flex;align-items:center;gap:6px}
+.nav-tab:hover{color:var(--txt);background:var(--bg3)}
+.nav-tab.active{color:var(--cyan);background:var(--cyan2)}
+.nav-tab svg{width:13px;height:13px;opacity:.7}
+.nav-right{display:flex;align-items:center;gap:10px}
+.streak-badge{display:flex;align-items:center;gap:5px;
+  background:var(--yellow2);border:1px solid rgba(255,211,42,.25);
+  border-radius:20px;padding:4px 10px;font-size:11px;font-family:var(--mono);color:var(--yellow)}
+
+/* MAIN */
+main{padding-top:56px;position:relative;z-index:1;min-height:100vh}
+.view{display:none;padding:32px 24px;max-width:900px;margin:0 auto}
+.view.active{display:block}
+
+/* HOME */
+.home-hero{padding:40px 0 24px}
+.home-label{font-family:var(--mono);font-size:10px;color:var(--cyan);letter-spacing:.15em;
+  text-transform:uppercase;margin-bottom:12px}
+.home-title{font-family:var(--serif);font-size:clamp(28px,5vw,42px);color:var(--txt);
+  line-height:1.15;margin-bottom:8px}
+.home-title em{color:var(--cyan);font-style:italic}
+.home-sub{font-size:14px;color:var(--txt2);max-width:480px;line-height:1.6}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:24px 0}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:18px 16px;cursor:default}
+.stat-num{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--txt);margin-bottom:2px}
+.stat-num.c{color:var(--cyan)}.stat-num.g{color:var(--green)}.stat-num.y{color:var(--yellow)}
+.stat-label{font-size:11px;color:var(--txt3);text-transform:uppercase;letter-spacing:.06em}
+.chapter-list{display:flex;flex-direction:column;gap:10px;margin:28px 0}
+.chapter-item{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:16px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s}
+.chapter-item:hover{border-color:var(--border2);background:var(--card2)}
+.ch-num{font-family:var(--mono);font-size:10px;color:var(--cyan);min-width:28px}
+.ch-info{flex:1}
+.ch-name{font-size:13px;font-weight:500;color:var(--txt);margin-bottom:3px}
+.ch-count{font-size:11px;color:var(--txt3);font-family:var(--mono)}
+.ch-bar-wrap{width:120px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.ch-bar{height:100%;background:var(--cyan);border-radius:2px;transition:width .5s}
+.ch-pct{font-family:var(--mono);font-size:10px;color:var(--txt2);width:30px;text-align:right}
+.action-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;border-radius:var(--r2);
+  font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;border:none;font-family:var(--sans)}
+.btn-primary{background:var(--cyan);color:var(--bg0)}
+.btn-primary:hover{background:#29dcff;transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--cyan);border:1px solid var(--border2)}
+.btn-outline:hover{border-color:var(--cyan);background:var(--cyan2)}
+.btn-ghost{background:var(--bg3);color:var(--txt2);border:1px solid var(--border)}
+.btn-ghost:hover{color:var(--txt);border-color:var(--border2)}
+.btn-red{background:var(--red2);color:var(--red);border:1px solid rgba(255,71,87,.2)}
+.btn-red:hover{background:rgba(255,71,87,.22)}
+
+/* QUIZ */
+.quiz-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:12px;flex-wrap:wrap}
+.quiz-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.quiz-badge{font-family:var(--mono);font-size:10px;letter-spacing:.08em;padding:4px 10px;
+  border-radius:20px;text-transform:uppercase}
+.badge-practice{background:var(--purple2);color:var(--purple);border:1px solid rgba(167,139,250,.2)}
+.badge-exam{background:var(--red2);color:var(--red);border:1px solid rgba(255,71,87,.2)}
+.badge-review{background:var(--yellow2);color:var(--yellow);border:1px solid rgba(255,211,42,.2)}
+.quiz-progress-text{font-family:var(--mono);font-size:11px;color:var(--txt2)}
+.quiz-timer{font-family:var(--mono);font-size:13px;color:var(--yellow);
+  background:var(--yellow2);padding:4px 12px;border-radius:20px;border:1px solid rgba(255,211,42,.2)}
+.quiz-timer.urgent{color:var(--red);background:var(--red2);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.progress-bar-wrap{height:3px;background:var(--border);border-radius:2px;margin-bottom:28px;overflow:hidden}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green));border-radius:2px;transition:width .4s}
+
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:28px;margin-bottom:16px}
+.q-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;gap:12px}
+.q-tags{display:flex;gap:6px;flex-wrap:wrap}
+.q-tag{font-size:10px;font-family:var(--mono);padding:3px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.05em}
+.tag-ch{background:var(--bg3);color:var(--txt2);border:1px solid var(--border)}
+.tag-diff-medium{background:rgba(0,212,255,.1);color:var(--cyan);border:1px solid rgba(0,212,255,.2)}
+.tag-diff-hard{background:rgba(255,211,42,.1);color:var(--yellow);border:1px solid rgba(255,211,42,.2)}
+.tag-diff-tricky{background:rgba(255,71,87,.1);color:var(--red);border:1px solid rgba(255,71,87,.2)}
+.tag-type{background:var(--purple2);color:var(--purple);border:1px solid rgba(167,139,250,.2)}
+.q-bookmark{background:none;border:none;cursor:pointer;color:var(--txt3);padding:2px;transition:color .2s}
+.q-bookmark:hover{color:var(--yellow)}.q-bookmark.active{color:var(--yellow)}
+.q-num{font-family:var(--mono);font-size:11px;color:var(--txt3);margin-bottom:10px}
+.q-text{font-size:15px;color:var(--txt);line-height:1.65;font-weight:400}
+.q-hint{font-size:11px;color:var(--txt3);margin-top:8px;font-style:italic}
+
+.options{display:flex;flex-direction:column;gap:8px;margin-top:20px}
+.option{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;
+  background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r2);
+  cursor:pointer;transition:all .2s;font-size:13.5px;color:var(--txt2)}
+.option:hover:not(.disabled){border-color:var(--border2);background:var(--bg3);color:var(--txt)}
+.option-key{font-family:var(--mono);font-size:10px;min-width:20px;height:20px;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--border2);border-radius:4px;color:var(--txt3);margin-top:1px;flex-shrink:0}
+.option.selected{border-color:var(--cyan);background:var(--cyan2);color:var(--txt)}
+.option.selected .option-key{border-color:var(--cyan);color:var(--cyan)}
+.option.correct{border-color:var(--green);background:var(--green2);color:var(--txt)}
+.option.correct .option-key{border-color:var(--green);color:var(--green)}
+.option.wrong{border-color:var(--red);background:var(--red2);color:var(--txt)}
+.option.wrong .option-key{border-color:var(--red);color:var(--red)}
+.option.disabled{cursor:default;pointer-events:none}
+
+.tf-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+.tf-btn{padding:16px;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r2);
+  cursor:pointer;transition:all .2s;font-size:13px;font-weight:500;color:var(--txt2);text-align:center;font-family:var(--sans)}
+.tf-btn:hover:not(.disabled){color:var(--txt);border-color:var(--border2);background:var(--bg3)}
+.tf-btn.selected{border-color:var(--cyan);background:var(--cyan2);color:var(--txt)}
+.tf-btn.correct{border-color:var(--green);background:var(--green2);color:var(--green)}
+.tf-btn.wrong{border-color:var(--red);background:var(--red2);color:var(--red)}
+.tf-btn.reveal-correct{border-color:var(--green);background:var(--green2);color:var(--green)}
+.tf-btn.disabled{cursor:default;pointer-events:none}
+
+.multiselect-hint{font-size:11px;color:var(--purple);margin-top:10px;font-family:var(--mono)}
+.option.multi-selected{border-color:var(--purple);background:var(--purple2);color:var(--txt)}
+.option.multi-selected .option-key{border-color:var(--purple);color:var(--purple)}
+
+.feedback{margin-top:16px;padding:16px 18px;border-radius:var(--r2);display:none}
+.feedback.show{display:block;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.feedback.correct-fb{background:var(--green2);border:1px solid rgba(0,230,118,.3)}
+.feedback.wrong-fb{background:var(--red2);border:1px solid rgba(255,71,87,.3)}
+.feedback-title{font-size:12px;font-weight:600;margin-bottom:6px;font-family:var(--mono);letter-spacing:.04em}
+.feedback.correct-fb .feedback-title{color:var(--green)}
+.feedback.wrong-fb .feedback-title{color:var(--red)}
+.feedback-text{font-size:13px;color:var(--txt2);line-height:1.6}
+.feedback-trap{font-size:12px;color:var(--yellow);margin-top:8px;
+  background:var(--yellow2);padding:8px 12px;border-radius:var(--r2);border-left:2px solid var(--yellow);line-height:1.5}
+
+.quiz-actions{display:flex;justify-content:space-between;align-items:center;margin-top:16px;flex-wrap:wrap;gap:10px}
+.submit-btn{background:var(--cyan);color:var(--bg0);border:none;padding:11px 28px;border-radius:var(--r2);
+  font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--sans);display:flex;align-items:center;gap:7px}
+.submit-btn:hover:not(:disabled){background:#29dcff;transform:translateY(-1px)}
+.submit-btn:disabled{opacity:.4;cursor:default}
+.next-btn{background:var(--cyan);color:var(--bg0);border:none;padding:11px 28px;border-radius:var(--r2);
+  font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--sans);display:none;align-items:center;gap:7px}
+.next-btn.show{display:flex}
+.next-btn:hover{background:#29dcff;transform:translateY(-1px)}
+.skip-btn{background:none;border:1px solid var(--border);color:var(--txt3);padding:11px 18px;border-radius:var(--r2);
+  font-size:12px;cursor:pointer;transition:all .2s;font-family:var(--sans)}
+.skip-btn:hover{color:var(--txt2);border-color:var(--border2)}
+
+/* RESULTS */
+.results-hero{text-align:center;padding:32px 0 20px}
+.results-score-ring{position:relative;width:120px;height:120px;margin:0 auto 16px}
+.results-score-ring svg{transform:rotate(-90deg)}
+.results-score-ring .ring-bg{stroke:var(--border);fill:none;stroke-width:8}
+.results-score-ring .ring-fill{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1s}
+.results-score-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.results-score-pct{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--txt)}
+.results-score-label{font-size:10px;color:var(--txt3);font-family:var(--mono)}
+.results-grade{font-family:var(--serif);font-size:32px;margin:6px 0;color:var(--cyan)}
+.results-sub{font-size:13px;color:var(--txt2)}
+.results-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}
+.res-stat{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 12px;text-align:center}
+.res-stat-num{font-family:var(--mono);font-size:18px;font-weight:700;margin-bottom:2px}
+.res-stat-label{font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:.05em}
+.weak-list{display:flex;flex-direction:column;gap:6px;margin:16px 0}
+.weak-item{background:var(--red2);border:1px solid rgba(255,71,87,.2);border-radius:var(--r2);
+  padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
+.weak-item-q{font-size:12px;color:var(--txt2);flex:1;margin-right:12px}
+.weak-item-badge{font-family:var(--mono);font-size:10px;color:var(--red);background:rgba(255,71,87,.2);
+  padding:2px 7px;border-radius:3px;white-space:nowrap}
+.results-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:24px}
+
+/* REVIEW */
+.review-header{margin-bottom:20px}
+.review-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.filter-btn{padding:6px 14px;border-radius:20px;font-size:11px;font-family:var(--mono);
+  cursor:pointer;transition:all .2s;border:1px solid var(--border);background:none;color:var(--txt3)}
+.filter-btn:hover{color:var(--txt);border-color:var(--border2)}
+.filter-btn.active{color:var(--cyan);border-color:var(--cyan);background:var(--cyan2)}
+.review-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:10px}
+.review-q-text{font-size:13.5px;color:var(--txt);line-height:1.6;margin-bottom:12px}
+.review-correct{font-size:12px;color:var(--green);background:var(--green2);
+  padding:8px 12px;border-radius:var(--r2);margin-bottom:6px;border-left:2px solid var(--green)}
+.review-your{font-size:12px;color:var(--red);background:var(--red2);
+  padding:8px 12px;border-radius:var(--r2);margin-bottom:6px;border-left:2px solid var(--red)}
+.review-exp{font-size:12px;color:var(--txt2);line-height:1.6;margin-top:8px}
+.review-expand{background:none;border:none;color:var(--txt3);font-size:11px;cursor:pointer;
+  font-family:var(--mono);margin-top:8px;display:flex;align-items:center;gap:5px}
+.review-expand:hover{color:var(--txt2)}
+.review-detail{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.review-detail.open{display:block}
+
+/* ANALYTICS */
+.analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+@media(max-width:580px){.analytics-grid{grid-template-columns:1fr}}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.chart-title{font-size:12px;font-family:var(--mono);color:var(--txt2);margin-bottom:16px;
+  text-transform:uppercase;letter-spacing:.06em}
+.bar-chart{display:flex;flex-direction:column;gap:10px}
+.bar-row{display:flex;align-items:center;gap:10px}
+.bar-label{font-size:11px;color:var(--txt2);width:110px;flex-shrink:0;line-height:1.3}
+.bar-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .8s ease}
+.bar-pct{font-family:var(--mono);font-size:10px;color:var(--txt3);width:32px;text-align:right}
+.donut-wrap{display:flex;align-items:center;justify-content:center;gap:20px}
+.donut-legend{display:flex;flex-direction:column;gap:6px}
+.legend-item{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--txt2)}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.heatmap{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px}
+.heat-cell{height:16px;border-radius:2px;background:var(--border);transition:background .3s}
+
+/* TOAST */
+.toast-container{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{padding:12px 16px;background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);
+  font-size:12px;color:var(--txt);display:flex;align-items:center;gap:8px;min-width:220px;
+  animation:toastIn .3s ease;pointer-events:auto;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.toast.remove{animation:toastOut .3s ease forwards}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes toastOut{to{opacity:0;transform:translateX(20px)}}
+.toast-icon{font-size:14px}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);
+  z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;display:none}
+.modal-overlay.open{display:flex;animation:fadeIn .2s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--card);border:1px solid var(--border2);border-radius:var(--r);
+  padding:28px;max-width:400px;width:100%;position:relative}
+.modal-title{font-family:var(--serif);font-size:20px;color:var(--txt);margin-bottom:8px}
+.modal-sub{font-size:13px;color:var(--txt2);line-height:1.6;margin-bottom:20px}
+.modal-options{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.modal-opt{background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r2);
+  padding:12px 16px;cursor:pointer;transition:all .2s}
+.modal-opt:hover{border-color:var(--border2);background:var(--bg3)}
+.modal-opt.active{border-color:var(--cyan);background:var(--cyan2)}
+.modal-opt-title{font-size:13px;font-weight:500;color:var(--txt);margin-bottom:2px}
+.modal-opt-sub{font-size:11px;color:var(--txt3)}
+.modal-row{display:flex;gap:8px}
+
+/* SEARCH */
+.search-bar{position:relative;margin-bottom:16px}
+.search-input{width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--txt);
+  padding:10px 16px 10px 36px;border-radius:var(--r2);font-size:13px;font-family:var(--sans);outline:none}
+.search-input:focus{border-color:var(--border2)}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--txt3);font-size:14px}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg0)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* SECTION HEADINGS */
+.section-title{font-family:var(--serif);font-size:22px;color:var(--txt);margin-bottom:4px}
+.section-sub{font-size:13px;color:var(--txt3);margin-bottom:20px}
+.divider{height:1px;background:var(--border);margin:24px 0}
+
+/* KEYBOARD HINT */
+.kb-hint{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.kb-key{font-family:var(--mono);font-size:9px;color:var(--txt3);background:var(--bg3);
+  border:1px solid var(--border);border-radius:3px;padding:2px 6px}
+
+@media(max-width:600px){
+  nav{padding:0 16px}
+  .view{padding:20px 16px}
+  .nav-tabs .nav-tab span{display:none}
+  .results-grid{grid-template-columns:1fr 1fr}
+  .q-card{padding:20px 16px}
+}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:48px 20px;color:var(--txt3)}
+.empty-icon{font-size:36px;margin-bottom:10px}
+.empty-text{font-size:13px}
+
+/* EXAM COUNTDOWN */
+.exam-warning{background:var(--red2);border:1px solid rgba(255,71,87,.3);border-radius:var(--r2);
+  padding:10px 14px;font-size:12px;color:var(--red);margin-bottom:16px;display:flex;align-items:center;gap:7px}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <div class="nav-brand-icon">VPN</div>
+    <span class="nav-brand-text"><span>IPsec</span> Exam Master</span>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showView('home')" id="tab-home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="nav-tab" onclick="showView('quiz-setup')" id="tab-quiz">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+      <span>Practice</span>
+    </button>
+    <button class="nav-tab" onclick="showView('review')" id="tab-review">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      <span>Review</span>
+    </button>
+    <button class="nav-tab" onclick="showView('analytics')" id="tab-analytics">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span>Stats</span>
+    </button>
+  </div>
+  <div class="nav-right">
+    <div class="streak-badge" id="nav-streak">🔥 0</div>
+  </div>
+</nav>
+
+<main>
+
+<!-- HOME VIEW -->
+<div class="view active" id="view-home">
+  <div class="home-hero">
+    <div class="home-label">// Dr. Abdalla Sayed</div>
+    <h1 class="home-title">VPN &amp; IPsec —<br><em>Exam Master</em></h1>
+    <p class="home-sub">Deep-analysis question bank built to reverse-engineer the exam. Every trap, every trick, every distinction.</p>
+  </div>
+  <div class="stats-row" id="home-stats"></div>
+  <div class="divider"></div>
+  <p class="section-sub" style="margin-bottom:12px">Chapter Performance</p>
+  <div class="chapter-list" id="chapter-list"></div>
+  <div class="action-row">
+    <button class="btn btn-primary" onclick="openStartModal('all','practice')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Start Practice
+    </button>
+    <button class="btn btn-outline" onclick="openStartModal('all','exam')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Exam Simulation
+    </button>
+    <button class="btn btn-ghost" onclick="openStartModal('weak','practice')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      Weak Areas Only
+    </button>
+    <button class="btn btn-red" onclick="confirmReset()">Reset All</button>
+  </div>
+</div>
+
+<!-- QUIZ SETUP MODAL -->
+<div class="modal-overlay" id="modal-start">
+  <div class="modal">
+    <h2 class="modal-title">Start Session</h2>
+    <p class="modal-sub" id="modal-desc">Configure your study session</p>
+    <div class="modal-options" id="modal-chapter-opts"></div>
+    <div class="modal-row">
+      <button class="btn btn-primary" style="flex:1" onclick="startQuiz()">Begin</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ VIEW -->
+<div class="view" id="view-quiz">
+  <div class="quiz-header">
+    <div class="quiz-meta">
+      <span class="quiz-badge" id="quiz-mode-badge">Practice</span>
+      <span class="quiz-progress-text" id="quiz-progress-text">Q 1 / 20</span>
+    </div>
+    <div id="quiz-timer-wrap" style="display:none"><span class="quiz-timer" id="quiz-timer">⏱ 30:00</span></div>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="quiz-progress-bar" style="width:0%"></div></div>
+  <div id="exam-warning" class="exam-warning" style="display:none">⚡ Exam Mode — No instant feedback. Answers revealed at the end.</div>
+  <div id="quiz-question-area"></div>
+  <div class="kb-hint" id="kb-hints"></div>
+</div>
+
+<!-- RESULTS VIEW -->
+<div class="view" id="view-results">
+  <div class="results-hero">
+    <div class="results-score-ring">
+      <svg width="120" height="120" viewBox="0 0 120 120">
+        <circle class="ring-bg" cx="60" cy="60" r="52"/>
+        <circle class="ring-fill" id="ring-fill" cx="60" cy="60" r="52" stroke="var(--cyan)"
+          stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
+      </svg>
+      <div class="results-score-text">
+        <span class="results-score-pct" id="res-pct">0%</span>
+        <span class="results-score-label">Score</span>
+      </div>
+    </div>
+    <div class="results-grade" id="res-grade">—</div>
+    <p class="results-sub" id="res-sub">Keep going!</p>
+  </div>
+  <div class="results-grid" id="res-stats-grid"></div>
+  <div id="res-weak-section"></div>
+  <div class="results-actions" id="res-actions"></div>
+</div>
+
+<!-- REVIEW VIEW -->
+<div class="view" id="view-review">
+  <div class="review-header">
+    <h2 class="section-title">Question Review</h2>
+    <p class="section-sub">Browse all questions — study weak spots &amp; bookmarks</p>
+  </div>
+  <div class="search-bar">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" id="review-search" placeholder="Search questions…" oninput="renderReview()">
+  </div>
+  <div class="review-filters" id="review-filters"></div>
+  <div id="review-list"></div>
+</div>
+
+<!-- ANALYTICS VIEW -->
+<div class="view" id="view-analytics">
+  <h2 class="section-title">Performance Analytics</h2>
+  <p class="section-sub">Your study statistics across all sessions</p>
+  <div class="analytics-grid">
+    <div class="chart-card">
+      <div class="chart-title">Chapter Accuracy</div>
+      <div class="bar-chart" id="chart-chapter"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Question Type Breakdown</div>
+      <div class="donut-wrap" id="chart-types"></div>
+    </div>
+  </div>
+  <div class="chart-card" style="margin-bottom:16px">
+    <div class="chart-title">Difficulty Breakdown</div>
+    <div class="bar-chart" id="chart-diff"></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">Most Missed Questions (Top 8)</div>
+    <div id="chart-missed"></div>
+  </div>
+</div>
+
+</main>
+
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+// ====================================================
+// QUESTION BANK — 88 Questions
+// ====================================================
+const CHAPTERS = {
+  1: "VPN Fundamentals",
+  2: "IPsec Architecture",
+  3: "IPsec Protocols & Modes",
+  4: "IKE & Key Exchange",
+  5: "Applications & Limitations"
+};
+
+const Q = [
+// ─── CHAPTER 1: VPN Fundamentals ─────────────────────────────────────────────
+{id:1,ch:1,type:"mcq",diff:"medium",
+q:"What does the 'Virtual' in VPN specifically mean?",
+opts:["Uses virtual machines for packet routing","No dedicated physical link — uses shared public infrastructure","Data is encrypted using virtual ciphers","IP addresses are virtualized by the server"],
+ans:1,
+exp:"'Virtual' means there is no dedicated physical connection. The VPN creates a logical secure channel over shared public infrastructure (the internet) — hence 'virtual' private network.",
+trap:"Many students confuse 'Virtual' with IP masking or encryption. Those are functions of the VPN, not what 'Virtual' in the name means."},
+
+{id:2,ch:1,type:"tf",diff:"medium",
+q:"A VPN requires a dedicated physical link between the two communicating endpoints.",
+ans:false,
+exp:"False. This is the entire point of VPN — 'Virtual' means it uses shared public infrastructure with no dedicated physical line. VPN simulates a private link over the public internet.",
+trap:"A common misconception. Dedicated physical links are leased lines — VPNs specifically eliminate the need for them."},
+
+{id:3,ch:1,type:"mcq",diff:"medium",
+q:"What does the 'Private' component of VPN refer to?",
+opts:["Using private IP address ranges (10.x, 192.168.x)","Data is protected from unauthorized access and interception","Only private companies are permitted to use VPNs","The VPN server is privately owned"],
+ans:1,
+exp:"'Private' means the communication is protected — data is encrypted and authenticated so unauthorized parties cannot read or intercept it. It does NOT mean private IP addressing.",
+trap:"Students often associate 'Private' with RFC 1918 private IP addresses. That's not what 'Private' in VPN means."},
+
+{id:4,ch:1,type:"mcq",diff:"medium",
+q:"From a destination server's perspective, where does VPN traffic appear to originate?",
+opts:["The client's real IP address","A random rotating IP address","The VPN server's IP address","The ISP's gateway IP address"],
+ans:2,
+exp:"All traffic exits through the VPN server. From the destination's perspective, all requests appear to come from the VPN server's IP — the client's real IP is completely hidden.",
+trap:""},
+
+{id:5,ch:1,type:"multiselect",diff:"medium",
+q:"Which of the following are core VPN functions? (Select ALL that apply)",
+opts:["Encryption","Integrity","Authentication","IP Masking","Traffic Prioritization (QoS)"],
+ans:[0,1,2,3],
+exp:"The four core VPN functions are: Encryption (confidentiality), Integrity (tamper detection), Authentication (verifying identity), and IP Masking (hiding real IP). QoS/Traffic prioritization is NOT a VPN function.",
+trap:"'Traffic Prioritization' sounds plausible but is a network QoS feature, not a core VPN function."},
+
+{id:6,ch:1,type:"mcq",diff:"medium",
+q:"Which VPN function specifically detects whether data has been altered during transit?",
+opts:["Encryption","Integrity","Authentication","IP Masking"],
+ans:1,
+exp:"Integrity ensures the receiver gets exactly what was sent. It uses cryptographic hash functions to detect any modification to data in transit. Encryption hides the content; Integrity ensures it wasn't changed.",
+trap:"Encryption and Integrity are frequently confused. Encryption = confidentiality. Integrity = tamper detection."},
+
+{id:7,ch:1,type:"mcq",diff:"hard",
+q:"In a Site-to-Site VPN, who handles encryption and decryption of traffic?",
+opts:["Each individual employee's device","VPN client software installed on each computer","Gateways at each site — transparent to end users","The internet service provider"],
+ans:2,
+exp:"In Site-to-Site VPN, gateways (routers/firewalls) at each location handle encryption/decryption. End-user devices require no special VPN configuration — they communicate normally and the gateway handles the security.",
+trap:"This is a critical distinction from Remote Access/Client-to-Site VPNs where the individual device runs VPN software."},
+
+{id:8,ch:1,type:"tf",diff:"medium",
+q:"In a Site-to-Site VPN, end-user devices must install VPN client software.",
+ans:false,
+exp:"False. Site-to-Site VPN gateways handle encryption transparently. End-user devices communicate normally — no VPN software required. This is a key advantage of Site-to-Site over Remote Access VPN.",
+trap:"This is a classic exam trap. Site-to-Site = gateways do the work, users are unaware. Only Client-to-Site and Remote Access require client software."},
+
+{id:9,ch:1,type:"mcq",diff:"hard",
+q:"A company wants to give remote employees access to internal resources from home, with IT enforcing granular security policies and multi-factor authentication. Which VPN type is most appropriate?",
+opts:["Site-to-Site VPN","Remote Access VPN","Client-to-Site VPN","Extranet VPN"],
+ans:2,
+exp:"Client-to-Site VPN combines individual user access with centralized IT control. It's explicitly paired with MFA and granular access controls enforced at the VPN gateway. Remote Access VPN is simpler but offers less centralized control.",
+trap:"Remote Access and Client-to-Site VPNs look similar. Client-to-Site adds the emphasis on IT centralized control and MFA — the key differentiator."},
+
+{id:10,ch:1,type:"mcq",diff:"medium",
+q:"Which of the following are explicitly listed as common Remote Access VPN implementations?",
+opts:["L2TP, PPTP, SSTP","Cisco AnyConnect, OpenVPN, WireGuard","OpenSSH, SFTP, SCP","MPLS, BGP, OSPF"],
+ans:1,
+exp:"The slides specifically mention Cisco AnyConnect, OpenVPN, and WireGuard as common Remote Access VPN implementations. L2TP/PPTP are older VPN protocols; MPLS/BGP are routing protocols.",
+trap:""},
+
+{id:11,ch:1,type:"mcq",diff:"medium",
+q:"A branch office in Cairo needs to connect to headquarters in London so employees at both sites share the same logical network without VPN configuration on their laptops. Which type is needed?",
+opts:["Remote Access VPN","Client-to-Site VPN","Site-to-Site VPN","SSL VPN"],
+ans:2,
+exp:"Site-to-Site VPN connects entire networks across locations. Employees at each site communicate as if on the same LAN. No special configuration needed on individual devices — gateways handle it all.",
+trap:""},
+
+{id:12,ch:1,type:"mcq",diff:"hard",
+q:"What is the PRIMARY distinction between Remote Access VPN and Client-to-Site VPN?",
+opts:["Remote Access uses encryption; Client-to-Site does not","Client-to-Site offers more centralized IT control, granular policies, and is often paired with MFA","Remote Access is for multiple users; Client-to-Site is for single users","There is no meaningful difference — they are identical concepts"],
+ans:1,
+exp:"Both are for individual users connecting remotely, but Client-to-Site specifically emphasizes IT's centralized control over who can access what, security policies enforced at the gateway, and integration with MFA. Remote Access is the broader, simpler concept.",
+trap:"Many students say D — but there IS a difference. The slides present them as distinct. Watch for this in the exam."},
+
+{id:13,ch:1,type:"tf",diff:"medium",
+q:"VPN authentication confirms that only authorized users and devices can establish a VPN connection, preventing impersonation attacks.",
+ans:true,
+exp:"True. Authentication is specifically about verifying identity — confirming you're talking to who you think you are. It prevents impersonation and unauthorized access.",
+trap:""},
+
+{id:14,ch:1,type:"mcq",diff:"medium",
+q:"An employee connects to a VPN from a coffee shop. Which security threats does the VPN address? (Best answer)",
+opts:["Denial of service attacks on the coffee shop network","Eavesdropping, man-in-the-middle attacks, and unauthorized surveillance on the open Wi-Fi","Physical theft of the laptop","Router configuration attacks"],
+ans:1,
+exp:"VPN on public/open Wi-Fi primarily protects against eavesdropping, MITM attacks, and unauthorized surveillance — all threats explicitly mentioned in the slides. DoS and physical theft are not VPN concerns.",
+trap:""},
+
+// ─── CHAPTER 2: IPsec Architecture ──────────────────────────────────────────
+{id:15,ch:2,type:"mcq",diff:"medium",
+q:"At which OSI layer does IPsec operate?",
+opts:["Layer 2 — Data Link","Layer 3 — Network","Layer 4 — Transport","Layer 7 — Application"],
+ans:1,
+exp:"IPsec operates at Layer 3 (the Network Layer). This is critical — it makes IPsec transparent to applications (unlike TLS which is at Layer 7). All IP traffic is protected regardless of which app sends it.",
+trap:"TLS operates at Layer 7 (Application). IPsec is Layer 3. This difference is extremely exam-worthy."},
+
+{id:16,ch:2,type:"tf",diff:"medium",
+q:"IPsec requires existing applications to be modified in order to benefit from its security.",
+ans:false,
+exp:"False. IPsec operates at the network layer and is transparent to applications. No application changes are needed — IPsec secures all IP packets regardless of the application that generates them.",
+trap:"TLS (Layer 7) DOES require application support. IPsec at Layer 3 does NOT — this distinction is frequently tested."},
+
+{id:17,ch:2,type:"mcq",diff:"hard",
+q:"What is the key architectural difference between IPsec and TLS?",
+opts:["IPsec uses symmetric encryption; TLS uses asymmetric encryption","IPsec operates at Layer 3 (transparent to apps); TLS operates at the application layer","IPsec is proprietary; TLS is open standard","TLS provides better security than IPsec"],
+ans:1,
+exp:"IPsec is at Layer 3 (Network) — it protects all IP traffic transparently. TLS is at the application layer — it must be explicitly integrated into each application. This is the fundamental architectural difference.",
+trap:"Both use both symmetric and asymmetric encryption, so option A is wrong. Both are open standards, so option C is wrong."},
+
+{id:18,ch:2,type:"mcq",diff:"medium",
+q:"Which IPsec security service prevents an attacker from capturing valid packets and resending them later?",
+opts:["Confidentiality","Data Integrity","Anti-Replay Protection","Origin Authentication"],
+ans:2,
+exp:"Anti-Replay Protection uses unique sequence numbers on each packet. The receiver tracks these numbers and rejects any duplicate or out-of-window packets — blocking replay attacks where captured packets are re-injected.",
+trap:"Students confuse Anti-Replay with Integrity. Integrity detects MODIFICATION; Anti-Replay prevents REUSE of unmodified captured packets."},
+
+{id:19,ch:2,type:"mcq",diff:"hard",
+q:"How does IPsec implement Anti-Replay protection?",
+opts:["By rotating encryption keys after each packet","By using unique sequence numbers on each packet that the receiver tracks","By encrypting timestamps in each packet","By requiring re-authentication for every packet"],
+ans:1,
+exp:"Each IPsec packet carries a unique sequence number. The receiver maintains a sliding window of accepted sequence numbers and rejects any packet with a duplicate or too-old sequence number.",
+trap:""},
+
+{id:20,ch:2,type:"tf",diff:"hard",
+q:"IPsec's Origin Authentication uses sequence numbers to verify the identity of the communicating party.",
+ans:false,
+exp:"False. Origin Authentication uses digital signatures or pre-shared keys to verify identity. Sequence numbers are used for Anti-Replay protection — a completely different security service.",
+trap:"Classic confusion between two IPsec services. Sequence numbers = Anti-Replay. Digital signatures / PSK = Origin Authentication."},
+
+{id:21,ch:2,type:"multiselect",diff:"medium",
+q:"Which of the following are IPsec security services? (Select ALL that apply)",
+opts:["Confidentiality","Data Integrity","Anti-Replay","Origin Authentication","Key Management","Traffic Shaping"],
+ans:[0,1,2,3,4],
+exp:"IPsec provides five security services: Confidentiality (encryption), Data Integrity (hashing), Anti-Replay (sequence numbers), Origin Authentication (PSK/digital signatures), and Key Management (IKE). Traffic Shaping is a QoS feature, not an IPsec security service.",
+trap:"Traffic Shaping sounds network-security related but is absolutely not an IPsec security service."},
+
+{id:22,ch:2,type:"mcq",diff:"medium",
+q:"Which encryption algorithm is the current gold standard in IPsec deployments?",
+opts:["DES (56-bit)","3DES (168-bit)","SEAL","AES (128/192/256-bit)"],
+ans:3,
+exp:"AES (Advanced Encryption Standard) with 128, 192, or 256-bit keys is the current gold standard. It provides the strongest security, is hardware accelerated, and is the most widely deployed. DES is legacy/broken. 3DES is being phased out. SEAL is a niche stream cipher.",
+trap:""},
+
+{id:23,ch:2,type:"mcq",diff:"hard",
+q:"SEAL (Software-Optimized Encryption Algorithm) is best classified as:",
+opts:["A block cipher with 256-bit keys","A software-optimized stream cipher with low CPU cost","An asymmetric encryption algorithm","A cryptographic hash function"],
+ans:1,
+exp:"SEAL is a software-optimized stream cipher designed for low computational overhead. Unlike AES which is a block cipher, SEAL processes data as a stream. It's less commonly used than AES but offers speed advantages in software-only environments.",
+trap:"Students often assume all IPsec encryption is block ciphers. SEAL is a stream cipher — this detail is frequently tested."},
+
+{id:24,ch:2,type:"mcq",diff:"hard",
+q:"Arrange from weakest/oldest to strongest/newest: DES, 3DES, AES, SEAL",
+opts:["DES → SEAL → 3DES → AES","DES → 3DES → SEAL → AES","AES → 3DES → DES → SEAL","3DES → DES → SEAL → AES"],
+ans:1,
+exp:"DES (56-bit, legacy, broken) → 3DES (168-bit, stronger but slow) → SEAL (stream cipher, software-optimized) → AES (128-256 bit, current gold standard). DES is the oldest and weakest; AES is the strongest.",
+trap:"3DES key size (168-bit) is larger than SEAL is often cited as, but AES is still the gold standard due to design strength and hardware acceleration."},
+
+{id:25,ch:2,type:"mcq",diff:"medium",
+q:"What is the key size of DES?",
+opts:["40-bit","56-bit","112-bit","168-bit"],
+ans:1,
+exp:"DES uses a 56-bit key. This is why it's considered broken — 56-bit keys are far too short for modern computational power and can be brute-forced.",
+trap:"Don't confuse: DES=56-bit, 3DES=168-bit, AES=128/192/256-bit."},
+
+{id:26,ch:2,type:"mcq",diff:"medium",
+q:"What is the key size of 3DES?",
+opts:["56-bit","112-bit","168-bit","256-bit"],
+ans:2,
+exp:"3DES (Triple DES) applies DES three times with different keys, giving an effective key length of 168 bits (3 × 56 bits). It's stronger than DES but slower and being phased out.",
+trap:""},
+
+{id:27,ch:2,type:"tf",diff:"hard",
+q:"In Diffie-Hellman key exchange, the shared secret is transmitted over the network.",
+ans:false,
+exp:"False — this is the entire magic of DH. Both parties exchange public values, then independently compute the same shared secret. The secret is NEVER transmitted. An eavesdropper who captures the exchange cannot derive the secret.",
+trap:"This is a classic DH exam trap. The RESULT (shared secret) is never sent. Public values are exchanged. The secret is computed locally by both parties."},
+
+{id:28,ch:2,type:"mcq",diff:"hard",
+q:"In Diffie-Hellman, what is exchanged over the public channel?",
+opts:["The actual symmetric encryption key","The shared secret encrypted with asymmetric keys","Public mathematical values used to independently compute the shared secret","Pre-shared keys (PSKs)"],
+ans:2,
+exp:"DH parties exchange public mathematical values (based on DH group parameters). Each party uses their private value plus the other's public value to independently arrive at the same shared secret — without it ever being sent across the network.",
+trap:""},
+
+{id:29,ch:2,type:"mcq",diff:"medium",
+q:"What do Diffie-Hellman Groups (e.g., Group 14, 19, 20) define?",
+opts:["The number of encryption rounds per packet","The key size and algorithm used for key exchange","The maximum lifetime of a VPN session","The number of simultaneous VPN connections"],
+ans:1,
+exp:"DH Groups define the mathematical parameters for key exchange — specifically the key size and underlying algorithm (e.g., Group 14 uses 2048-bit MODP, Groups 19/20 use elliptic curves). Higher group numbers generally mean stronger security.",
+trap:""},
+
+{id:30,ch:2,type:"mcq",diff:"hard",
+q:"Why does IPsec use symmetric encryption for bulk data rather than asymmetric encryption?",
+opts:["Asymmetric encryption doesn't support AES","Symmetric encryption is significantly faster, essential for per-packet processing without bottlenecks","Symmetric encryption is more secure for IP packets","Asymmetric encryption requires IP header modification"],
+ans:1,
+exp:"Symmetric encryption (AES, 3DES) is orders of magnitude faster than asymmetric encryption (RSA, ECC). Since IPsec must encrypt every single IP packet at line speed, asymmetric encryption would create severe performance bottlenecks. Asymmetric crypto is only used for key exchange.",
+trap:""},
+
+{id:31,ch:2,type:"tf",diff:"medium",
+q:"IPsec is a proprietary protocol suite developed by a single vendor.",
+ans:false,
+exp:"False. IPsec is explicitly described as an 'open standards framework — not proprietary.' It is standardized by the IETF and supported across different vendors and platforms.",
+trap:""},
+
+{id:32,ch:2,type:"mcq",diff:"medium",
+q:"Which protocol automates key negotiation, generation, and renewal in IPsec?",
+opts:["Diffie-Hellman directly","SSL","IKE (Internet Key Exchange)","RSA"],
+ans:2,
+exp:"IKE (Internet Key Exchange) automates the negotiation, generation, and periodic renewal of cryptographic keys. It uses DH for key exchange as part of its process, but IKE is the protocol managing the overall key management lifecycle.",
+trap:"DH is used BY IKE, but IKE is the protocol that manages key exchange. Don't confuse the tool (DH) with the manager (IKE)."},
+
+// ─── CHAPTER 3: IPsec Protocols & Modes ─────────────────────────────────────
+{id:33,ch:3,type:"mcq",diff:"medium",
+q:"Which IPsec protocol provides encryption of the data payload?",
+opts:["AH (Authentication Header)","ESP (Encapsulating Security Payload)","Both AH and ESP equally","IKE"],
+ans:1,
+exp:"Only ESP provides encryption. AH provides authentication and integrity but NO encryption — packet content remains readable. This is the most fundamental distinction between AH and ESP.",
+trap:"The #1 AH/ESP confusion. AH = authentication only, NO encryption. ESP = encryption + optional authentication."},
+
+{id:34,ch:3,type:"tf",diff:"medium",
+q:"AH (Authentication Header) encrypts the data payload of an IP packet.",
+ans:false,
+exp:"False. AH provides data origin authentication, connectionless integrity, and anti-replay protection — but it does NOT encrypt data. Traffic protected by AH alone is readable by anyone who intercepts it (though they cannot modify it undetected).",
+trap:"This is one of the most commonly missed facts about IPsec. AH = no encryption. ESP = encryption."},
+
+{id:35,ch:3,type:"multiselect",diff:"hard",
+q:"What security services does AH provide? (Select ALL that apply)",
+opts:["Data origin authentication","Connectionless integrity","Anti-replay protection","Encryption of payload","IP header authentication"],
+ans:[0,1,2,4],
+exp:"AH provides: data origin authentication, connectionless integrity, anti-replay protection, and IP header protection (it authenticates the outer IP header). AH does NOT provide encryption — that's ESP only.",
+trap:"Remember AH covers the IP HEADER too — this is important in the AH vs ESP comparison."},
+
+{id:36,ch:3,type:"mcq",diff:"hard",
+q:"ESP authentication is:",
+opts:["Mandatory and always active","Optional — can be enabled or disabled","Required only in Tunnel Mode","Not supported by ESP"],
+ans:1,
+exp:"ESP authentication is explicitly optional. ESP always provides encryption, but authentication (integrity check + origin verification) can be enabled or disabled independently. This is an important nuance in the AH vs ESP comparison.",
+trap:"Students assume ESP always authenticates since it's the 'full' protocol. Authentication in ESP is OPTIONAL — watch for this in True/False questions."},
+
+{id:37,ch:3,type:"mcq",diff:"hard",
+q:"Regarding IP header protection, what is the correct comparison between AH and ESP in Tunnel Mode?",
+opts:["Both AH and ESP fully protect the outer IP header","AH protects the outer IP header; ESP only partially protects (inner packet only)","ESP fully protects the outer IP header; AH does not","Neither protocol protects the IP header"],
+ans:1,
+exp:"AH authenticates the outer IP header in both modes. ESP in Tunnel Mode only protects the inner (original) packet — the new outer header is NOT authenticated by ESP alone. This is a subtle but critical difference.",
+trap:"This is one of the trickiest AH vs ESP distinctions. AH = full outer header protection. ESP = only inner packet in tunnel mode."},
+
+{id:38,ch:3,type:"mcq",diff:"medium",
+q:"Which IPsec protocol is described as 'the most commonly deployed in modern VPN implementations'?",
+opts:["AH","ESP","Both equally","GRE"],
+ans:1,
+exp:"ESP is the most commonly deployed IPsec protocol because it provides encryption — which is required for most VPN use cases. AH (integrity only, no encryption) is rare in practice.",
+trap:""},
+
+{id:39,ch:3,type:"mcq",diff:"hard",
+q:"A compliance requirement states: packet content must remain READABLE by authorized inspectors, but route authenticity and integrity must be guaranteed. Which protocol?",
+opts:["ESP","AH","Both AH and ESP combined","Neither"],
+ans:1,
+exp:"AH provides integrity and authentication WITHOUT encryption — data remains readable. This is explicitly stated as appropriate for 'internal network audit trails or compliance scenarios where data must remain readable by authorized inspectors.'",
+trap:"This is the rare legitimate use case for AH. If you need readability + integrity, AH is the answer. If you need confidentiality, use ESP."},
+
+{id:40,ch:3,type:"mcq",diff:"hard",
+q:"A network admin captures a packet protected by AH only. What can an attacker do with it?",
+opts:["Read the packet content AND modify it undetected","Read the packet content but CANNOT modify it undetected","Neither read nor modify the packet","Modify but not read the packet"],
+ans:1,
+exp:"AH provides NO encryption, so an attacker CAN read the packet content. However, AH provides cryptographic integrity protection, so any modification will be detected by the receiver. The attacker can see the data but not alter it silently.",
+trap:"Critical thinking question. AH = readable but tamper-evident. Not encrypted but integrity-protected."},
+
+{id:41,ch:3,type:"mcq",diff:"medium",
+q:"Which is the current standard MAC/hash for IPsec authentication?",
+opts:["HMAC-MD5","HMAC-SHA-1","HMAC-SHA-256 / SHA-384","HMAC-3DES"],
+ans:2,
+exp:"HMAC-SHA-256 and HMAC-SHA-384 are the current standard. HMAC-MD5 is legacy/weakened. HMAC-SHA-1 is transitional (still supported but being phased out). HMAC-3DES is not a real hash algorithm.",
+trap:"Know the progression: MD5 (broken) → SHA-1 (transitional) → SHA-256/SHA-384 (current standard)."},
+
+{id:42,ch:3,type:"mcq",diff:"medium",
+q:"HMAC-MD5 is classified as:",
+opts:["Current standard for IPsec authentication","Transitional — still acceptable but being phased out","Legacy — weakened, limited use","Not supported in IPsec"],
+ans:2,
+exp:"HMAC-MD5 is explicitly described as 'legacy — weakened, limited use.' MD5 has known cryptographic weaknesses that make it unsuitable for new deployments.",
+trap:"Know all three tiers: MD5=legacy/weakened, SHA-1=transitional, SHA-256/384=current standard."},
+
+{id:43,ch:3,type:"mcq",diff:"medium",
+q:"In Transport Mode, what remains VISIBLE to routers and intermediate devices?",
+opts:["The encrypted payload only","The original IP header (source and destination IP addresses)","Only the VPN gateway addresses","Nothing — everything is hidden"],
+ans:1,
+exp:"In Transport Mode, the original IP header is LEFT INTACT and visible to all intermediate devices. Only the upper-layer payload (TCP/UDP data) is protected by IPsec. This means source and destination IP addresses of the actual communicating hosts are exposed.",
+trap:"Transport Mode = IP header exposed. Tunnel Mode = IP header hidden. This is the core topological distinction."},
+
+{id:44,ch:3,type:"tf",diff:"medium",
+q:"Transport Mode adds a new outer IP header to the protected packet.",
+ans:false,
+exp:"False. Transport Mode does NOT add any new IP header. It protects only the payload and leaves the original IP header intact. Tunnel Mode is the one that adds a new outer IP header encapsulating the entire original packet.",
+trap:"Students frequently mix up which mode adds the extra header. Only TUNNEL mode wraps the packet in a new IP header."},
+
+{id:45,ch:3,type:"mcq",diff:"medium",
+q:"What is the correct packet structure in Transport Mode?",
+opts:["New Outer Header → Original IP Header → Encrypted Payload","Original IP Header → IPsec Header → Encrypted Payload","IPsec Header → Encrypted Payload → Original IP Header","Encrypted Payload → Original IP Header → IPsec Header"],
+ans:1,
+exp:"Transport Mode structure: Original IP Header (visible, unchanged) → IPsec Header (AH or ESP) → Encrypted Payload (TCP/UDP data). The original IP header is NOT encrypted or replaced.",
+trap:""},
+
+{id:46,ch:3,type:"mcq",diff:"medium",
+q:"Transport Mode is best suited for:",
+opts:["Site-to-site VPN between two gateway routers","Host-to-host (peer-to-peer) communication within a trusted network","Connecting a remote employee to corporate HQ","Hiding internal network topology from the internet"],
+ans:1,
+exp:"Transport Mode is designed for host-to-host (peer-to-peer) communication — end-to-end protection where both endpoints run IPsec directly. It has lower overhead (no extra header) but exposes the internal IP addresses.",
+trap:"Site-to-site VPNs and most enterprise deployments use TUNNEL Mode, not Transport Mode."},
+
+{id:47,ch:3,type:"tf",diff:"hard",
+q:"In Tunnel Mode, only the data payload is encrypted — the original IP header remains visible.",
+ans:false,
+exp:"False. Tunnel Mode encapsulates the ENTIRE original IP packet — including its header — inside a new outer packet. Both the original IP header and payload are encrypted and protected. Only the new outer header (with gateway addresses) is visible.",
+trap:"This is a reversed Transport Mode confusion. Transport Mode = original header visible. Tunnel Mode = entire original packet hidden."},
+
+{id:48,ch:3,type:"mcq",diff:"medium",
+q:"In Tunnel Mode, what addresses does the new outer IP header contain?",
+opts:["The original client and server IP addresses","The VPN gateway addresses (not the actual hosts)","Random anonymized IP addresses","The ISP gateway addresses"],
+ans:1,
+exp:"The outer header references the VPN GATEWAYS, not the actual client/server hosts. This hides the internal network topology — observers only see traffic between the two VPN gateways.",
+trap:"This is why Tunnel Mode provides topology hiding: the real source/destination IPs are encapsulated and hidden inside the outer packet."},
+
+{id:49,ch:3,type:"mcq",diff:"medium",
+q:"Which mode is the standard for site-to-site VPN gateways and most enterprise deployments?",
+opts:["Transport Mode","Tunnel Mode","Both equally","Hybrid Mode"],
+ans:1,
+exp:"Tunnel Mode is the preferred and standard choice for most VPN implementations, especially site-to-site gateways. It provides stronger protection by hiding the entire original packet and masking internal network topology.",
+trap:""},
+
+{id:50,ch:3,type:"mcq",diff:"hard",
+q:"An observer monitors traffic between two VPN gateways configured in Tunnel Mode. What can they see?",
+opts:["All internal client IP addresses and their data","VPN gateway IP addresses only — internal topology is hidden","Only the encrypted payload, no IP information at all","The full original packet contents"],
+ans:1,
+exp:"Tunnel Mode reveals only the outer header's gateway IP addresses to observers. All internal host IPs and the entire original packet (header + payload) are encapsulated and encrypted inside. Internal network topology is fully hidden.",
+trap:""},
+
+{id:51,ch:3,type:"mcq",diff:"hard",
+q:"What overhead advantage does Transport Mode have compared to Tunnel Mode?",
+opts:["Stronger encryption algorithm options","Lower overhead — no additional IP header is added","Better compatibility with NAT","Better IP header protection"],
+ans:1,
+exp:"Transport Mode has lower overhead because it doesn't add a new outer IP header. Tunnel Mode wraps the entire original packet in a new IP packet, adding an extra IP header (20 bytes minimum) to every packet.",
+trap:""},
+
+{id:52,ch:3,type:"mcq",diff:"hard",
+q:"AH and ESP can be used simultaneously. How common is this in practice?",
+opts:["Very common — it's the recommended configuration","The standard for all modern deployments","Uncommon in practice, though technically possible","Not supported by the IPsec standard"],
+ans:2,
+exp:"AH and ESP can technically be used together when both full IP header integrity AND payload encryption are required. However, the slides explicitly note this is 'uncommon in practice' — ESP alone covers most requirements.",
+trap:""},
+
+{id:53,ch:3,type:"mcq",diff:"medium",
+q:"Which statement about Transport Mode is CORRECT?",
+opts:["It hides the internal network topology effectively","It is used for site-to-site VPN gateways","It is less effective at hiding network topology","It adds a new outer IP header for gateway addresses"],
+ans:2,
+exp:"Transport Mode explicitly leaves the original IP header visible, meaning internal host IP addresses are exposed. It is 'less effective at hiding network topology' — this is directly stated in the slides.",
+trap:"Don't confuse Transport Mode's 'end-to-end' protection with 'topology hiding' — they're different concepts."},
+
+// ─── CHAPTER 4: IKE & Key Exchange ──────────────────────────────────────────
+{id:54,ch:4,type:"mcq",diff:"medium",
+q:"What is the primary purpose of IKE (Internet Key Exchange) in IPsec?",
+opts:["Encrypting bulk data traffic","Providing the authentication header","Automating key negotiation, generation, and renewal — eliminating manual key distribution","Providing the IP masking service"],
+ans:2,
+exp:"IKE automates the secure negotiation, generation, and periodic renewal of cryptographic keys. Without IKE, administrators would need to manually configure and distribute keys — a major operational burden at scale.",
+trap:"DH is used within IKE, but IKE is the protocol managing the whole key lifecycle."},
+
+{id:55,ch:4,type:"mcq",diff:"medium",
+q:"IKE uses which port for standard key exchange communication?",
+opts:["TCP 443","UDP 500","TCP 80","UDP 4500"],
+ans:1,
+exp:"IKE uses UDP port 500 for key exchange. This is an important firewall configuration detail — UDP 500 must be allowed for IPsec VPN establishment.",
+trap:"UDP 4500 is used for NAT-T (NAT Traversal), not standard IKE. UDP 500 = IKE. UDP 4500 = NAT-T."},
+
+{id:56,ch:4,type:"mcq",diff:"hard",
+q:"NAT Traversal (NAT-T) for IPsec uses which port?",
+opts:["UDP 500","TCP 443","UDP 4500","TCP 1723"],
+ans:2,
+exp:"NAT-T (NAT Traversal) encapsulates IPsec traffic in UDP port 4500 to pass through NAT devices. Standard IKE uses UDP 500, but when NAT is detected, the session switches to UDP 4500.",
+trap:"Classic port confusion: IKE=UDP 500, NAT-T=UDP 4500. Both need to be allowed in firewalls for NAT'd IPsec connections."},
+
+{id:57,ch:4,type:"mcq",diff:"hard",
+q:"The ESP protocol is identified by protocol number:",
+opts:["Protocol 17 (UDP)","Protocol 47 (GRE)","Protocol 50","Protocol 51 (AH)"],
+ans:2,
+exp:"ESP is IP protocol number 50. AH is IP protocol number 51. These are IP protocol numbers (like 6=TCP, 17=UDP), not port numbers. Firewalls need to permit protocol 50 for ESP traffic.",
+trap:"Protocol 50 = ESP, Protocol 51 = AH. These are commonly mixed up. Also, these are protocol numbers, not port numbers."},
+
+{id:58,ch:4,type:"tf",diff:"medium",
+q:"IKE supports forward secrecy in key management.",
+ans:true,
+exp:"True. IKE supports forward secrecy by periodically generating new session keys. This means that even if a long-term key is compromised, past session keys cannot be derived — protecting previously encrypted traffic.",
+trap:""},
+
+{id:59,ch:4,type:"mcq",diff:"hard",
+q:"Which combination is correct for IPsec firewall requirements?",
+opts:["TCP 443, TCP 80","UDP 500 (IKE) + Protocol 50 (ESP)","UDP 500 (IKE) + TCP 443 (ESP)","Protocol 47 (GRE) + UDP 500"],
+ans:1,
+exp:"IPsec VPN requires: UDP 500 for IKE key exchange, and Protocol 50 for ESP data traffic. If NAT is involved, also UDP 4500 for NAT-T. AH (Protocol 51) is rarely used.",
+trap:"ESP is not TCP or UDP — it's a separate IP protocol (number 50). Many students incorrectly pair it with TCP/UDP ports."},
+
+// ─── CHAPTER 5: Applications & Limitations ──────────────────────────────────
+{id:60,ch:5,type:"mcq",diff:"medium",
+q:"Which IPsec application eliminates the need for expensive dedicated leased lines between offices?",
+opts:["Remote access VPN for employees","Site-to-site IPsec tunnels connecting branches to HQ","Extranet security for partner access","E-commerce payment protection"],
+ans:1,
+exp:"Site-to-site IPsec tunnels connect branch offices to headquarters over the internet, 'enabling seamless resource sharing without dedicated leased lines.' This is a major cost-saving application of IPsec.",
+trap:""},
+
+{id:61,ch:5,type:"mcq",diff:"medium",
+q:"'Extranet' in the context of IPsec applications refers to:",
+opts:["Internet-facing public web servers","Secure controlled communication with trusted external partners","Internal company employee network","A demilitarized zone (DMZ)"],
+ans:1,
+exp:"Extranet VPN provides secure communication with trusted EXTERNAL partners (suppliers, clients, auditors). Intranet is for internal business units on segmented networks. These are different use cases.",
+trap:"Extranet = external trusted partners. Intranet = internal segments. Don't confuse them."},
+
+{id:62,ch:5,type:"mcq",diff:"hard",
+q:"IPsec supplements which other security protocol for e-commerce and payment systems?",
+opts:["SSH","SSL","TLS","SFTP"],
+ans:2,
+exp:"IPsec provides 'an additional layer of security for payment systems and business-to-business transaction platforms, supplementing TLS at the network layer.' TLS operates at the application layer; IPsec at the network layer provides defense in depth.",
+trap:""},
+
+{id:63,ch:5,type:"mcq",diff:"medium",
+q:"What is the PRIMARY cause of IPsec performance overhead?",
+opts:["Large packet header sizes adding excessive data","Cryptographic operations — encryption, decryption, and integrity checking — imposing CPU load","Too many concurrent VPN connections","Complex routing decisions for each packet"],
+ans:1,
+exp:"IPsec's cryptographic operations (encryption, decryption, integrity checking) impose significant CPU load. In high-throughput environments, this reduces effective bandwidth and increases latency.",
+trap:""},
+
+{id:64,ch:5,type:"mcq",diff:"medium",
+q:"What is the recommended solution for IPsec CPU overhead in high-throughput environments?",
+opts:["Using weaker encryption (DES instead of AES)","Disabling integrity checking to reduce load","Hardware acceleration (dedicated crypto chips)","Switching from Tunnel Mode to Transport Mode"],
+ans:2,
+exp:"Hardware acceleration — dedicated crypto chips that handle AES encryption/decryption in hardware — resolves the CPU overhead issue. This is explicitly recommended in the slides for high-throughput environments.",
+trap:"Weakening encryption or disabling integrity would compromise security — never acceptable. The correct answer is hardware acceleration."},
+
+{id:65,ch:5,type:"tf",diff:"medium",
+q:"IPsec works transparently with NAT without requiring any special configuration.",
+ans:false,
+exp:"False. NAT is incompatible with standard IPsec because NAT modifies IP headers that IPsec authenticates. NAT-T (NAT Traversal) is required to encapsulate IPsec inside UDP 4500 to pass through NAT devices.",
+trap:"This is a significant real-world IPsec limitation. NAT-T = UDP 4500 is the solution."},
+
+{id:66,ch:5,type:"mcq",diff:"medium",
+q:"Which of the following is NOT listed as an IPsec limitation in the slides?",
+opts:["Processor overhead from cryptographic operations","NAT compatibility requiring NAT-T","Insecure key exchange process","Network design complexity and misconfiguration risk"],
+ans:2,
+exp:"The slides list processor overhead, NAT compatibility issues, network design complexity, and PKI infrastructure requirements as limitations. Insecure key exchange is NOT a limitation — IKE with DH provides secure key exchange. Key exchange security is a strength, not a limitation.",
+trap:"Students might list 'key exchange' as a limitation. IKE with DH provides SECURE key exchange — it's a strength. The limitations are complexity and performance."},
+
+{id:67,ch:5,type:"mcq",diff:"hard",
+q:"Certificate management in IPsec requires which additional infrastructure?",
+opts:["DHCP servers for dynamic IP assignment","PKI (Public Key Infrastructure)","RADIUS authentication servers","Additional DNS server configuration"],
+ans:1,
+exp:"When using digital certificates (vs. pre-shared keys) for IPsec authentication, a PKI (Public Key Infrastructure) is required to issue, manage, and revoke certificates. This adds significant deployment complexity.",
+trap:""},
+
+{id:68,ch:5,type:"multiselect",diff:"hard",
+q:"Which of the following are listed as IPsec complexity/limitation factors? (Select ALL that apply)",
+opts:["NAT compatibility requires NAT-T (UDP 4500)","Interoperability between vendor implementations can vary","Certificate management adds PKI requirements","AES hardware support is unavailable","Firewall rules for UDP 500 and protocol 50 needed"],
+ans:[0,1,2,4],
+exp:"Limitations include: NAT-T requirement, vendor interoperability variations, PKI infrastructure for certificates, and firewall configuration needs (UDP 500, protocol 50). AES hardware support is actually widely available — this is a benefit, not a limitation.",
+trap:"AES hardware acceleration is a SOLUTION to the overhead problem, not a limitation."},
+
+{id:69,ch:5,type:"mcq",diff:"medium",
+q:"Which scenario is an example of an Intranet VPN application?",
+opts:["Connecting a supplier's network to your company's network","Connecting a remote employee's laptop to corporate HQ","Securing communication between internal business units on segmented networks","Providing a VPN service to the general public"],
+ans:2,
+exp:"Intranet VPN secures communication between INTERNAL business units on segmented networks (e.g., separating HR from Finance from Engineering within the same company). Extranet = external trusted partners.",
+trap:""},
+
+// ─── MIXED / SYNTHESIS / TRICKY ─────────────────────────────────────────────
+{id:70,ch:3,type:"mcq",diff:"tricky",
+q:"A network engineer configures IPsec in Transport Mode using only AH. An outside observer intercepts the traffic. What can the observer determine? (Most accurate answer)",
+opts:["Nothing — full protection is in place","Source and destination IP addresses of the communicating hosts only","The encrypted payload content and IP addresses","Gateway addresses only — internal IPs are hidden"],
+ans:1,
+exp:"Transport Mode + AH only: AH does not encrypt, so content is technically readable. But critically, Transport Mode leaves the original IP header visible — exposing source and destination host IPs. AH provides integrity protection but no encryption and no topology hiding.",
+trap:"Two traps in one: (1) AH provides no encryption (content readable), (2) Transport Mode leaves IP headers visible (topology exposed). Tunnel Mode would hide the IPs."},
+
+{id:71,ch:3,type:"mcq",diff:"tricky",
+q:"Which combination provides MAXIMUM security in IPsec?",
+opts:["AH in Transport Mode","ESP in Transport Mode","AH in Tunnel Mode","ESP in Tunnel Mode"],
+ans:3,
+exp:"ESP in Tunnel Mode provides the highest security: ESP encrypts AND authenticates the payload, and Tunnel Mode hides the entire original packet including IP headers. This is the combination used in most enterprise VPN deployments.",
+trap:""},
+
+{id:72,ch:1,type:"mcq",diff:"tricky",
+q:"VPN 'Authentication' prevents which specific attack?",
+opts:["Data eavesdropping on the wire","Replay attacks","Impersonation / man-in-the-middle attacks by verifying identity","Data modification in transit"],
+ans:2,
+exp:"Authentication confirms that only authorized parties can establish a VPN connection — preventing impersonation attacks (where an attacker pretends to be a legitimate endpoint). Encryption prevents eavesdropping; Integrity prevents modification; Anti-Replay prevents replay attacks.",
+trap:"Know each VPN/IPsec service and its specific threat: Encryption=eavesdropping, Integrity=tampering, Authentication=impersonation, Anti-Replay=replay attacks."},
+
+{id:73,ch:2,type:"mcq",diff:"tricky",
+q:"IPsec provides 'packet-level protection.' This means:",
+opts:["Only the first and last packets in a session are protected","Every individual IP packet is independently encrypted and authenticated","Packets are protected in groups (blocks) of 64","Protection only applies to TCP packets, not UDP"],
+ans:1,
+exp:"Packet-level protection means EVERY IP packet is independently secured — encrypted and authenticated individually. This ensures security is maintained even if traffic is routed across multiple untrusted networks.",
+trap:""},
+
+{id:74,ch:3,type:"tf",diff:"tricky",
+q:"If ESP is used without authentication, it provides BOTH confidentiality AND integrity.",
+ans:false,
+exp:"False. ESP without authentication provides only confidentiality (encryption) but NO integrity checking. Without authentication/MAC, an attacker could modify the ciphertext and the receiver cannot detect it. This is called a chosen-ciphertext attack vulnerability.",
+trap:"This is an advanced but realistic trap. ESP encryption ALONE does not guarantee integrity — you need the optional authentication component for integrity."},
+
+{id:75,ch:1,type:"mcq",diff:"tricky",
+q:"The 'Network' component of VPN means:",
+opts:["It only works on IP networks","It uses network-layer encryption exclusively","Multiple devices or sites are connected into a unified logical network","It requires a physical network infrastructure"],
+ans:2,
+exp:"'Network' in VPN means it connects multiple devices or sites into a unified logical network — regardless of their physical locations. The three components are Virtual (no physical link), Private (protected), Network (logical connectivity).",
+trap:""},
+
+{id:76,ch:2,type:"mcq",diff:"tricky",
+q:"What makes IPsec's Diffie-Hellman exchange secure against eavesdropping?",
+opts:["The key exchange uses asymmetric encryption to protect the secret","The secret is transmitted in encrypted form","Mathematical properties mean an eavesdropper who captures all exchanged values still cannot compute the shared secret","The exchange happens over a pre-authenticated secure channel"],
+ans:2,
+exp:"The security of DH relies on the computational difficulty of the discrete logarithm (or elliptic curve discrete logarithm) problem. Even with all public values captured, deriving the shared secret requires solving a computationally infeasible problem.",
+trap:"The magic of DH is mathematical hardness, not encryption of the exchange itself."},
+
+{id:77,ch:5,type:"mcq",diff:"tricky",
+q:"A company with 10 branch offices wants to connect all branches to HQ. Site-to-site IPsec tunnels replace which expensive networking option?",
+opts:["Wireless mesh networks","Dedicated leased lines between each branch and HQ","Public internet routing","Cloud-based DNS services"],
+ans:1,
+exp:"Site-to-site IPsec VPNs specifically replace dedicated leased lines (private WAN circuits). Leased lines are expensive point-to-point connections — IPsec over the internet provides the same logical connectivity at a fraction of the cost.",
+trap:""},
+
+{id:78,ch:3,type:"mcq",diff:"tricky",
+q:"Which is the ONLY security service that AH provides but ESP does NOT provide (even optionally)?",
+opts:["Data integrity","Anti-replay protection","Full outer IP header authentication","Encryption"],
+ans:2,
+exp:"AH authenticates the FULL outer IP header. ESP in Tunnel Mode only partially protects (inner packet) — the new outer header added by tunnel mode is NOT authenticated by ESP alone. AH's full outer IP header authentication is the unique service it offers.",
+trap:"This is the most nuanced AH vs ESP distinction. Both provide integrity and anti-replay. Only AH covers the full outer IP header."},
+
+{id:79,ch:2,type:"mcq",diff:"tricky",
+q:"IPsec confidentiality uses AES, while authentication uses HMAC-SHA-256. Why are DIFFERENT algorithms used for these services?",
+opts:["They are actually the same algorithm used differently","AES is for encryption (symmetric cipher); HMAC-SHA-256 is for integrity/authentication (keyed hash) — different cryptographic functions","AES is too slow for authentication; SHA is too slow for encryption","Standards require different algorithms for compliance"],
+ans:1,
+exp:"Encryption requires a cipher (AES transforms data into ciphertext). Authentication/integrity requires a keyed hash function (HMAC-SHA-256 produces a fixed-length MAC for verification). These are fundamentally different cryptographic operations serving different purposes.",
+trap:""},
+
+{id:80,ch:1,type:"mcq",diff:"tricky",
+q:"A user connects to a corporate VPN and then visits 'www.example.com'. The destination server logs the connection. Whose IP address is logged?",
+opts:["The user's real IP address (their home/ISP IP)","The VPN server's IP address","The corporate HQ's IP address","A randomized anonymous IP address"],
+ans:1,
+exp:"The destination server sees traffic from the VPN server's IP, not the user's real IP. 'From the perspective of the destination server, all traffic appears to originate from the VPN server's IP address — not the client's real address.' This is IP Masking.",
+trap:""},
+
+{id:81,ch:4,type:"mcq",diff:"medium",
+q:"IKE's key management eliminates the need for:",
+opts:["Diffie-Hellman key exchange","Manual key distribution","AES encryption","Tunnel Mode configuration"],
+ans:1,
+exp:"IKE automates key management — 'eliminating the need for manual key distribution.' Without IKE, administrators would need to manually configure symmetric keys on both ends and periodically rotate them — extremely impractical at scale.",
+trap:""},
+
+{id:82,ch:5,type:"tf",diff:"medium",
+q:"IPsec can only be used to secure communication between two individual hosts (host-to-host), not between networks.",
+ans:false,
+exp:"False. IPsec explicitly 'supports both host-to-host and network-to-network security.' Site-to-site VPNs are a prime example of network-to-network IPsec protection.",
+trap:""},
+
+{id:83,ch:3,type:"mcq",diff:"hard",
+q:"An organization deploys IPsec in Tunnel Mode. Which internal information is HIDDEN from an outside observer?",
+opts:["Only the data payload is hidden; IP addresses are visible","Internal host IP addresses AND the data payload are both hidden","Only the destination IP is hidden; source IP is visible","Nothing is hidden in Tunnel Mode — security is one-way"],
+ans:1,
+exp:"Tunnel Mode encapsulates the ENTIRE original IP packet (header + payload). An observer sees only the outer header (gateway IPs) — all internal host IPs and data are encrypted and hidden.",
+trap:""},
+
+{id:84,ch:2,type:"mcq",diff:"hard",
+q:"Which IPsec security service directly protects against a session hijacking attack where an attacker captures a valid authentication packet and replays it to establish a fake session?",
+opts:["Confidentiality","Data Integrity","Anti-Replay Protection","Key Management"],
+ans:2,
+exp:"Anti-Replay protection prevents captured valid packets (including authentication packets) from being reused. Sequence numbers ensure each packet is unique and stale/duplicate packets are rejected.",
+trap:""},
+
+{id:85,ch:1,type:"mcq",diff:"medium",
+q:"What is the correct sequence when a client connects to a VPN?",
+opts:["Assigns virtual IP → establishes tunnel → encrypts traffic","Establishes encrypted tunnel → assigns virtual IP → routes traffic through tunnel","Encrypts traffic first → then creates the tunnel","Routes traffic → encrypts at destination"],
+ans:1,
+exp:"The process: device establishes an encrypted tunnel to the VPN server → a virtual IP address is assigned → all outbound traffic is routed through this tunnel. The tunnel establishment precedes IP assignment.",
+trap:""},
+
+{id:86,ch:5,type:"mcq",diff:"medium",
+q:"A company's IPsec VPN is being deployed behind a NAT router. What additional configuration is needed?",
+opts:["Use AH instead of ESP","Configure NAT-T (NAT Traversal) on UDP port 4500","Switch from Tunnel Mode to Transport Mode","Disable the firewall entirely"],
+ans:1,
+exp:"NAT modifies IP headers, breaking IPsec's AH authentication (and potentially ESP). NAT-T encapsulates IPsec packets in UDP port 4500 to traverse NAT devices safely. This is explicitly listed as an IPsec limitation requiring special handling.",
+trap:""},
+
+{id:87,ch:3,type:"tf",diff:"tricky",
+q:"Transport Mode is more appropriate than Tunnel Mode for protecting traffic between two VPN gateways connecting separate office networks.",
+ans:false,
+exp:"False. Site-to-site connections between office networks use Tunnel Mode — the standard for gateway-to-gateway VPNs. Transport Mode is for host-to-host communication. Tunnel Mode hides internal topology and provides the full network-level protection needed for site-to-site deployments.",
+trap:""},
+
+{id:88,ch:2,type:"mcq",diff:"tricky",
+q:"Which statement about the five IPsec security services is MOST accurate?",
+opts:["All five must always be used together in every IPsec deployment","Different services can be used independently based on security requirements","Only Confidentiality and Integrity are mandatory; the rest are optional","Anti-Replay and Key Management are provided by the same mechanism"],
+ans:1,
+exp:"IPsec is flexible — different security services can be combined or used independently based on requirements. For example, AH (integrity/authentication, no encryption) vs ESP (encryption + optional authentication) reflects this modular design.",
+trap:""}
+]; // end Q array
+
+// ====================================================
+// STATE & STORAGE
+// ====================================================
+let state = {
+  mode: 'practice', // 'practice' | 'exam'
+  filter: 'all',    // 'all' | 'weak' | 1-5 (chapter)
+  session: null,    // active session
+  startModal: {mode:'practice', filter:'all'}
+};
+
+function loadData(){
+  try{
+    const d = JSON.parse(localStorage.getItem('ipsec_data')||'{}');
+    return {
+      qStats: d.qStats||{},       // {qId: {correct:n, wrong:n}}
+      sessions: d.sessions||[],   // [{date,score,total,mode}]
+      bookmarks: d.bookmarks||[], // [qId]
+      streak: d.streak||0,
+      lastStudy: d.lastStudy||null
+    };
+  }catch(e){return {qStats:{},sessions:[],bookmarks:[],streak:0,lastStudy:null}}
+}
+function saveData(d){ try{localStorage.setItem('ipsec_data',JSON.stringify(d))}catch(e){} }
+let DB = loadData();
+
+// Update streak
+function updateStreak(){
+  const today = new Date().toDateString();
+  if(DB.lastStudy !== today){
+    const yday = new Date(Date.now()-86400000).toDateString();
+    DB.streak = DB.lastStudy===yday ? DB.streak+1 : 1;
+    DB.lastStudy = today;
+    saveData(DB);
+  }
+  document.getElementById('nav-streak').textContent = `🔥 ${DB.streak}`;
+}
+updateStreak();
+
+// ====================================================
+// NAVIGATION
+// ====================================================
+function showView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  const vmap = {home:'view-home','quiz-setup':'view-quiz',review:'view-review',analytics:'view-analytics'};
+  const view = vmap[id]||'view-'+id;
+  const el = document.getElementById(view);
+  if(el) el.classList.add('active');
+  const tab = document.getElementById('tab-'+(id==='quiz-setup'?'quiz':id));
+  if(tab) tab.classList.add('active');
+  if(id==='home') renderHome();
+  if(id==='review') renderReview();
+  if(id==='analytics') renderAnalytics();
+}
+
+// ====================================================
+// HOME
+// ====================================================
+function getAccuracy(chId){
+  const qs = Q.filter(q=>q.ch===chId);
+  let correct=0,total=0;
+  qs.forEach(q=>{
+    const s = DB.qStats[q.id];
+    if(s){correct+=s.correct;total+=s.correct+s.wrong;}
+  });
+  return total>0?Math.round(correct/total*100):null;
+}
+
+function renderHome(){
+  // Stats row
+  const total = Q.length;
+  const attempted = Object.keys(DB.qStats).length;
+  const allCorrect = Object.values(DB.qStats).reduce((a,s)=>a+s.correct,0);
+  const allTotal = Object.values(DB.qStats).reduce((a,s)=>a+s.correct+s.wrong,0);
+  const acc = allTotal>0?Math.round(allCorrect/allTotal*100):0;
+  const sessions = DB.sessions.length;
+
+  document.getElementById('home-stats').innerHTML = `
+    <div class="stat-card"><div class="stat-num c">${total}</div><div class="stat-label">Total Questions</div></div>
+    <div class="stat-card"><div class="stat-num">${attempted}</div><div class="stat-label">Attempted</div></div>
+    <div class="stat-card"><div class="stat-num ${acc>=70?'g':acc>=50?'y':'stat-num'}">${acc}%</div><div class="stat-label">Overall Accuracy</div></div>
+    <div class="stat-card"><div class="stat-num y">${DB.streak}</div><div class="stat-label">Day Streak 🔥</div></div>
+    <div class="stat-card"><div class="stat-num">${sessions}</div><div class="stat-label">Sessions Done</div></div>
+  `;
+
+  // Chapter list
+  const chDiv = document.getElementById('chapter-list');
+  chDiv.innerHTML = '';
+  Object.entries(CHAPTERS).forEach(([ch,name])=>{
+    const count = Q.filter(q=>q.ch==ch).length;
+    const acc2 = getAccuracy(parseInt(ch));
+    const pct = acc2!==null?acc2:0;
+    const barColor = pct>=70?'var(--green)':pct>=50?'var(--yellow)':'var(--cyan)';
+    chDiv.innerHTML += `
+      <div class="chapter-item" onclick="openStartModal('${ch}','practice')">
+        <span class="ch-num">CH.0${ch}</span>
+        <div class="ch-info">
+          <div class="ch-name">${name}</div>
+          <div class="ch-count">${count} questions</div>
+        </div>
+        <div class="ch-bar-wrap"><div class="ch-bar" style="width:${pct}%;background:${barColor}"></div></div>
+        <span class="ch-pct">${acc2!==null?pct+'%':'—'}</span>
+      </div>
+    `;
+  });
+}
+
+// ====================================================
+// MODAL
+// ====================================================
+function openStartModal(filter, mode){
+  state.startModal = {mode, filter};
+  const modal = document.getElementById('modal-start');
+  const desc = document.getElementById('modal-desc');
+  const chOpts = document.getElementById('modal-chapter-opts');
+
+  desc.textContent = mode==='exam'
+    ? '⚡ Exam simulation — no feedback until the end.'
+    : '💡 Practice mode — instant feedback on every answer.';
+
+  const weakQs = Q.filter(q=>{
+    const s=DB.qStats[q.id];
+    return s && s.wrong>s.correct;
+  });
+
+  chOpts.innerHTML = `
+    <div class="modal-opt ${filter==='all'?'active':''}" onclick="selectFilter('all')">
+      <div class="modal-opt-title">All Questions (${Q.length})</div>
+      <div class="modal-opt-sub">Complete question bank — all chapters</div>
+    </div>
+    <div class="modal-opt ${filter==='weak'?'active':''}" onclick="selectFilter('weak')">
+      <div class="modal-opt-title">Weak Areas (${weakQs.length})</div>
+      <div class="modal-opt-sub">Questions you've answered wrong more than right</div>
+    </div>
+  `;
+  Object.entries(CHAPTERS).forEach(([ch,name])=>{
+    const count = Q.filter(q=>q.ch==ch).length;
+    chOpts.innerHTML += `
+      <div class="modal-opt ${filter==ch?'active':''}" onclick="selectFilter('${ch}')">
+        <div class="modal-opt-title">Ch.${ch}: ${name} (${count})</div>
+        <div class="modal-opt-sub">Chapter-specific practice</div>
+      </div>
+    `;
+  });
+
+  modal.classList.add('open');
+}
+function selectFilter(f){
+  state.startModal.filter = f;
+  document.querySelectorAll('.modal-opt').forEach(o=>o.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+function closeModal(){
+  document.getElementById('modal-start').classList.remove('open');
+}
+
+// ====================================================
+// QUIZ ENGINE
+// ====================================================
+let timerInterval = null;
+
+function startQuiz(){
+  const {mode, filter} = state.startModal;
+  closeModal();
+
+  let pool;
+  if(filter==='all') pool = [...Q];
+  else if(filter==='weak') {
+    pool = Q.filter(q=>{
+      const s=DB.qStats[q.id];
+      return s && s.wrong>s.correct;
+    });
+    if(pool.length===0){toast('⚠️ No weak questions yet!','yellow');return;}
+  } else {
+    pool = Q.filter(q=>q.ch==filter);
+  }
+  // Shuffle
+  pool = shuffle(pool);
+
+  state.session = {
+    questions: pool,
+    idx: 0,
+    answers: {},   // qId -> {selected, correct}
+    mode,
+    startTime: Date.now(),
+    timer: mode==='exam' ? pool.length*75 : null, // 75 sec per question in exam
+    timeLeft: mode==='exam' ? pool.length*75 : null
+  };
+
+  showView('quiz');
+  document.getElementById('tab-quiz').classList.add('active');
+
+  const badge = document.getElementById('quiz-mode-badge');
+  badge.textContent = mode==='practice'?'Practice Mode':'Exam Mode';
+  badge.className = 'quiz-badge ' + (mode==='practice'?'badge-practice':'badge-exam');
+
+  const timerWrap = document.getElementById('quiz-timer-wrap');
+  if(mode==='exam'){
+    timerWrap.style.display='block';
+    startTimer();
+    document.getElementById('exam-warning').style.display='flex';
+  } else {
+    timerWrap.style.display='none';
+    document.getElementById('exam-warning').style.display='none';
+  }
+
+  // Keyboard hints
+  document.getElementById('kb-hints').innerHTML = `
+    <span class="kb-key">1-4 answer</span>
+    <span class="kb-key">T true</span>
+    <span class="kb-key">F false</span>
+    <span class="kb-key">Enter next</span>
+    <span class="kb-key">B bookmark</span>
+  `;
+
+  renderQuestion();
+}
+
+function startTimer(){
+  clearInterval(timerInterval);
+  timerInterval = setInterval(()=>{
+    if(!state.session) return;
+    state.session.timeLeft--;
+    updateTimerDisplay();
+    if(state.session.timeLeft<=0){
+      clearInterval(timerInterval);
+      endSession();
+    }
+  },1000);
+}
+function updateTimerDisplay(){
+  const t = state.session.timeLeft;
+  const m = Math.floor(t/60), s = t%60;
+  const el = document.getElementById('quiz-timer');
+  el.textContent = `⏱ ${m}:${s.toString().padStart(2,'0')}`;
+  el.className = 'quiz-timer' + (t<60?' urgent':'');
+}
+
+function renderQuestion(){
+  const sess = state.session;
+  const q = sess.questions[sess.idx];
+  const total = sess.questions.length;
+  const answered = Object.keys(sess.answers).length;
+
+  document.getElementById('quiz-progress-text').textContent = `Q ${sess.idx+1} / ${total}`;
+  document.getElementById('quiz-progress-bar').style.width = ((sess.idx)/total*100)+'%';
+
+  const isBookmarked = DB.bookmarks.includes(q.id);
+  const diffTag = `tag-diff-${q.diff}`;
+  const typeLabel = q.type==='mcq'?'MCQ':q.type==='tf'?'T/F':'Multi-Select';
+
+  let qHTML = `
+    <div class="q-card" id="q-card">
+      <div class="q-top">
+        <div class="q-tags">
+          <span class="q-tag tag-ch">Ch.${q.ch}: ${CHAPTERS[q.ch]}</span>
+          <span class="q-tag ${diffTag}">${q.diff.toUpperCase()}</span>
+          <span class="q-tag tag-type">${typeLabel}</span>
+        </div>
+        <button class="q-bookmark ${isBookmarked?'active':''}" onclick="toggleBookmark(${q.id})" title="Bookmark">★</button>
+      </div>
+      <div class="q-num">Q${q.id}.</div>
+      <div class="q-text">${q.q}</div>
+  `;
+
+  if(q.type==='mcq'){
+    qHTML += `<div class="options" id="options">`;
+    q.opts.forEach((opt,i)=>{
+      const key = ['A','B','C','D','E'][i];
+      qHTML += `<div class="option" id="opt-${i}" onclick="selectMCQ(${i})">
+        <span class="option-key">${key}</span><span>${opt}</span>
+      </div>`;
+    });
+    qHTML += `</div>`;
+  } else if(q.type==='tf'){
+    qHTML += `<div class="tf-row" id="options">
+      <button class="tf-btn" id="opt-true" onclick="selectTF(true)">✓ True</button>
+      <button class="tf-btn" id="opt-false" onclick="selectTF(false)">✗ False</button>
+    </div>`;
+  } else if(q.type==='multiselect'){
+    qHTML += `<p class="multiselect-hint">Select all that apply — then click Submit</p>
+      <div class="options" id="options">`;
+    q.opts.forEach((opt,i)=>{
+      const key = ['A','B','C','D','E'][i];
+      qHTML += `<div class="option" id="opt-${i}" onclick="toggleMulti(${i})">
+        <span class="option-key">${key}</span><span>${opt}</span>
+      </div>`;
+    });
+    qHTML += `</div>`;
+  }
+
+  qHTML += `<div class="feedback" id="feedback"></div></div>`;
+
+  // Actions
+  qHTML += `<div class="quiz-actions">
+    <button class="skip-btn" onclick="skipQuestion()">Skip →</button>
+    <div style="display:flex;gap:8px">
+      <button class="submit-btn" id="submit-btn" onclick="submitAnswer()" ${q.type==='multiselect'?'':'style="display:none"'}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Submit
+      </button>
+      <button class="next-btn" id="next-btn" onclick="nextQuestion()">
+        ${sess.idx+1<total?'Next →':'Finish 🏁'}
+      </button>
+    </div>
+  </div>`;
+
+  document.getElementById('quiz-question-area').innerHTML = qHTML;
+  state._multiSelected = [];
+}
+
+let _answered = false;
+function selectMCQ(idx){
+  if(_answered && state.session.mode==='practice') return;
+  document.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+  document.getElementById('opt-'+idx).classList.add('selected');
+  state._selected = idx;
+  if(state.session.mode==='practice'){
+    // Auto-evaluate
+    processAnswer(idx);
+  } else {
+    // Exam: just track
+    const sess = state.session;
+    const q = sess.questions[sess.idx];
+    sess.answers[q.id] = {selected:[idx], correct: idx===q.ans};
+  }
+}
+function selectTF(val){
+  if(_answered && state.session.mode==='practice') return;
+  document.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('opt-'+(val?'true':'false')).classList.add('selected');
+  if(state.session.mode==='practice'){
+    processAnswerTF(val);
+  } else {
+    const sess = state.session;
+    const q = sess.questions[sess.idx];
+    sess.answers[q.id] = {selected:val, correct: val===q.ans};
+  }
+}
+function toggleMulti(idx){
+  if(!state._multiSelected) state._multiSelected=[];
+  const i = state._multiSelected.indexOf(idx);
+  if(i>-1) state._multiSelected.splice(i,1);
+  else state._multiSelected.push(idx);
+  document.querySelectorAll('.option').forEach((o,j)=>{
+    o.classList.toggle('multi-selected', state._multiSelected.includes(j));
+  });
+}
+function submitAnswer(){
+  const q = state.session.questions[state.session.idx];
+  if(q.type==='multiselect'){
+    const sel = state._multiSelected||[];
+    if(sel.length===0){toast('Select at least one option','yellow');return;}
+    if(state.session.mode==='practice'){
+      processAnswerMulti(sel);
+    } else {
+      const correct = arraysMatch(sel.sort(), q.ans.slice().sort());
+      state.session.answers[q.id]={selected:sel,correct};
+      document.getElementById('next-btn').classList.add('show');
+      document.getElementById('submit-btn').style.display='none';
+    }
+  } else {
+    if(state.session.mode==='practice' && !_answered){
+      if(state._selected===undefined){toast('Please select an answer','yellow');return;}
+      processAnswer(state._selected);
+    }
+  }
+}
+
+function processAnswer(selectedIdx){
+  _answered = true;
+  const sess = state.session;
+  const q = sess.questions[sess.idx];
+  const correct = selectedIdx===q.ans;
+  sess.answers[q.id]={selected:[selectedIdx],correct};
+  updateQStats(q.id, correct);
+
+  document.querySelectorAll('.option').forEach((o,i)=>{
+    o.classList.add('disabled');
+    if(i===q.ans) o.classList.add('correct');
+    else if(i===selectedIdx && !correct) o.classList.add('wrong');
+  });
+
+  if(sess.mode==='practice') showFeedback(q, correct, [selectedIdx]);
+  document.getElementById('next-btn').classList.add('show');
+}
+function processAnswerTF(val){
+  _answered = true;
+  const sess = state.session;
+  const q = sess.questions[sess.idx];
+  const correct = val===q.ans;
+  sess.answers[q.id]={selected:val,correct};
+  updateQStats(q.id, correct);
+
+  document.querySelectorAll('.tf-btn').forEach(b=>b.classList.add('disabled'));
+  const ansEl = document.getElementById('opt-'+(q.ans?'true':'false'));
+  const selEl = document.getElementById('opt-'+(val?'true':'false'));
+  ansEl.classList.add('reveal-correct');
+  if(!correct) selEl.classList.add('wrong');
+
+  if(sess.mode==='practice') showFeedback(q, correct, val);
+  document.getElementById('next-btn').classList.add('show');
+}
+function processAnswerMulti(sel){
+  _answered = true;
+  const sess = state.session;
+  const q = sess.questions[sess.idx];
+  const correct = arraysMatch(sel.slice().sort(), q.ans.slice().sort());
+  sess.answers[q.id]={selected:sel,correct};
+  updateQStats(q.id, correct);
+
+  document.querySelectorAll('.option').forEach((o,i)=>{
+    o.classList.add('disabled');
+    if(q.ans.includes(i)) o.classList.add('correct');
+    else if(sel.includes(i)) o.classList.add('wrong');
+  });
+
+  if(sess.mode==='practice') showFeedback(q, correct, sel);
+  document.getElementById('next-btn').classList.add('show');
+  document.getElementById('submit-btn').style.display='none';
+}
+
+function showFeedback(q, correct, sel){
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback show ' + (correct?'correct-fb':'wrong-fb');
+  let trap = q.trap?`<div class="feedback-trap">⚠️ ${q.trap}</div>`:'';
+  fb.innerHTML = `
+    <div class="feedback-title">${correct?'✓ CORRECT':'✗ INCORRECT'}</div>
+    <div class="feedback-text">${q.exp}</div>
+    ${trap}
+  `;
+}
+
+function skipQuestion(){
+  _answered = false;
+  state._selected = undefined;
+  state._multiSelected = [];
+  nextQuestion();
+}
+function nextQuestion(){
+  _answered = false;
+  state._selected = undefined;
+  state._multiSelected = [];
+  const sess = state.session;
+  sess.idx++;
+  if(sess.idx >= sess.questions.length){
+    endSession();
+    return;
+  }
+  renderQuestion();
+}
+
+function updateQStats(qId, correct){
+  if(!DB.qStats[qId]) DB.qStats[qId]={correct:0,wrong:0};
+  if(correct) DB.qStats[qId].correct++;
+  else DB.qStats[qId].wrong++;
+  saveData(DB);
+}
+
+// ====================================================
+// END SESSION
+// ====================================================
+function endSession(){
+  clearInterval(timerInterval);
+  const sess = state.session;
+  if(!sess) return;
+
+  // For exam mode: evaluate all
+  if(sess.mode==='exam'){
+    sess.questions.forEach(q=>{
+      const a = sess.answers[q.id];
+      if(a){
+        updateQStats(q.id, a.correct);
+      }
+    });
+  }
+
+  const total = sess.questions.length;
+  const answered = Object.keys(sess.answers).length;
+  const correct = Object.values(sess.answers).filter(a=>a.correct).length;
+  const pct = total>0?Math.round(correct/total*100):0;
+  const timeTaken = Math.round((Date.now()-sess.startTime)/1000);
+
+  DB.sessions.push({date:new Date().toISOString(),score:correct,total,pct,mode:sess.mode,timeSec:timeTaken});
+  saveData(DB);
+
+  showView('results-actual');
+  renderResults(correct, total, pct, timeTaken, sess);
+}
+
+function renderResults(correct, total, pct, timeSec, sess){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-results').classList.add('active');
+
+  // Ring animation
+  const circ = 326.7;
+  const fill = circ*(1-pct/100);
+  const ring = document.getElementById('ring-fill');
+  ring.style.strokeDashoffset = circ;
+  ring.style.stroke = pct>=70?'var(--green)':pct>=50?'var(--yellow)':'var(--red)';
+  setTimeout(()=>{ring.style.strokeDashoffset = fill;},100);
+
+  document.getElementById('res-pct').textContent = pct+'%';
+
+  let grade, gradeText;
+  if(pct>=90){grade='A+';gradeText='Outstanding — Exam Ready!'}
+  else if(pct>=80){grade='A';gradeText='Excellent performance!'}
+  else if(pct>=70){grade='B';gradeText='Good — review weak areas'}
+  else if(pct>=60){grade='C';gradeText='Keep studying — almost there'}
+  else{grade='D';gradeText='Need more practice — don\'t give up!'}
+
+  document.getElementById('res-grade').textContent = grade;
+  document.getElementById('res-sub').textContent = gradeText;
+
+  const wrong = total-correct;
+  const skipped = total-Object.keys(sess.answers).length;
+  const mins = Math.floor(timeSec/60), secs = timeSec%60;
+  document.getElementById('res-stats-grid').innerHTML = `
+    <div class="res-stat"><div class="res-stat-num" style="color:var(--green)">${correct}</div><div class="res-stat-label">Correct</div></div>
+    <div class="res-stat"><div class="res-stat-num" style="color:var(--red)">${wrong}</div><div class="res-stat-label">Incorrect</div></div>
+    <div class="res-stat"><div class="res-stat-num" style="color:var(--yellow)">${skipped}</div><div class="res-stat-label">Skipped</div></div>
+    <div class="res-stat"><div class="res-stat-num">${pct}%</div><div class="res-stat-label">Accuracy</div></div>
+    <div class="res-stat"><div class="res-stat-num">${mins}m ${secs}s</div><div class="res-stat-label">Time</div></div>
+    <div class="res-stat"><div class="res-stat-num" style="color:var(--cyan)">${total}</div><div class="res-stat-label">Attempted</div></div>
+  `;
+
+  // Weak areas from this session
+  const wrongQs = sess.questions.filter(q=>sess.answers[q.id] && !sess.answers[q.id].correct);
+  const weakSection = document.getElementById('res-weak-section');
+  if(wrongQs.length>0){
+    weakSection.innerHTML = `<p class="section-sub" style="margin-top:16px;margin-bottom:10px">Missed This Session (${wrongQs.length})</p>
+      <div class="weak-list">${wrongQs.slice(0,6).map(q=>`
+        <div class="weak-item">
+          <span class="weak-item-q">${q.q.slice(0,80)}${q.q.length>80?'…':''}</span>
+          <span class="weak-item-badge">Ch.${q.ch}</span>
+        </div>`).join('')}
+      </div>`;
+  } else weakSection.innerHTML='';
+
+  document.getElementById('res-actions').innerHTML = `
+    <button class="btn btn-primary" onclick="openStartModal('all','practice')">New Session</button>
+    <button class="btn btn-outline" onclick="openStartModal('weak','practice')">Retry Weak Areas</button>
+    <button class="btn btn-ghost" onclick="reviewSession()">Review Answers</button>
+    <button class="btn btn-ghost" onclick="showView('analytics')">View Stats</button>
+  `;
+}
+
+function reviewSession(){
+  showView('review');
+  state.reviewFilter = 'session';
+  renderReview();
+}
+
+// ====================================================
+// REVIEW
+// ====================================================
+function renderReview(){
+  const search = (document.getElementById('review-search')||{value:''}).value.toLowerCase();
+  const filt = state.reviewFilter||'all';
+
+  // Filters
+  const missed = Q.filter(q=>{const s=DB.qStats[q.id];return s&&s.wrong>0;}).length;
+  const bmk = DB.bookmarks.length;
+  document.getElementById('review-filters').innerHTML = `
+    <button class="filter-btn ${filt==='all'?'active':''}" onclick="setReviewFilter('all')">All (${Q.length})</button>
+    <button class="filter-btn ${filt==='wrong'?'active':''}" onclick="setReviewFilter('wrong')">Missed (${missed})</button>
+    <button class="filter-btn ${filt==='bookmarks'?'active':''}" onclick="setReviewFilter('bookmarks')">Bookmarks (${bmk})</button>
+    ${Object.entries(CHAPTERS).map(([ch,name])=>{
+      const c=Q.filter(q=>q.ch==ch).length;
+      return `<button class="filter-btn ${filt=='ch'+ch?'active':''}" onclick="setReviewFilter('ch${ch}')">Ch.${ch} (${c})</button>`;
+    }).join('')}
+  `;
+
+  let filtered = Q;
+  if(filt==='wrong') filtered = Q.filter(q=>{const s=DB.qStats[q.id];return s&&s.wrong>0;});
+  else if(filt==='bookmarks') filtered = Q.filter(q=>DB.bookmarks.includes(q.id));
+  else if(filt.startsWith('ch')) filtered = Q.filter(q=>q.ch==filt.slice(2));
+
+  if(search) filtered = filtered.filter(q=>q.q.toLowerCase().includes(search)||q.exp.toLowerCase().includes(search));
+
+  const list = document.getElementById('review-list');
+  if(filtered.length===0){
+    list.innerHTML = `<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">No questions match your filter.</div></div>`;
+    return;
+  }
+  list.innerHTML = filtered.map(q=>{
+    const s = DB.qStats[q.id];
+    const acc = s?(s.correct/(s.correct+s.wrong)*100).toFixed(0)+'%':'—';
+    const isBookmarked = DB.bookmarks.includes(q.id);
+    const correctAns = getCorrectAnswerText(q);
+    const diffClass = `tag-diff-${q.diff}`;
+    return `
+    <div class="review-card" id="rev-${q.id}">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div class="q-tags">
+          <span class="q-tag tag-ch">Ch.${q.ch}</span>
+          <span class="q-tag ${diffClass}">${q.diff.toUpperCase()}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          ${s?`<span style="font-family:var(--mono);font-size:10px;color:${s.correct>s.wrong?'var(--green)':'var(--red)'}">${acc}</span>`:''}
+          <button class="q-bookmark ${isBookmarked?'active':''}" onclick="toggleBookmark(${q.id})" title="Bookmark">★</button>
+        </div>
+      </div>
+      <div class="review-q-text">Q${q.id}. ${q.q}</div>
+      <div class="review-correct">✓ ${correctAns}</div>
+      <button class="review-expand" onclick="toggleRevDetail(${q.id})">
+        <span id="rev-exp-icon-${q.id}">▶</span> Explanation
+      </button>
+      <div class="review-detail" id="rev-detail-${q.id}">
+        <div class="review-exp">${q.exp}</div>
+        ${q.trap?`<div class="feedback-trap" style="margin-top:8px">⚠️ ${q.trap}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function getCorrectAnswerText(q){
+  if(q.type==='tf') return q.ans?'True':'False';
+  if(q.type==='mcq') return q.opts[q.ans];
+  if(q.type==='multiselect') return q.ans.map(i=>q.opts[i]).join(' + ');
+  return '';
+}
+function setReviewFilter(f){
+  state.reviewFilter = f;
+  renderReview();
+}
+function toggleRevDetail(id){
+  const d = document.getElementById('rev-detail-'+id);
+  const icon = document.getElementById('rev-exp-icon-'+id);
+  d.classList.toggle('open');
+  icon.textContent = d.classList.contains('open')?'▼':'▶';
+}
+
+// ====================================================
+// BOOKMARKS
+// ====================================================
+function toggleBookmark(id){
+  const idx = DB.bookmarks.indexOf(id);
+  if(idx>-1) DB.bookmarks.splice(idx,1);
+  else DB.bookmarks.push(id);
+  saveData(DB);
+  // Update current bookmark button
+  const btns = document.querySelectorAll('.q-bookmark');
+  btns.forEach(b=>{
+    if(b.getAttribute('onclick')===`toggleBookmark(${id})`){
+      b.classList.toggle('active', DB.bookmarks.includes(id));
+    }
+  });
+  toast(DB.bookmarks.includes(id)?'📌 Bookmarked':'Bookmark removed','cyan');
+}
+
+// ====================================================
+// ANALYTICS
+// ====================================================
+function renderAnalytics(){
+  // Chapter accuracy chart
+  const cc = document.getElementById('chart-chapter');
+  cc.innerHTML = Object.entries(CHAPTERS).map(([ch,name])=>{
+    const qs = Q.filter(q=>q.ch==ch);
+    const s = qs.reduce((a,q)=>{
+      const st=DB.qStats[q.id];
+      if(st){a.correct+=st.correct;a.total+=st.correct+st.wrong;}
+      return a;
+    },{correct:0,total:0});
+    const pct = s.total>0?Math.round(s.correct/s.total*100):0;
+    const color = pct>=70?'var(--green)':pct>=50?'var(--yellow)':'var(--cyan)';
+    return `<div class="bar-row">
+      <span class="bar-label">Ch.${ch}: ${name.slice(0,16)}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>
+      <span class="bar-pct">${s.total>0?pct+'%':'—'}</span>
+    </div>`;
+  }).join('');
+
+  // Type breakdown
+  const types = {mcq:0,tf:0,multiselect:0};
+  const typeCorrect = {mcq:0,tf:0,multiselect:0};
+  Q.forEach(q=>{
+    const s=DB.qStats[q.id];
+    if(s){types[q.type]+=s.correct+s.wrong; typeCorrect[q.type]+=s.correct;}
+  });
+  const typeColors = {mcq:'var(--cyan)',tf:'var(--green)',multiselect:'var(--purple)'};
+  const typeNames = {mcq:'MCQ',tf:'True/False',multiselect:'Multi-Select'};
+  const totalAns = Object.values(types).reduce((a,b)=>a+b,0)||1;
+  document.getElementById('chart-types').innerHTML = `
+    <svg width="100" height="100" viewBox="0 0 36 36">
+      ${donutPaths(Object.values(types),Object.values(typeColors))}
+    </svg>
+    <div class="donut-legend">
+      ${Object.entries(types).map(([t,v])=>`
+        <div class="legend-item">
+          <span class="legend-dot" style="background:${typeColors[t]}"></span>
+          ${typeNames[t]}: ${v} (${Math.round(v/totalAns*100)}%)
+        </div>`).join('')}
+    </div>`;
+
+  // Difficulty chart
+  const diffs = {medium:0,hard:0,tricky:0};
+  const diffCorrect = {medium:0,hard:0,tricky:0};
+  Q.forEach(q=>{
+    const s=DB.qStats[q.id];
+    if(s){diffs[q.diff]+=s.correct+s.wrong; diffCorrect[q.diff]+=s.correct;}
+  });
+  const diffColors = {medium:'var(--cyan)',hard:'var(--yellow)',tricky:'var(--red)'};
+  document.getElementById('chart-diff').innerHTML = Object.entries(diffs).map(([d,v])=>{
+    const pct = v>0?Math.round(diffCorrect[d]/v*100):0;
+    return `<div class="bar-row">
+      <span class="bar-label">${d.charAt(0).toUpperCase()+d.slice(1)} (${Q.filter(q=>q.diff===d).length}q)</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${diffColors[d]}"></div></div>
+      <span class="bar-pct">${v>0?pct+'%':'—'}</span>
+    </div>`;
+  }).join('');
+
+  // Most missed
+  const missed = Q.map(q=>{
+    const s=DB.qStats[q.id];
+    return {q, wrong:s?s.wrong:0};
+  }).filter(x=>x.wrong>0).sort((a,b)=>b.wrong-a.wrong).slice(0,8);
+  document.getElementById('chart-missed').innerHTML = missed.length===0
+    ? `<div class="empty"><div class="empty-text" style="color:var(--green)">✓ No missed questions yet!</div></div>`
+    : missed.map(({q,wrong})=>`
+      <div style="display:flex;justify-content:space-between;align-items:center;
+        padding:8px 12px;border-bottom:1px solid var(--border);font-size:12px;">
+        <span style="color:var(--txt2);flex:1;margin-right:12px">${q.q.slice(0,70)}…</span>
+        <span style="font-family:var(--mono);font-size:10px;color:var(--red);background:var(--red2);
+          padding:2px 8px;border-radius:3px;white-space:nowrap">✗ ${wrong}x</span>
+      </div>`).join('');
+}
+
+function donutPaths(values, colors){
+  const total = values.reduce((a,b)=>a+b,0)||1;
+  let offset = 0;
+  const cx=18,cy=18,r=15.9,circ=2*Math.PI*r;
+  return values.map((v,i)=>{
+    const dash = (v/total)*circ;
+    const gap = circ-dash;
+    const path = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${colors[i]}"
+      stroke-width="3.5" stroke-dasharray="${dash} ${gap}"
+      stroke-dashoffset="${circ*(1-offset/100)-circ*0.25}" transform="rotate(-90 ${cx} ${cy})"/>`;
+    offset += (v/total)*100;
+    return path;
+  }).join('');
+}
+
+// ====================================================
+// UTILITIES
+// ====================================================
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+function arraysMatch(a,b){
+  return a.length===b.length&&a.every((v,i)=>v===b[i]);
+}
+
+function toast(msg, type='cyan'){
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className='toast';
+  const col = type==='green'?'var(--green)':type==='yellow'?'var(--yellow)':type==='red'?'var(--red)':'var(--cyan)';
+  t.innerHTML = `<span style="color:${col}">●</span>${msg}`;
+  c.appendChild(t);
+  setTimeout(()=>{t.classList.add('remove');setTimeout(()=>t.remove(),300);},2200);
+}
+
+function confirmReset(){
+  if(confirm('Reset ALL progress? This cannot be undone.')){
+    DB = {qStats:{},sessions:[],bookmarks:[],streak:0,lastStudy:null};
+    saveData(DB);
+    toast('Progress reset','yellow');
+    renderHome();
+  }
+}
+
+// ====================================================
+// KEYBOARD SHORTCUTS
+// ====================================================
+document.addEventListener('keydown',e=>{
+  const sess = state.session;
+  if(!sess) return;
+  const q = sess.questions[sess.idx];
+  if(!q) return;
+  const answered = !!sess.answers[q.id];
+
+  if(e.key==='Enter'){
+    const nextBtn = document.getElementById('next-btn');
+    if(nextBtn && nextBtn.classList.contains('show')) nextQuestion();
+  }
+  if(q.type==='mcq' && !answered){
+    const map = {'1':0,'2':1,'3':2,'4':3,'a':0,'b':1,'c':2,'d':3};
+    if(map[e.key.toLowerCase()]!==undefined) selectMCQ(map[e.key.toLowerCase()]);
+  }
+  if(q.type==='tf' && !answered){
+    if(e.key.toLowerCase()==='t') selectTF(true);
+    if(e.key.toLowerCase()==='f') selectTF(false);
+  }
+  if(e.key.toLowerCase()==='b'){
+    toggleBookmark(q.id);
+  }
+});
+
+// ====================================================
+// INIT
+// ====================================================
+renderHome();
+</script>
+</body>
+</html>
