@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blockchain Technology — Exam Master</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0a0c10;--bg2:#0f1218;--bg3:#151a22;--bg4:#1c2330;
+  --border:#232c3d;--border2:#2d3a50;
+  --text:#e8edf5;--text2:#8a9bb8;--text3:#5a6a85;
+  --accent:#3b82f6;--accent2:#60a5fa;--accent-dim:rgba(59,130,246,0.15);--accent-glow:rgba(59,130,246,0.35);
+  --green:#22d3a0;--green-dim:rgba(34,211,160,0.12);
+  --red:#f87171;--red-dim:rgba(248,113,113,0.12);
+  --yellow:#fbbf24;--yellow-dim:rgba(251,191,36,0.12);
+  --purple:#a78bfa;--purple-dim:rgba(167,139,250,0.12);
+  --radius:12px;--radius-sm:8px;--shadow:0 4px 24px rgba(0,0,0,0.4);--shadow-lg:0 8px 48px rgba(0,0,0,0.5);
+}
+.light-mode {
+  --bg:#f0f4fa;--bg2:#ffffff;--bg3:#e8eef7;--bg4:#dce6f5;
+  --border:#c8d4e8;--border2:#b0c0d8;--text:#1a2236;--text2:#4a5a78;--text3:#7a8fac;
+  --accent-dim:rgba(59,130,246,0.1);--accent-glow:rgba(59,130,246,0.25);
+  --green-dim:rgba(34,211,160,0.1);--red-dim:rgba(248,113,113,0.1);
+  --yellow-dim:rgba(251,191,36,0.1);--purple-dim:rgba(167,139,250,0.1);
+  --shadow:0 4px 24px rgba(0,0,0,0.1);--shadow-lg:0 8px 48px rgba(0,0,0,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background 0.3s,color 0.3s;}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle at 20% 20%,rgba(59,130,246,0.05) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(167,139,250,0.04) 0%,transparent 50%);pointer-events:none;z-index:0;}
+header{position:sticky;top:0;z-index:100;background:rgba(10,12,16,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.light-mode header{background:rgba(240,244,250,0.85);}
+.header-left{display:flex;align-items:center;gap:12px;}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;letter-spacing:-0.02em;}
+.logo span{color:var(--accent2);}
+.logo-badge{font-family:'Space Mono',monospace;font-size:0.65rem;background:var(--accent-dim);color:var(--accent2);border:1px solid var(--accent);border-radius:4px;padding:2px 7px;letter-spacing:0.05em;}
+.header-right{display:flex;align-items:center;gap:10px;}
+.btn-icon{width:36px;height:36px;border-radius:var(--radius-sm);background:var(--bg3);border:1px solid var(--border);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all 0.2s;}
+.btn-icon:hover{background:var(--bg4);color:var(--text);border-color:var(--border2);}
+.streak-badge{display:flex;align-items:center;gap:5px;background:var(--yellow-dim);border:1px solid var(--yellow);border-radius:6px;padding:4px 10px;font-family:'Space Mono',monospace;font-size:0.75rem;color:var(--yellow);}
+.app{display:flex;min-height:calc(100vh - 60px);position:relative;z-index:1;}
+.sidebar{width:240px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);padding:20px 0;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;}
+.main{flex:1;padding:28px 32px;max-width:1100px;}
+@media(max-width:768px){.sidebar{display:none;}.main{padding:16px;}}
+.sidebar-section{padding:0 16px;margin-bottom:8px;}
+.sidebar-label{font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;padding:8px 8px 4px;}
+.sidebar-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--radius-sm);color:var(--text2);cursor:pointer;font-size:0.875rem;transition:all 0.18s;border:1px solid transparent;}
+.sidebar-item:hover{background:var(--bg3);color:var(--text);}
+.sidebar-item.active{background:var(--accent-dim);color:var(--accent2);border-color:var(--accent);}
+.sidebar-item .icon{font-size:1rem;width:20px;text-align:center;}
+.stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;position:relative;overflow:hidden;transition:border-color 0.2s;}
+.stat-card:hover{border-color:var(--border2);}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.stat-card.blue::before{background:var(--accent);}
+.stat-card.green::before{background:var(--green);}
+.stat-card.yellow::before{background:var(--yellow);}
+.stat-card.purple::before{background:var(--purple);}
+.stat-val{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;line-height:1;}
+.stat-val.blue{color:var(--accent2);}.stat-val.green{color:var(--green);}.stat-val.yellow{color:var(--yellow);}.stat-val.purple{color:var(--purple);}
+.stat-label{color:var(--text3);font-size:0.78rem;margin-top:4px;}
+@media(max-width:600px){.stats-strip{grid-template-columns:1fr 1fr;}}
+.panel-tabs{display:flex;gap:4px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:4px;margin-bottom:20px;}
+.panel-tab{flex:1;padding:9px 14px;border-radius:var(--radius-sm);font-size:0.85rem;font-weight:500;cursor:pointer;color:var(--text2);background:transparent;border:none;transition:all 0.18s;white-space:nowrap;text-align:center;}
+.panel-tab.active{background:var(--bg2);color:var(--text);box-shadow:var(--shadow);}
+.panel-tab:hover:not(.active){color:var(--text);}
+.section-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden;transition:border-color 0.2s;}
+.section-card:hover{border-color:var(--border2);}
+.section-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;user-select:none;}
+.section-header-left{display:flex;align-items:center;gap:12px;}
+.section-icon{width:34px;height:34px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:1rem;}
+.section-title{font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;}
+.section-subtitle{color:var(--text3);font-size:0.78rem;margin-top:2px;}
+.section-chevron{color:var(--text3);transition:transform 0.25s;font-size:0.8rem;}
+.section-card.open .section-chevron{transform:rotate(180deg);}
+.section-body{display:none;padding:0 20px 20px;border-top:1px solid var(--border);}
+.section-card.open .section-body{display:block;}
+.concept-grid{display:flex;flex-wrap:wrap;gap:8px;padding:14px 0 0;}
+.chip{padding:6px 12px;border-radius:20px;font-size:0.8rem;font-weight:500;border:1px solid;cursor:default;}
+.chip.blue{background:var(--accent-dim);color:var(--accent2);border-color:var(--accent);}
+.chip.green{background:var(--green-dim);color:var(--green);border-color:var(--green);}
+.chip.yellow{background:var(--yellow-dim);color:var(--yellow);border-color:var(--yellow);}
+.chip.purple{background:var(--purple-dim);color:var(--purple);border-color:var(--purple);}
+.chip.red{background:var(--red-dim);color:var(--red);border-color:var(--red);}
+.content-block{padding:14px 0 0;}
+.cb-title{font-family:'Syne',sans-serif;font-weight:700;font-size:0.82rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;}
+.info-row{display:flex;gap:8px;padding:10px 12px;background:var(--bg3);border-radius:var(--radius-sm);border-left:3px solid var(--accent);margin-bottom:6px;font-size:0.875rem;line-height:1.5;}
+.info-row.warn{border-left-color:var(--yellow);}
+.info-row.danger{border-left-color:var(--red);}
+.info-row.success{border-left-color:var(--green);}
+.info-row.purple{border-left-color:var(--purple);}
+.comparison-table{width:100%;border-collapse:collapse;font-size:0.85rem;margin-top:10px;}
+.comparison-table th{background:var(--bg3);padding:10px 14px;text-align:left;font-family:'Syne',sans-serif;font-weight:700;font-size:0.78rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;border-bottom:1px solid var(--border);}
+.comparison-table td{padding:9px 14px;border-bottom:1px solid var(--border);vertical-align:top;}
+.comparison-table tr:last-child td{border-bottom:none;}
+.comparison-table tr:hover td{background:var(--bg3);}
+.memory-box{background:linear-gradient(135deg,var(--purple-dim),var(--accent-dim));border:1px solid var(--purple);border-radius:var(--radius);padding:14px 16px;margin-top:10px;}
+.memory-box-title{font-family:'Space Mono',monospace;font-size:0.75rem;color:var(--purple);margin-bottom:6px;}
+.memory-box p{font-size:0.875rem;color:var(--text);line-height:1.6;}
+.quiz-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:20px;}
+.btn{padding:9px 18px;border-radius:var(--radius-sm);font-size:0.875rem;font-weight:500;cursor:pointer;transition:all 0.18s;border:1px solid;font-family:'DM Sans',sans-serif;}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-primary:hover{background:#2563eb;}
+.btn-outline{background:transparent;color:var(--text2);border-color:var(--border2);}
+.btn-outline:hover{background:var(--bg3);color:var(--text);}
+.btn-green{background:var(--green);color:#000;border-color:var(--green);}
+.btn-green:hover{opacity:0.85;}
+.btn-red{background:var(--red);color:#fff;border-color:var(--red);}
+.btn-red:hover{opacity:0.85;}
+.btn-sm{padding:6px 12px;font-size:0.8rem;}
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.filter-chip{padding:5px 12px;border-radius:20px;font-size:0.78rem;border:1px solid var(--border);color:var(--text2);cursor:pointer;transition:all 0.15s;background:transparent;}
+.filter-chip:hover,.filter-chip.active{background:var(--accent-dim);color:var(--accent2);border-color:var(--accent);}
+.filter-chip.diff-medium.active{background:var(--yellow-dim);color:var(--yellow);border-color:var(--yellow);}
+.filter-chip.diff-hard.active{background:var(--red-dim);color:var(--red);border-color:var(--red);}
+.question-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:16px;transition:border-color 0.2s;position:relative;}
+.question-card:hover{border-color:var(--border2);}
+.question-card.answered-correct{border-color:var(--green);background:var(--green-dim);}
+.question-card.answered-wrong{border-color:var(--red);background:var(--red-dim);}
+.question-meta{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;}
+.q-type{font-family:'Space Mono',monospace;font-size:0.68rem;padding:3px 8px;border-radius:4px;text-transform:uppercase;background:var(--accent-dim);color:var(--accent2);border:1px solid var(--accent);}
+.q-diff{font-family:'Space Mono',monospace;font-size:0.68rem;padding:3px 8px;border-radius:4px;text-transform:uppercase;}
+.q-diff.medium{background:var(--yellow-dim);color:var(--yellow);border:1px solid var(--yellow);}
+.q-diff.hard{background:var(--red-dim);color:var(--red);border:1px solid var(--red);}
+.q-diff.exam{background:var(--purple-dim);color:var(--purple);border:1px solid var(--purple);}
+.q-num{font-family:'Space Mono',monospace;font-size:0.75rem;color:var(--text3);margin-left:auto;}
+.question-text{font-size:0.95rem;line-height:1.6;font-weight:500;margin-bottom:16px;}
+.options{display:flex;flex-direction:column;gap:8px;}
+.option{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);cursor:pointer;transition:all 0.15s;font-size:0.875rem;line-height:1.5;background:var(--bg3);}
+.option:hover:not(.disabled){border-color:var(--accent);background:var(--accent-dim);color:var(--accent2);}
+.option.selected-correct{border-color:var(--green)!important;background:var(--green-dim)!important;color:var(--green)!important;}
+.option.selected-wrong{border-color:var(--red)!important;background:var(--red-dim)!important;color:var(--red)!important;}
+.option.correct-highlight{border-color:var(--green)!important;background:var(--green-dim)!important;color:var(--green)!important;}
+.option.disabled{cursor:default;}
+.option-letter{min-width:22px;height:22px;border-radius:4px;border:1px solid currentColor;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:0.7rem;font-weight:700;flex-shrink:0;margin-top:1px;}
+.tf-options{display:flex;gap:10px;}
+.tf-option{flex:1;padding:12px;text-align:center;border-radius:var(--radius-sm);border:1px solid var(--border);cursor:pointer;font-weight:700;font-size:1rem;transition:all 0.15s;background:var(--bg3);}
+.tf-option.true-opt:hover:not(.disabled){border-color:var(--green);background:var(--green-dim);color:var(--green);}
+.tf-option.false-opt:hover:not(.disabled){border-color:var(--red);background:var(--red-dim);color:var(--red);}
+.tf-option.selected-correct{border-color:var(--green)!important;background:var(--green-dim)!important;color:var(--green)!important;}
+.tf-option.selected-wrong{border-color:var(--red)!important;background:var(--red-dim)!important;color:var(--red)!important;}
+.tf-option.correct-highlight{border-color:var(--green)!important;background:var(--green-dim)!important;color:var(--green)!important;}
+.fill-input{width:100%;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:0.875rem;font-family:'DM Sans',sans-serif;transition:border-color 0.18s;outline:none;margin-bottom:8px;}
+.fill-input:focus{border-color:var(--accent);}
+.fill-input.correct{border-color:var(--green);background:var(--green-dim);}
+.fill-input.wrong{border-color:var(--red);background:var(--red-dim);}
+.explanation-box{margin-top:14px;padding:14px 16px;background:var(--bg3);border-radius:var(--radius-sm);border-left:3px solid var(--accent);font-size:0.85rem;line-height:1.6;display:none;}
+.explanation-box.show{display:block;animation:slideDown 0.25s ease;}
+.explanation-box.correct-exp{border-left-color:var(--green);}
+.explanation-box.wrong-exp{border-left-color:var(--red);}
+.exp-title{font-family:'Space Mono',monospace;font-size:0.72rem;margin-bottom:6px;}
+.exp-title.correct-exp{color:var(--green);}
+.exp-title.wrong-exp{color:var(--red);}
+.exp-why{margin-top:8px;color:var(--text2);}
+.trap-note{margin-top:8px;padding:8px 10px;background:var(--yellow-dim);border-radius:6px;color:var(--yellow);font-size:0.82rem;}
+.bookmark-btn{position:absolute;top:16px;right:16px;background:none;border:none;cursor:pointer;font-size:1.1rem;color:var(--text3);transition:color 0.15s;}
+.bookmark-btn:hover,.bookmark-btn.active{color:var(--yellow);}
+.match-container{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:10px;}
+.match-col-title{font-family:'Syne',sans-serif;font-weight:700;font-size:0.82rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;}
+.match-item{padding:10px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);cursor:pointer;font-size:0.85rem;line-height:1.4;margin-bottom:6px;background:var(--bg3);transition:all 0.15s;}
+.match-item:hover{border-color:var(--accent);background:var(--accent-dim);}
+.match-item.selected{border-color:var(--accent2);background:var(--accent-dim);color:var(--accent2);}
+.match-item.matched-correct{border-color:var(--green);background:var(--green-dim);color:var(--green);cursor:default;}
+.match-item.matched-wrong{border-color:var(--red);background:var(--red-dim);color:var(--red);}
+@media(max-width:500px){.match-container{grid-template-columns:1fr;}}
+.progress-wrap{margin-bottom:20px;}
+.progress-label{display:flex;justify-content:space-between;font-size:0.8rem;color:var(--text3);margin-bottom:6px;}
+.progress-bar{height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:3px;transition:width 0.4s;}
+#toast-container{position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:8px;}
+.toast{padding:12px 18px;border-radius:var(--radius-sm);font-size:0.85rem;font-weight:500;box-shadow:var(--shadow-lg);animation:toastIn 0.3s ease;border:1px solid;max-width:280px;backdrop-filter:blur(10px);}
+.toast.success{background:rgba(34,211,160,0.15);border-color:var(--green);color:var(--green);}
+.toast.error{background:rgba(248,113,113,0.15);border-color:var(--red);color:var(--red);}
+.toast.info{background:rgba(59,130,246,0.15);border-color:var(--accent);color:var(--accent2);}
+.toast.warn{background:rgba(251,191,36,0.15);border-color:var(--yellow);color:var(--yellow);}
+.exam-mode-banner{background:linear-gradient(135deg,var(--red-dim),rgba(251,191,36,0.08));border:1px solid var(--red);border-radius:var(--radius);padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.exam-timer{font-family:'Space Mono',monospace;font-size:1.4rem;color:var(--red);font-weight:700;}
+.exam-timer.warning{animation:pulse 1s infinite;}
+.session-summary{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:28px;text-align:center;margin-top:20px;}
+.summary-score{font-family:'Syne',sans-serif;font-size:4rem;font-weight:800;line-height:1;margin:16px 0 8px;}
+.summary-grade{font-size:1.1rem;color:var(--text2);margin-bottom:20px;}
+.analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.analytics-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;}
+.analytics-title{font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--text3);margin-bottom:12px;text-transform:uppercase;}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:0.8rem;}
+.bar-row-label{min-width:90px;color:var(--text2);font-size:0.78rem;}
+.bar-track{flex:1;height:8px;background:var(--bg4);border-radius:4px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;transition:width 0.6s;}
+.bar-pct{min-width:36px;text-align:right;color:var(--text3);font-family:'Space Mono',monospace;font-size:0.72rem;}
+@media(max-width:600px){.analytics-grid{grid-template-columns:1fr;}}
+.search-bar{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 14px;margin-bottom:16px;}
+.search-bar input{flex:1;background:none;border:none;outline:none;color:var(--text);font-size:0.875rem;font-family:'DM Sans',sans-serif;}
+.search-bar input::placeholder{color:var(--text3);}
+.panel{display:none;}
+.panel.active{display:block;animation:fadeIn 0.25s ease;}
+.divider{height:1px;background:var(--border);margin:16px 0;}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text3);}
+.empty-icon{font-size:2.5rem;margin-bottom:10px;}
+.correct-list{list-style:none;}
+.correct-list li{margin-bottom:4px;font-size:0.85rem;color:var(--text2);padding:5px 10px;background:var(--bg3);border-radius:6px;}
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn 0.3s ease;}
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <div class="logo">Block<span>Chain</span> <span class="logo-badge">EXAM MASTER</span></div>
+  </div>
+  <div class="header-right">
+    <div class="streak-badge" id="streakBadge">🔥 <span id="streakCount">0</span> streak</div>
+    <button class="btn-icon" onclick="toggleTheme()" title="Toggle theme" id="themeBtn">🌙</button>
+    <button class="btn-icon" onclick="showPanel('bookmarks')" title="Bookmarks">🔖</button>
+    <button class="btn-icon" onclick="resetAll()" title="Reset progress">↺</button>
+  </div>
+</header>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Navigation</div>
+      <div class="sidebar-item active" onclick="showPanel('overview')" id="nav-overview"><span class="icon">📊</span> Overview</div>
+      <div class="sidebar-item" onclick="showPanel('study')" id="nav-study"><span class="icon">📖</span> Study Guide</div>
+      <div class="sidebar-item" onclick="showPanel('quiz')" id="nav-quiz"><span class="icon">❓</span> Question Bank</div>
+      <div class="sidebar-item" onclick="showPanel('exam')" id="nav-exam"><span class="icon">🎯</span> Exam Simulation</div>
+      <div class="sidebar-item" onclick="showPanel('analytics')" id="nav-analytics"><span class="icon">📈</span> Analytics</div>
+      <div class="sidebar-item" onclick="showPanel('bookmarks')" id="nav-bookmarks"><span class="icon">🔖</span> Bookmarks</div>
+    </div>
+    <div class="sidebar-section" style="margin-top:8px">
+      <div class="sidebar-label">Topics</div>
+      <div class="sidebar-item" onclick="showPanel('study');openSection('sec-intro')"><span class="icon">🔗</span> Definition</div>
+      <div class="sidebar-item" onclick="showPanel('study');openSection('sec-how')"><span class="icon">⚙️</span> How It Works</div>
+      <div class="sidebar-item" onclick="showPanel('study');openSection('sec-crypto')"><span class="icon">🔑</span> Cryptography</div>
+      <div class="sidebar-item" onclick="showPanel('study');openSection('sec-network')"><span class="icon">🌐</span> P2P Network</div>
+      <div class="sidebar-item" onclick="showPanel('study');openSection('sec-types')"><span class="icon">📦</span> Types</div>
+      <div class="sidebar-item" onclick="showPanel('study');openSection('sec-features')"><span class="icon">🛡️</span> Features &amp; Security</div>
+    </div>
+  </aside>
+  <main class="main">
+    <!-- OVERVIEW PANEL -->
+    <div class="panel active" id="panel-overview">
+      <div class="stats-strip">
+        <div class="stat-card blue"><div class="stat-val blue" id="stat-total">60</div><div class="stat-label">Total Questions</div></div>
+        <div class="stat-card green"><div class="stat-val green" id="stat-correct">0</div><div class="stat-label">Correct Answers</div></div>
+        <div class="stat-card yellow"><div class="stat-val yellow" id="stat-accuracy">0%</div><div class="stat-label">Accuracy</div></div>
+        <div class="stat-card purple"><div class="stat-val purple" id="stat-bookmarks">0</div><div class="stat-label">Bookmarked</div></div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label"><span>Overall Progress</span><span id="progress-pct">0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+        <div class="section-card" style="cursor:default"><div style="padding:16px 20px">
+          <div class="cb-title">📚 Course Info</div>
+          <div class="info-row" style="margin-top:8px">🎓 Dr. Abdalla Sayed</div>
+          <div class="info-row success">6 Major Topics · 60 Questions</div>
+          <div class="info-row warn">Focus: Definitions, Comparisons, Security</div>
+        </div></div>
+        <div class="section-card" style="cursor:default"><div style="padding:16px 20px">
+          <div class="cb-title">🎯 High-Yield Alert</div>
+          <div class="info-row danger">🔴 TRAP #1: Public vs Private Keys</div>
+          <div class="info-row danger">🔴 TRAP #2: Blockchain Types + Examples</div>
+          <div class="info-row warn">🟡 4 Pillars: Exact Order &amp; Meaning</div>
+          <div class="info-row warn">🟡 Block Anatomy — All 5 Components</div>
+        </div></div>
+      </div>
+      <div class="section-card" style="cursor:default"><div style="padding:16px 20px">
+        <div class="cb-title">⚡ Quick Start</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+          <button class="btn btn-primary" onclick="showPanel('quiz')">🎲 Start Practice</button>
+          <button class="btn btn-outline" onclick="showPanel('exam')">🎯 Simulate Exam</button>
+          <button class="btn btn-outline" onclick="showPanel('study')">📖 Study Guide</button>
+          <button class="btn btn-outline" onclick="showPanel('analytics')">📊 Analytics</button>
+        </div>
+      </div></div>
+      <div style="margin-top:16px">
+        <div class="cb-title" style="margin-bottom:12px">🗺️ Topic Map</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+          <div style="padding:14px;background:var(--bg2);border:1px solid var(--accent);border-radius:var(--radius);cursor:pointer" onclick="showPanel('study');openSection('sec-intro')">
+            <div style="font-size:1.4rem;margin-bottom:6px">🔗</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem">Definition</div><div style="font-size:0.75rem;color:var(--text3);margin-top:2px">5 key properties</div>
+          </div>
+          <div style="padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer" onclick="showPanel('study');openSection('sec-how')">
+            <div style="font-size:1.4rem;margin-bottom:6px">⚙️</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem">Mechanism</div><div style="font-size:0.75rem;color:var(--text3);margin-top:2px">6-step lifecycle</div>
+          </div>
+          <div style="padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer" onclick="showPanel('study');openSection('sec-crypto')">
+            <div style="font-size:1.4rem;margin-bottom:6px">🔑</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem">Cryptography</div><div style="font-size:0.75rem;color:var(--text3);margin-top:2px">Keys &amp; Signatures</div>
+          </div>
+          <div style="padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer" onclick="showPanel('study');openSection('sec-network')">
+            <div style="font-size:1.4rem;margin-bottom:6px">🌐</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem">P2P Network</div><div style="font-size:0.75rem;color:var(--text3);margin-top:2px">Shared Ledger</div>
+          </div>
+          <div style="padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer" onclick="showPanel('study');openSection('sec-types')">
+            <div style="font-size:1.4rem;margin-bottom:6px">📦</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem">3 Types</div><div style="font-size:0.75rem;color:var(--text3);margin-top:2px">Public/Private/Hybrid</div>
+          </div>
+          <div style="padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer" onclick="showPanel('study');openSection('sec-features')">
+            <div style="font-size:1.4rem;margin-bottom:6px">🛡️</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem">4 Pillars</div><div style="font-size:0.75rem;color:var(--text3);margin-top:2px">Security Use Cases</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- STUDY PANEL -->
+    <div class="panel" id="panel-study">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem">Study Guide</div>
+          <div style="color:var(--text3);font-size:0.85rem;margin-top:2px">Deep analysis · Exam traps · Memory tricks</div>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="toggleAllSections()">Expand All</button>
+      </div>
+      <div class="section-card" id="sec-intro">
+        <div class="section-header" onclick="toggleSection('sec-intro')">
+          <div class="section-header-left">
+            <div class="section-icon" style="background:var(--accent-dim)">🔗</div>
+            <div><div class="section-title">What Is Blockchain?</div><div class="section-subtitle">Definition · Block anatomy · Chain linkage</div></div>
+          </div><span class="section-chevron">▼</span>
+        </div>
+        <div class="section-body">
+          <div class="content-block">
+            <div class="cb-title">Core Definition (memorize exactly)</div>
+            <div class="info-row">📌 A <strong>digital, decentralized, distributed public ledger</strong> in which records (blocks) are <strong>cryptographically linked</strong> and secured against alteration.</div>
+            <div class="memory-box">
+              <div class="memory-box-title">🧠 MEMORY TRICK: "D-D-D-CL-DS"</div>
+              <p><strong>D</strong>igital → <strong>D</strong>ecentralized → <strong>D</strong>istributed → <strong>C</strong>ryptographically <strong>L</strong>inked → <strong>D</strong>igitally <strong>S</strong>igned</p>
+            </div>
+          </div>
+          <div class="content-block">
+            <div class="cb-title">Block Anatomy — 5 Components</div>
+            <table class="comparison-table">
+              <tr><th>Component</th><th>Description</th><th>Exam Trap</th></tr>
+              <tr><td>📦 Transaction Data</td><td>The actual payload — transfer, contract, identity update</td><td>NOT just financial data!</td></tr>
+              <tr><td>⏱️ Timestamp</td><td>Exact date/time the block was created</td><td>Establishes chronological order</td></tr>
+              <tr><td>#️⃣ Current Hash</td><td>Unique fingerprint of THIS block's contents</td><td>Changes if ANY data changes</td></tr>
+              <tr><td>🔗 Previous Hash</td><td>Hash of the PRECEDING block</td><td>Creates the CHAIN linkage</td></tr>
+              <tr><td>✍️ Digital Signature</td><td>Cryptographic proof of transaction originator</td><td>Proves IDENTITY, not just data</td></tr>
+            </table>
+            <div class="info-row warn">⚠️ TRAP: "Current Hash" = THIS block's fingerprint. "Previous Hash" = reference to PRIOR block. Students constantly mix these up.</div>
+          </div>
+          <div class="content-block">
+            <div class="cb-title">Chain Linkage — Cascade Effect</div>
+            <div class="info-row">🔗 Block 1 (Genesis) → Block 2 stores Hash of Block 1 → Block 3 stores Hash of Block 2</div>
+            <div class="info-row danger">🔴 KEY: Altering Block 5 changes its hash → invalidates ALL subsequent blocks (6, 7, 8...) → cascade effect → detectable across the ENTIRE network.</div>
+          </div>
+          <div class="content-block">
+            <div class="cb-title">Why Blockchain? (Trust Triad)</div>
+            <div class="concept-grid">
+              <span class="chip blue">🔒 Trust — no third party needed</span>
+              <span class="chip green">📋 Data Integrity — cryptographic verification</span>
+              <span class="chip purple">🛡️ Security — no central attack vector</span>
+            </div>
+          </div>
+          <div class="content-block">
+            <div class="cb-title">Simple Analogy</div>
+            <div class="info-row purple">📓 "A shared notebook that thousands of people hold simultaneously — every page is sealed with a unique code, and you can't erase or rewrite any page without everyone noticing." — Dr. Abdalla Sayed</div>
+          </div>
+        </div>
+      </div>
+      <div class="section-card" id="sec-how">
+        <div class="section-header" onclick="toggleSection('sec-how')">
+          <div class="section-header-left">
+            <div class="section-icon" style="background:var(--green-dim)">⚙️</div>
+            <div><div class="section-title">How Blockchain Works</div><div class="section-subtitle">6-step lifecycle · Transaction types · Node verification</div></div>
+          </div><span class="section-chevron">▼</span>
+        </div>
+        <div class="section-body">
+          <div class="content-block">
+            <div class="cb-title">6-Step Transaction Lifecycle (EXACT ORDER)</div>
+            <div class="info-row">1️⃣ <strong>Create</strong> — User initiates transaction</div>
+            <div class="info-row">2️⃣ <strong>Sign</strong> — Signed with sender's PRIVATE key</div>
+            <div class="info-row">3️⃣ <strong>Verify</strong> — Network nodes validate</div>
+            <div class="info-row">4️⃣ <strong>Group</strong> — Valid transactions bundled into a block</div>
+            <div class="info-row">5️⃣ <strong>Consensus</strong> — Network agrees on block validity</div>
+            <div class="info-row">6️⃣ <strong>Add</strong> — Block permanently appended to chain &amp; broadcast</div>
+            <div class="memory-box">
+              <div class="memory-box-title">🧠 MEMORY TRICK: "CS-VG-CA"</div>
+              <p><strong>C</strong>reate → <strong>S</strong>ign → <strong>V</strong>erify → <strong>G</strong>roup → <strong>C</strong>onsensus → <strong>A</strong>dd</p>
+            </div>
+          </div>
+          <div class="content-block">
+            <div class="cb-title">Transaction Types (NOT just financial!)</div>
+            <div class="concept-grid">
+              <span class="chip blue">💰 Cryptocurrency Transfer</span>
+              <span class="chip green">🏥 Medical Record Verification</span>
+              <span class="chip yellow">🪪 Digital Identity</span>
+              <span class="chip purple">📦 Supply Chain Movement</span>
+              <span class="chip red">🤖 IoT Authentication</span>
+            </div>
+            <div class="info-row warn">⚠️ EXAM TRAP: "Transactions can ONLY be financial" — FALSE. Any meaningful event qualifies.</div>
+          </div>
+          <div class="content-block">
+            <div class="cb-title">Node Verification — 4 Checks</div>
+            <div class="info-row success">✅ 1. <strong>Signature Check</strong> — Uses sender's PUBLIC key to verify digital signature</div>
+            <div class="info-row success">✅ 2. <strong>Balance/Authorization Check</strong> — Sufficient funds or permission?</div>
+            <div class="info-row success">✅ 3. <strong>Double-Spend Check</strong> — Was this asset already spent?</div>
+            <div class="info-row danger">✅ 4. <strong>Rejection</strong> — Failed checks = IMMEDIATELY rejected, not propagated</div>
+            <div class="info-row danger">🔴 TRICK: Verification uses PUBLIC key. Creating signatures uses PRIVATE key.</div>
+          </div>
+          <div class="content-block">
+            <div class="cb-title">Digital Signature — 4-Step Process</div>
+            <div class="info-row">1. Sender <strong>hashes</strong> the transaction data</div>
+            <div class="info-row">2. Hash encrypted with sender's <strong>PRIVATE key</strong> → this IS the signature</div>
+            <div class="info-row">3. Any node decrypts signature using sender's <strong>PUBLIC key</strong></div>
+            <div class="info-row success">4. Decrypted hash == transaction hash → <strong>authenticity confirmed</strong></div>
+          </div>
+        </div>
+      </div>
+      <div class="section-card" id="sec-crypto">
+        <div class="section-header" onclick="toggleSection('sec-crypto')">
+          <div class="section-header-left">
+            <div class="section-icon" style="background:var(--yellow-dim)">🔑</div>
+            <div><div class="section-title">Cryptography Foundations</div><div class="section-subtitle">Private/Public keys · 4 goals · Digital identity</div></div>
+          </div><span class="section-chevron">▼</span>
+        </div>
+        <div class="section-body">
+          <div class="content-block">
+            <div class="cb-title">4 Cryptography Goals</div>
+            <table class="comparison-table">
+              <tr><th>Goal</th><th>Mechanism</th><th>Meaning</th></tr>
+              <tr><td>🔒 Confidentiality</td><td>Encryption</td><td>Only authorized parties can read data</td></tr>
+              <tr><td>✅ Integrity</td><td>Hash Functions</td><td>Detect unauthorized modifications</td></tr>
+              <tr><td>🪪 Authentication</td><td>Digital Signatures</td><td>Prove sender origin/identity</td></tr>
+              <tr><td>🚫 Non-Repudiation</td><td>Digital Signatures</td><td>Signers CANNOT deny having signed</td></tr>
+            </table>
+            <div class="info-row danger">🔴 TRAP: Hash functions = INTEGRITY (not confidentiality). Encryption = CONFIDENTIALITY.</div>
+          </div>
+          <div class="content-block">
+            <div class="cb-title">Private Key vs Public Key — THE Critical Comparison</div>
+            <table class="comparison-table">
+              <tr><th>Property</th><th>🔑 Private Key</th><th>🔓 Public Key</th></tr>
+              <tr><td>Sharing</td><td>NEVER shared — owner only</td><td>Freely shared with network</td></tr>
+              <tr><td>Used For</td><td><strong style="color:var(--red)">SIGN</strong> transactions</td><td><strong style="color:var(--green)">VERIFY</strong> signatures</td></tr>
+              <tr><td>Derivation</td><td>Random / root key</td><td>Derived FROM private key (one-way)</td></tr>
+              <tr><td>Functions as</td><td>Proves ownership/intent</td><td>Your blockchain "address"</td></tr>
+              <tr><td>Loss consequence</td><td>PERMANENT loss of access</td><td>Can regenerate from private key</td></tr>
+              <tr><td>Reverse-engineer?</td><td>Cannot derive private from public</td><td>CAN derive public from private</td></tr>
+            </table>
+            <div class="info-row danger">🔴 #1 EXAM TRAP: "Public key is used to sign transactions" — FALSE. Private = SIGN. Public = VERIFY.</div>
+            <div class="memory-box">
+              <div class="memory-box-title">🧠 MEMORY TRICK: "Private = Personal (SIGN). Public = Proof (VERIFY)"</div>
+              <p>You <strong>sign</strong> with something <strong>private</strong> (like your handwriting). Others <strong>verify</strong> using something <strong>public</strong> (like your ID photo).</p>
+            </div>
+          </div>
+          <div class="content-block">
+            <div class="cb-title">Digital Identity on Blockchain</div>
+            <div class="info-row purple">🪪 Key Pair = Identity (no username/password required)</div>
+            <div class="info-row">✅ Verifiable Credentials — cryptographically signed by trusted issuers</div>
+            <div class="info-row success">🔒 Self-Sovereign Identity — users decide what to reveal (user-controlled privacy)</div>
+            <div class="info-row warn">⚠️ Contrast: Traditional systems use centralized DBs — one breach exposes millions</div>
+          </div>
+        </div>
+      </div>
+      <div class="section-card" id="sec-network">
+        <div class="section-header" onclick="toggleSection('sec-network')">
+          <div class="section-header-left">
+            <div class="section-icon" style="background:var(--purple-dim)">🌐</div>
+            <div><div class="section-title">P2P Network Architecture</div><div class="section-subtitle">Peer-to-peer · Shared ledger · 4 benefits</div></div>
+          </div><span class="section-chevron">▼</span>
+        </div>
+        <div class="section-body">
+          <div class="content-block">
+            <div class="cb-title">P2P vs Client-Server</div>
+            <table class="comparison-table">
+              <tr><th>Property</th><th>Client-Server</th><th>Peer-to-Peer (P2P)</th></tr>
+              <tr><td>Architecture</td><td>Central server controls all</td><td>Each node is client AND server</td></tr>
+              <tr><td>Failure</td><td>1 server down = whole system down</td><td>Many nodes fail, network survives</td></tr>
+              <tr><td>Control</td><td>Centralized</td><td>Distributed equally</td></tr>
+              <tr><td>Communication</td><td>Routes through central server</td><td>Direct between peers</td></tr>
+              <tr><td>Node role</td><td>Client or Server (not both)</td><td>Client AND Server simultaneously</td></tr>
+            </table>
+          </div>
+          <div class="content-block">
+            <div class="cb-title">4 Reasons P2P Matters for Blockchain</div>
+            <div class="info-row">⚡ <strong>No Single Point of Failure</strong> — no single target to disable the network</div>
+            <div class="info-row">🏛️ <strong>True Decentralization</strong> — no company/government controls it</div>
+            <div class="info-row">💪 <strong>Greater Resilience</strong> — operates even if many nodes go offline</div>
+            <div class="info-row success">🚫 <strong>Censorship Resistance</strong> — no entity can block valid transactions</div>
+          </div>
+          <div class="content-block">
+            <div class="cb-title">The Shared Ledger</div>
+            <div class="info-row">📋 Every node holds an IDENTICAL copy of the full transaction history</div>
+            <div class="info-row">🔄 Updates propagate to ALL nodes in real time</div>
+            <div class="info-row warn">⚠️ No node has a "special" or "master" copy — all equal</div>
+            <div class="info-row success">✅ Eliminates costly reconciliation in finance, supply chain, healthcare</div>
+          </div>
+        </div>
+      </div>
+      <div class="section-card" id="sec-types">
+        <div class="section-header" onclick="toggleSection('sec-types')">
+          <div class="section-header-left">
+            <div class="section-icon" style="background:var(--green-dim)">📦</div>
+            <div><div class="section-title">Types of Blockchain</div><div class="section-subtitle">Public · Private · Hybrid — comparisons &amp; examples</div></div>
+          </div><span class="section-chevron">▼</span>
+        </div>
+        <div class="section-body">
+          <div class="content-block">
+            <div class="cb-title">Master Comparison Table</div>
+            <table class="comparison-table">
+              <tr><th>Property</th><th>🌐 Public</th><th>🏢 Private</th><th>🔀 Hybrid</th></tr>
+              <tr><td>Access</td><td>Open to anyone</td><td>Permission required</td><td>Selective</td></tr>
+              <tr><td>Decentralization</td><td>Maximum</td><td>Minimal/Controlled</td><td>Mixed</td></tr>
+              <tr><td>Transparency</td><td>Fully transparent</td><td>Confidential to outsiders</td><td>Flexible</td></tr>
+              <tr><td>Speed</td><td>Slower (more nodes)</td><td>Faster (fewer nodes)</td><td>Depends</td></tr>
+              <tr><td>Privacy</td><td>Pseudonymous only</td><td>Full privacy</td><td>Configurable</td></tr>
+              <tr><td>Trade-off</td><td>Sacrifices speed &amp; privacy</td><td>Sacrifices decentralization</td><td>Governance complexity</td></tr>
+              <tr><td>Examples</td><td><strong style="color:var(--accent2)">Bitcoin, Ethereum</strong></td><td><strong style="color:var(--yellow)">Hyperledger Fabric, Corda</strong></td><td>—</td></tr>
+            </table>
+            <div class="info-row danger">🔴 KEY: Bitcoin/Ethereum = PUBLIC. Hyperledger Fabric (enterprise) / Corda (finance) = PRIVATE.</div>
+          </div>
+          <div class="content-block">
+            <div class="cb-title">Hybrid Use Case (Exam Scenario)</div>
+            <div class="info-row purple">🏥 Healthcare: Sensitive patient records on PRIVATE layer + anonymized audit hashes on PUBLIC chain → regulatory compliance WITHOUT exposing private data</div>
+          </div>
+          <div class="memory-box">
+            <div class="memory-box-title">🧠 MEMORY: "As Privacy ↑, Decentralization ↓"</div>
+            <p>Public = Max transparency, Min privacy. Private = Max privacy, Min transparency. As you add privacy controls, you lose decentralization.</p>
+          </div>
+        </div>
+      </div>
+      <div class="section-card" id="sec-features">
+        <div class="section-header" onclick="toggleSection('sec-features')">
+          <div class="section-header-left">
+            <div class="section-icon" style="background:var(--red-dim)">🛡️</div>
+            <div><div class="section-title">4 Pillars &amp; Security Use Cases</div><div class="section-subtitle">Decentralization · Transparency · Immutability · Security</div></div>
+          </div><span class="section-chevron">▼</span>
+        </div>
+        <div class="section-body">
+          <div class="content-block">
+            <div class="cb-title">The 4 Core Pillars</div>
+            <table class="comparison-table">
+              <tr><th>#</th><th>Pillar</th><th>Core Meaning</th><th>Key Detail</th></tr>
+              <tr><td>1</td><td>🏛️ Decentralization</td><td>No single controlling entity</td><td>Power distributed across all nodes</td></tr>
+              <tr><td>2</td><td>👁️ Transparency</td><td>Open transaction history</td><td>Pseudonymous — no real identity exposure</td></tr>
+              <tr><td>3</td><td>🔒 Immutability</td><td>Data cannot be changed/deleted</td><td>MOST DISTINCTIVE property</td></tr>
+              <tr><td>4</td><td>🛡️ Security</td><td>Cryptographic + distributed</td><td>51% attack threshold</td></tr>
+            </table>
+            <div class="info-row warn">⚠️ TRAP: Transparency ≠ identity exposure. Blockchain uses PSEUDONYMOUS addresses.</div>
+            <div class="info-row danger">🔴 Immutability: Hash Dependency Chain → Network-Wide Rejection → 51% Attack Threshold (&gt;50% needed)</div>
+          </div>
+          <div class="content-block">
+            <div class="cb-title">8 Cybersecurity Use Cases</div>
+            <div class="info-row">🌐 <strong>Secure DNS</strong> — Resistant to hijacking &amp; cache poisoning attacks</div>
+            <div class="info-row">📡 <strong>IoT Authentication</strong> — Each device gets a cryptographic identity</div>
+            <div class="info-row">⚡ <strong>DDoS Resistance</strong> — No single target → reduces DDoS impact dramatically</div>
+            <div class="info-row">💬 <strong>Secure Messaging</strong> — E2E encrypted, blockchain-verified sender identities</div>
+            <div class="info-row">🪪 <strong>Identity &amp; Access</strong> — Self-sovereign identity, no centralized password DBs</div>
+            <div class="info-row">📦 <strong>Supply Chain</strong> — Counterfeit goods &amp; tampering immediately detectable</div>
+            <div class="info-row">📝 <strong>Log Integrity</strong> — Logs on-chain can't be secretly altered after a breach</div>
+            <div class="info-row purple">📜 <strong>Smart Contract Firewalls</strong> — Automated, code-enforced access control WITHOUT human intermediaries</div>
+          </div>
+          <div class="memory-box">
+            <div class="memory-box-title">🧠 MEMORY: "8 Uses = DNS, IoT, DDoS, Msg, ID, Supply, Log, Smart"</div>
+            <p><strong>D</strong>NS → <strong>I</strong>oT → <strong>D</strong>DoS → <strong>M</strong>essaging → <strong>I</strong>dentity → <strong>S</strong>upply Chain → <strong>L</strong>og Integrity → <strong>S</strong>mart Contracts</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- QUIZ PANEL -->
+    <div class="panel" id="panel-quiz">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem">Question Bank</div>
+          <div style="color:var(--text3);font-size:0.85rem;margin-top:2px">60 questions · All types · Instant feedback</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-outline btn-sm" onclick="shuffleQuestions()">🔀 Shuffle</button>
+          <button class="btn btn-outline btn-sm" onclick="showWrongOnly()">❌ Wrong Only</button>
+          <button class="btn btn-outline btn-sm" onclick="showBookmarkedOnly()">🔖 Bookmarked</button>
+          <button class="btn btn-primary btn-sm" onclick="resetQuiz()">↺ Reset</button>
+        </div>
+      </div>
+      <div class="search-bar">
+        <span>🔍</span>
+        <input type="text" id="searchInput" placeholder="Search questions..." oninput="filterQuestions()">
+      </div>
+      <div class="filter-bar">
+        <button class="filter-chip active" data-filter="all" onclick="setFilter('all',this)">All (60)</button>
+        <button class="filter-chip" data-filter="mcq" onclick="setFilter('mcq',this)">MCQ</button>
+        <button class="filter-chip" data-filter="tf" onclick="setFilter('tf',this)">True/False</button>
+        <button class="filter-chip" data-filter="fill" onclick="setFilter('fill',this)">Fill-in-Blank</button>
+        <button class="filter-chip" data-filter="match" onclick="setFilter('match',this)">Match</button>
+        <button class="filter-chip diff-medium" data-filter="medium" onclick="setFilter('medium',this)">Medium</button>
+        <button class="filter-chip diff-hard" data-filter="hard" onclick="setFilter('hard',this)">Hard/Exam</button>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label"><span id="quiz-progress-label">0 / 60 answered</span><span id="quiz-score-label">Score: 0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="quiz-progress-fill" style="width:0%"></div></div>
+      </div>
+      <div id="questions-container"></div>
+    </div>
+    <!-- EXAM PANEL -->
+    <div class="panel" id="panel-exam">
+      <div id="exam-setup" class="fade-in">
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;margin-bottom:6px">Exam Simulation</div>
+        <div style="color:var(--text3);font-size:0.85rem;margin-bottom:20px">Timed exam mode — no feedback until submission</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:500px;margin-bottom:24px">
+          <div style="padding:16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius)">
+            <div class="cb-title">Questions</div>
+            <select id="exam-q-count" style="margin-top:8px;padding:8px 12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:var(--radius-sm);font-size:0.875rem;outline:none;width:100%">
+              <option value="10">10 Questions</option>
+              <option value="20" selected>20 Questions</option>
+              <option value="30">30 Questions</option>
+              <option value="60">Full Bank (60)</option>
+            </select>
+          </div>
+          <div style="padding:16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius)">
+            <div class="cb-title">Time Limit</div>
+            <select id="exam-time" style="margin-top:8px;padding:8px 12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:var(--radius-sm);font-size:0.875rem;outline:none;width:100%">
+              <option value="600">10 minutes</option>
+              <option value="1200" selected>20 minutes</option>
+              <option value="1800">30 minutes</option>
+              <option value="3600">60 minutes</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-primary" onclick="startExam()">🎯 Start Exam</button>
+          <button class="btn btn-outline" onclick="showPanel('quiz')">← Practice Mode</button>
+        </div>
+      </div>
+      <div id="exam-running" style="display:none">
+        <div class="exam-mode-banner">
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1rem">🎯 EXAM MODE</div>
+            <div style="color:var(--text2);font-size:0.85rem" id="exam-q-indicator">Question 1 of 20</div>
+          </div>
+          <div class="exam-timer" id="exam-timer">20:00</div>
+          <button class="btn btn-red btn-sm" onclick="submitExam()">Submit Exam</button>
+        </div>
+        <div id="exam-questions-container"></div>
+        <div style="margin-top:20px;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap">
+          <button class="btn btn-outline" onclick="prevExamQ()" id="btn-prev-q">← Prev</button>
+          <button class="btn btn-primary" onclick="nextExamQ()" id="btn-next-q">Next →</button>
+          <button class="btn btn-green" onclick="submitExam()">✓ Submit</button>
+        </div>
+        <div id="exam-nav-dots" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:16px"></div>
+      </div>
+      <div id="exam-summary" style="display:none">
+        <div class="session-summary fade-in">
+          <div style="font-size:2rem">🎓</div>
+          <div style="color:var(--text3);margin-top:12px;font-size:0.9rem">Your Score</div>
+          <div class="summary-score" id="exam-score-display">—</div>
+          <div class="summary-grade" id="exam-grade-display">—</div>
+          <div id="exam-result-details" style="text-align:left;margin-top:16px"></div>
+          <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="reviewExam()">📋 Review Answers</button>
+            <button class="btn btn-outline" onclick="resetExamMode()">🔄 New Exam</button>
+            <button class="btn btn-outline" onclick="showPanel('quiz')">← Practice Mode</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ANALYTICS PANEL -->
+    <div class="panel" id="panel-analytics">
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;margin-bottom:20px">Performance Analytics</div>
+      <div class="analytics-grid">
+        <div class="analytics-card"><div class="analytics-title">📊 Topic Performance</div><div id="topic-bars"></div></div>
+        <div class="analytics-card"><div class="analytics-title">🎯 Question Type Accuracy</div><div id="type-bars"></div></div>
+        <div class="analytics-card" style="grid-column:1/-1"><div class="analytics-title">❌ Weak Areas (answered wrong)</div><div id="weak-areas"></div></div>
+      </div>
+    </div>
+    <!-- BOOKMARKS PANEL -->
+    <div class="panel" id="panel-bookmarks">
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;margin-bottom:6px">Bookmarked Questions</div>
+      <div style="color:var(--text3);font-size:0.85rem;margin-bottom:20px">Your saved questions for quick review</div>
+      <div id="bookmarks-container"></div>
+    </div>
+  </main>
+</div>
+<div id="toast-container"></div>
+<script>
